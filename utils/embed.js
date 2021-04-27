@@ -1,28 +1,12 @@
 const Discord = require('discord.js');
-const logger = require('../utils/logger');
+const { prefix } = require('../config.json');
+const logger = require('./logger');
 
-const commands = {
-    'join': 'Bot joins to the channel where member is joined.',
-    'leave': 'Bot leaves the channel.',
-    'play': 'Takes song url or name and plays it.',
-    'stop': 'Stops the playing and deletes the song queue',
-    'skip': 'Skips the song currently playing',
-    'loop': 'Loops the current song or all songs have played. To loop current song use it with \'self\' argument.',
-    'pause': 'Pauses the current song.',
-    'resume': 'Resumes the last song.',
-    'clear': 'Clear the song queue.',
-    'help': 'Shows list of commands. To show a specific command give command name as argument.',
-    'info': 'Shows server info',
-    'top': 'Shows top ranked members.',
-    'me': 'Shows member information.',
-    'ping': 'Shows member ping',
-    'queue': 'Shows the song queue',
-    'shuffle': 'Shuffles the song queue',
-};
+
 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
     'October', 'November', 'December'];
 
-function sendSongEmbed(guild, song) {
+function nowPlayingEmbed(guild, song) {
     return new Discord.MessageEmbed()
         .setTitle(song.title)
         .setColor('#0099ff')
@@ -33,7 +17,7 @@ function sendSongEmbed(guild, song) {
 }
 
 
-function sendInfoEmbed(message) {
+function infoEmbed(message) {
     const guild = message.guild;
 
     logger.info('Server info is requested', guild.id);
@@ -62,7 +46,7 @@ function sendInfoEmbed(message) {
 }
 
 
-function sendQueueEmbed(message, songs, playing) {
+function queueEmbed(message, songs, playing) {
     const embed = new Discord.MessageEmbed()
         .setTitle('The Play Queue')
         .setColor('#0099ff')
@@ -80,7 +64,7 @@ function sendQueueEmbed(message, songs, playing) {
 }
 
 
-function sendMemberEmbed(message) {
+function memberEmbed(message) {
     const member = message.member;
     const roles = message.guild.roles;
 
@@ -104,25 +88,7 @@ function sendMemberEmbed(message) {
 }
 
 
-function sendHelpEmbed(command) {
-    if (command) {
-        if (command in commands) {
-            return new Discord.MessageEmbed()
-                .setTitle(command)
-                .setColor('#0099ff')
-                .setDescription(commands[command]);
-        } else {
-            return 'This commands is not exists';
-        }
-    }
-    return new Discord.MessageEmbed()
-        .setTitle('List of commands')
-        .setColor('#0099ff')
-        .setDescription(Object.keys(commands).join(', '));
-}
-
-
-function sendTopEmbed(guild) {
+function topEmbed(guild) {
 
     logger.info(`Top list info has requested`, guild.id);
 
@@ -133,7 +99,7 @@ function sendTopEmbed(guild) {
         .setTimestamp()
         .setThumbnail(guild.iconURL());
 
-    const toplist = guild.members.cache
+    const toplist = guild.members.cache;
 
     for (let i = 0; i < Math.min(10, toplist.length); i++) {
         if (i < 3) {
@@ -145,11 +111,63 @@ function sendTopEmbed(guild) {
     return embed;
 }
 
+
+function helpEmbed(message, args) {
+    const embed = new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .setThumbnail(message.client.user.avatarURL())
+        .setFooter(`${message.guild.name} -  Discord`)
+        .setTimestamp();
+    const { commands } = message.client;
+    if (!args.length) {
+        embed.setTitle('Help');
+        embed.setDescription('Here\'s a list of all commands:');
+        embed.addField('\u200b', commands.map(command => command.name).join(', '));
+        embed.addField('\u200b', `\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+        return embed;
+    }
+
+    const name = args[0].toLowerCase();
+    const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
+
+    if (!command) {
+        return message.reply('That\'s not a valid command!');
+    }
+    embed.setTitle(command.name);
+    embed.setDescription(command.description);
+    let aliases = '-';
+    if (command.aliases.length > 0)
+        aliases = command.aliases.join(', ');
+    embed.addField('Aliases', aliases);
+    embed.addField('Usage', `${prefix}${command.name} ${command.usage}`);
+    if (command.hasOwnProperty('example')) {
+        embed.addField('Examples', command.example);
+    }
+    return embed;
+}
+
+
+function songEmbed(song) {
+    const embed = new Discord.MessageEmbed()
+        .setAuthor('Song Information')
+        .setTitle(song.title)
+        .setThumbnail(song.image)
+        .setURL(song.url);
+    let s = song.length;
+    embed.addFields(
+        { name: 'Length', value: `${(s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s}`, inline: true },
+        { name: 'Year', value: `${song.year.substr(0, 4)}`, inline: true });
+
+    return embed;
+}
+
+
 module.exports = {
-    songEmbed: sendSongEmbed,
-    infoEmbed: sendInfoEmbed,
-    helpEmbed: sendHelpEmbed,
-    memberEmbed: sendMemberEmbed,
-    queueEmbed: sendQueueEmbed,
-    topEmbed: sendTopEmbed,
+    playingEmbed: nowPlayingEmbed,
+    infoEmbed: infoEmbed,
+    helpEmbed: helpEmbed,
+    memberEmbed: memberEmbed,
+    queueEmbed: queueEmbed,
+    topEmbed: topEmbed,
+    songEmbed: songEmbed,
 };
