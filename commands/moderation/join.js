@@ -14,6 +14,8 @@ module.exports = {
                 connection.voice.setSelfDeaf(true).then(() => {
                     logger.info(`${message.client.user.tag} is connected to voice and set to deaf`, message.guild.id);
                 });
+            }).catch(error => {
+                logger.error(error, message.guild.id);
             });
             message.channel.send(`I am joined to ${message.member.voice.channel}`);
         } else {

@@ -28,7 +28,7 @@ const info_text = '[INFO] ';//2
 const warning_text = '[WARNING] ';//1
 const error_text = '[ERROR] ';//0
 
-const { logLevel } = require('../config.json');
+const { logLevel } = require('../configs/config.json');
 
 function getDateTime() {
     let date = new Date();
