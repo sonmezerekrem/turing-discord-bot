@@ -1,0 +1,13 @@
+{
+  "defaultActivity": {
+    "name": "help",
+    "type": "PLAYING"
+  },
+  "defaultState": "online",
+  "prefix": "+",
+  "logLevel": 2,
+  "color": "#9900ff",
+  "youtubeUrl": "https://www.youtube.com/watch?v=",
+  "youtubeApiUrl": "https://www.googleapis.com/youtube/v3/search",
+  "discordAvatarUrl": "https://discord-avatar-maker.app?bg=88C800&fg=FFFFFF&eyc=none&os=base-shape&is=wink"
+}
