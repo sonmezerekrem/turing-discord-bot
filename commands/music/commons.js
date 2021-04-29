@@ -1,21 +1,18 @@
 const ytdl = require('ytdl-core');
 const { playingEmbed } = require('../../utils/embed');
 const logger = require('../../utils/logger');
-const { defaultActivity } = require('../../config.json');
+const { defaultActivity } = require('../../configs/config.json');
 
 const queue = new Map();
 
 const play = (guild, songNo) => {
     const serverQueue = queue.get(guild.id);
+    logger.info(`Play is called with ${serverQueue.songs[songNo].title}`, guild.id);
     if (songNo > serverQueue.songs.length - 1) {
-        if (serverQueue.loop === 1) {
+        if (serverQueue.loop === 1)
             songNo = 0;
-        } else {
-            guild.client.user.setActivity(defaultActivity.name, { type: defaultActivity.type }).then(() => {
-                logger.info('Activity is set to default.', guild.id);
-            });
+        else
             return;
-        }
     }
 
     deletePlayMessage(guild);
@@ -27,20 +24,17 @@ const play = (guild, songNo) => {
     const dispatcher = serverQueue.connection
         .play(ytdl(song.url))
         .on('finish', () => {
-            if (queue.get(guild.id).loop < 2)
+            logger.info(`${songNo} is finished`, guild.id);
+            if (queue.get(guild.id).loop < 2) {
                 play(guild, songNo + 1);
-            else
+            } else
                 play(guild, songNo);
         })
-        .on('error', (error) => console.error(error));
+        .on('error', (error) => logger.error(error));
     dispatcher.setVolume(serverQueue.volume);
-    guild.client.user.setActivity('Music', { type: 'STREAMING' }).then(() => {
-        logger.info('Activity is set to streaming music.', guild.id);
-    });
     serverQueue.textChannel.send(playingEmbed(guild, song)).then(sent => {
         serverQueue.lastPlayMessage = sent.id;
     });
-
 };
 
 const isValidUrl = (url) => {

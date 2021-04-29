@@ -18,7 +18,7 @@ module.exports = {
 
         if (serverQueue.songs.length > 0) {
             if (serverQueue.playing !== null) {
-                return message.channel.send(songEmbed(serverQueue.songs[serverQueue.playing]));
+                return message.channel.send(songEmbed(serverQueue.songs[serverQueue.playing], serverQueue.connection.dispatcher.streamTime));
             } else {
                 return message.channel.send('There is no song that I could show!');
             }

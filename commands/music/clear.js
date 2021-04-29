@@ -18,6 +18,5 @@ module.exports = {
 
         serverQueue.songs = [];
         serverQueue.playing = null;
-        deletePlayMessage(message.guild)
     },
 };

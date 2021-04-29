@@ -7,14 +7,13 @@ const { queue, play, isValidUrl } = require('./commons');
 
 const { youtubeKey } = require('../../env.json');
 
-const youtubeApiUrl = `https://www.googleapis.com/youtube/v3/search`;
-const youtubeUrl = 'https://www.youtube.com/watch?v=';
+const { youtubeUrl, youtubeApiUrl } = require('../../configs/config.json');
 
 module.exports = {
     name: 'play',
     description: 'Plays a music with given queries or Youtube URL',
     guildOnly: true,
-    args: true,
+    args: false,
     aliases: ['p'],
     usage: '[query  |  URL]',
     execute: async function(message, args) {
@@ -29,6 +28,17 @@ module.exports = {
             return message.channel.send('I need the permissions to join and speak in your voice channel!');
         }
 
+        if (args.length === 0) {
+            if (serverQueue) {
+                if (serverQueue.songs.length > 0) {
+                    return message.channel.send('There is no song in history');
+                }
+                play(message.guild, 0);
+            } else {
+                return message.channel.send('There is no song in history');
+            }
+        }
+
         let searchUrl = args[0];
         if (!isValidUrl(searchUrl)) {
             const youtubeResponse = await axios.get(youtubeApiUrl, {
@@ -36,8 +46,7 @@ module.exports = {
                     key: youtubeKey,
                     type: 'video',
                     part: 'snippet',
-                    maxResults: 1,
-                    q: args.slice(1).join(' '),
+                    q: args.join(' '),
                 },
             });
             if (youtubeResponse.status === 200) {
@@ -54,6 +63,7 @@ module.exports = {
             image: songInfo.videoDetails.thumbnails[0].url,
             length: songInfo.videoDetails.lengthSeconds,
             year: songInfo.videoDetails.publishDate,
+            addedBy: message.author,
         };
 
         if (!serverQueue) {

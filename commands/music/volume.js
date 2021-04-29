@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const { prefix } = require('../../config.json');
+const { prefix } = require('../../configs/config.json');
 const { queue } = require('./commons');
 
 module.exports = {

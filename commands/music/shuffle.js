@@ -17,7 +17,16 @@ module.exports = {
         if (!serverQueue) return message.channel.send('There is no song that I could shuffle!');
 
         if (serverQueue.songs.length > 0) {
-            //TODO
+            let array = serverQueue.songs;
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * i);
+                if (i !== serverQueue.playing && j !== serverQueue.playing) {
+                    const temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                }
+            }
+            serverQueue.songs = array;
             return message.channel.send('The play queue has shuffled.');
         } else
             return message.channel.send('There is no song that I could shuffle!');
