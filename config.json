@@ -1,9 +1,0 @@
-{
-  "defaultActivity": {
-    "name": "help",
-    "type": "PLAYING"
-  },
-  "defaultState":"online",
-  "prefix": "+",
-  "logLevel": 2
-}

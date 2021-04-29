@@ -2,7 +2,8 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const logger = require('./utils/logger');
 const { token } = require('./env.json');
-const { prefix, defaultActivity, defaultState } = require('./config.json');
+const { prefix } = require('./configs/config.json');
+const { connect } = require('./utils/connecting');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -18,44 +19,15 @@ for (const folder of commandFolders) {
     }
 }
 
-client.once('ready', () => {
-    client.user.setStatus(defaultState)
-        .then((pre) => {
-            logger.info('Status is set to default.', 0);
-        })
-        .catch(err => {
-            logger.error(err, 0);
-        });
-    client.user.setActivity(defaultActivity.name, { type: defaultActivity.type })
-        .then((pre) => {
-            logger.info('Activity is set to default.', 0);
-        })
-        .catch(err => {
-            logger.error(err, 0);
-        });
-
+client.once('ready', async () => {
+    await connect(client);
     logger.info(`${client.user.tag} is ready now.`, 0);
 });
 
 
-client.once('reconnecting', () => {
+client.once('reconnecting',async () => {
     logger.info(`${client.user.tag} is reconnecting.`, 0);
-
-    client.user.setStatus(defaultState)
-        .then((pre) => {
-            logger.info('Status is set to default.', 0);
-        })
-        .catch(err => {
-            logger.error(err, 0);
-        });
-    client.user.setActivity(defaultActivity.name, { type: defaultActivity.type })
-        .then((pre) => {
-            logger.info('Activity is set to default.', 0);
-        })
-        .catch(err => {
-            logger.error(err, 0);
-        });
-
+    await connect(client);
     logger.info(`${client.user.tag} is reconnected.`, 0);
 });
 
