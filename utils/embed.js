@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { prefix } = require('../config.json');
+const { prefix } = require('../configs/config.json');
 const logger = require('./logger');
 
 
@@ -147,17 +147,29 @@ function helpEmbed(message, args) {
 }
 
 
-function songEmbed(song) {
+function songEmbed(song, streamTime) {
     const embed = new Discord.MessageEmbed()
         .setAuthor('Song Information')
         .setTitle(song.title)
         .setThumbnail(song.image)
         .setURL(song.url);
-    let s = song.length;
-    embed.addFields(
-        { name: 'Length', value: `${(s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s}`, inline: true },
-        { name: 'Year', value: `${song.year.substr(0, 4)}`, inline: true });
 
+    const toMinute = (s) => {
+        return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
+    };
+
+    streamTime = Math.round(streamTime / 1000);
+
+    const point = Math.round((streamTime) * 30 / song.length);
+    let current = Array(30).fill('–');
+    current[point] = '⁕';
+    current = current.join('');
+
+    embed.setDescription(`♪ ${toMinute(streamTime)} ${current} ${toMinute(song.length)}`);
+
+    embed.addFields(
+        { name: 'Year', value: `${song.year.substr(0, 4)}`, inline: true },
+        { name: 'Added by', value: song.addedBy, inline: true });
     return embed;
 }
 
