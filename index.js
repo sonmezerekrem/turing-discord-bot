@@ -51,3 +51,4 @@ process.on('uncaughtException', error => logger.error(error, 1));
 
 
 client.login(token);
+
