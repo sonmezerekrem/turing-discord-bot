@@ -1,7 +1,7 @@
 const {defaultActivity} = require("../../configs/config.json")
 const logger = require('../../utils/logger');
 
-const { queue } = require('../music/commons');
+const { queue } = require('./commons');
 
 module.exports = {
     name: 'leave',
