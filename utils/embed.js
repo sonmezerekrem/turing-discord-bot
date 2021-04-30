@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { prefix } = require('../configs/config.json');
+const { prefix } = require('../config.json');
 const logger = require('./logger');
 
 

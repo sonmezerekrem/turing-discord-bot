@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const logger = require('../utils/logger');
 
-const { prefix } = require('../configs/config.json');
+const { prefix } = require('../config.json');
 
 module.exports = {
     name: 'message',

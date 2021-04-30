@@ -1,4 +1,4 @@
-const { defaultActivity, defaultState } = require('../configs/config.json');
+const { defaultActivity, defaultState } = require('../config.json');
 const logger = require('./logger');
 
 

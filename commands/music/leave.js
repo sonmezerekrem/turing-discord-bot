@@ -1,4 +1,4 @@
-const {defaultActivity} = require("../../configs/config.json")
+const {defaultActivity} = require("../../config.json")
 const logger = require('../../utils/logger');
 
 const { queue } = require('./commons');

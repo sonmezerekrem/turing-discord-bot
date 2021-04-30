@@ -1,7 +1,7 @@
 const ytdl = require('ytdl-core');
 const { playingEmbed } = require('../../utils/embed');
 const logger = require('../../utils/logger');
-const { defaultActivity } = require('../../configs/config.json');
+const { defaultActivity } = require('../../config.json');
 
 const queue = new Map();
 

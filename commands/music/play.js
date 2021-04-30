@@ -7,7 +7,7 @@ const { queue, play, isValidUrl } = require('./commons');
 
 const { youtubeKey } = require('../../env.json');
 
-const { youtubeUrl, youtubeApiUrl } = require('../../configs/config.json');
+const { youtubeUrl, youtubeApiUrl } = require('../../config.json');
 
 module.exports = {
     name: 'play',

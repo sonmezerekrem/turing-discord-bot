@@ -1,25 +1,7 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const mongoose = require('mongoose');
 const logger = require('./utils/logger');
-const { dbHost, dbPort, dbName, token } = require('./env.json');
-
-
-mongoose.Promise = global.Promise;
-mongoose.connect(
-    `mongodb://${dbHost}:${dbPort}/${dbName}`, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true
-        // user: dbUser,
-        // pass: dbPassword
-    }
-).then(() => {
-    logger.info('MongoDB Server is connected.', 0);
-}).catch(error => {
-    logger.error(`Error connecting to MongoDB Server. ${error}`, 0);
-    process.exit();
-});
+const { token } = require('./env.json');
 
 
 const client = new Discord.Client();
