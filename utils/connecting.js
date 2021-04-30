@@ -2,7 +2,7 @@ const { defaultActivity, defaultState } = require('../configs/config.json');
 const logger = require('./logger');
 
 
-const connect = async (client) => {
+const connect = (client) => {
     client.user.setStatus(defaultState)
         .then(() => {
             logger.info('Status is set to default.', 0);
@@ -27,5 +27,5 @@ const connect = async (client) => {
 };
 
 module.exports = {
-    connect: connect,
+    connect: connect
 };
