@@ -8,7 +8,7 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
 
-const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js') && !file.includes('commons'));
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {

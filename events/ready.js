@@ -1,4 +1,4 @@
-const { connect } = require('../utils/connecting');
+const { connect } = require('./commons');
 const logger = require('../utils/logger');
 
 module.exports = {

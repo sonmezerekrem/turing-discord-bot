@@ -1,5 +1,5 @@
 const { defaultActivity, defaultState } = require('../config.json');
-const logger = require('./logger');
+const logger = require('../utils/logger');
 
 
 const connect = async (client) => {
