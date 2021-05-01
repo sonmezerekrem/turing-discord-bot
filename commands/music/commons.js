@@ -7,7 +7,7 @@ const queue = new Map();
 
 const play = (guild, songNo) => {
     const serverQueue = queue.get(guild.id);
-    logger.info(`Play is called with ${serverQueue.songs[songNo].title}`, guild.id);
+    logger.info(`Play method has been called with songNo:${serverQueue.songs[songNo].title} guild:${guild.id}`);
     if (songNo > serverQueue.songs.length - 1) {
         if (serverQueue.loop === 1)
             songNo = 0;
@@ -24,13 +24,13 @@ const play = (guild, songNo) => {
     const dispatcher = serverQueue.connection
         .play(ytdl(song.url))
         .on('finish', () => {
-            logger.info(`${songNo} is finished`, guild.id);
+            logger.debug(`${songNo} is finished guild:${guild.id}`);
             if (queue.get(guild.id).loop < 2) {
                 play(guild, songNo + 1);
             } else
                 play(guild, songNo);
         })
-        .on('error', (error) => logger.error(error));
+        .on('error', (error) => logger.error(`${error} guild:${message.guild.id}`));
     dispatcher.setVolume(serverQueue.volume);
     serverQueue.textChannel.send(playingEmbed(guild, song)).then(sent => {
         serverQueue.lastPlayMessage = sent.id;
@@ -51,7 +51,7 @@ const deletePlayMessage = (guild) => {
     if (serverQueue.lastPlayMessage != null) {
         serverQueue.textChannel.messages.fetch(serverQueue.lastPlayMessage).then((msg) => {
             msg.delete().then(() => {
-                logger.info(`Play message is deleted with id - ${serverQueue.lastPlayMessage}`, guild.id);
+                logger.debug(`Play message is deleted with id - ${serverQueue.lastPlayMessage} guild:${guild.id}`);
                 serverQueue.lastPlayMessage = null;
             });
         });
@@ -62,7 +62,7 @@ module.exports = {
     queue: queue,
     play: play,
     isValidUrl: isValidUrl,
-    deletePlayMessage: deletePlayMessage,
+    deletePlayMessage: deletePlayMessage
 };
 
 

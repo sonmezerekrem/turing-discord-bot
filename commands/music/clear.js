@@ -10,6 +10,7 @@ module.exports = {
     aliases: ['c'],
     usage: '',
     async execute(message, args) {
+        logger.debug(`Clear command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
         if (!message.member.voice.channel)
             return message.channel.send('You have to be in a voice channel to clear the play queue!');
@@ -18,5 +19,5 @@ module.exports = {
 
         serverQueue.songs = [];
         serverQueue.playing = null;
-    },
+    }
 };

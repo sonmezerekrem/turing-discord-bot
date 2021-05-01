@@ -10,6 +10,7 @@ module.exports = {
     aliases: ['loopoff', 'lo'],
     usage: '',
     execute(message, args) {
+        logger.debug(`Endloop command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
         if (!message.member.voice.channel)
             return message.channel.send('You have to be in a voice channel to endloop the music!');
@@ -19,5 +20,5 @@ module.exports = {
         serverQueue.loop = 0;
 
         message.channel.send('Play queue loop is ended.');
-    },
+    }
 };

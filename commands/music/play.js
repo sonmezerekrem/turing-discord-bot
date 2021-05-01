@@ -17,6 +17,7 @@ module.exports = {
     aliases: ['p'],
     usage: '[query  |  URL]',
     execute: async function(message, args) {
+        logger.debug(`Play command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
 
         const voiceChannel = message.member.voice.channel;
@@ -24,7 +25,7 @@ module.exports = {
 
         const permissions = voiceChannel.permissionsFor(message.client.user);
         if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-            logger.warning('Bot needs permission to speak and connect', message.guild.id);
+            logger.debug(`Bot needs permission to speak and connect at guild:${message.guild.id} by:${message.author.id}`);
             return message.channel.send('I need the permissions to join and speak in your voice channel!');
         }
 
@@ -41,13 +42,14 @@ module.exports = {
 
         let searchUrl = args[0];
         if (!isValidUrl(searchUrl)) {
+            logger.debug(`Making axios get request to ${youtubeApiUrl} with query:${args.join(' ')} at guild:${message.guild.id} by:${message.author.id}`);
             const youtubeResponse = await axios.get(youtubeApiUrl, {
                 params: {
                     key: youtubeKey,
                     type: 'video',
                     part: 'snippet',
-                    q: args.join(' '),
-                },
+                    q: args.join(' ')
+                }
             });
             if (youtubeResponse.status === 200) {
                 searchUrl = youtubeUrl + youtubeResponse.data.items[0].id.videoId;
@@ -63,8 +65,9 @@ module.exports = {
             image: songInfo.videoDetails.thumbnails[0].url,
             length: songInfo.videoDetails.lengthSeconds,
             year: songInfo.videoDetails.publishDate,
-            addedBy: message.author,
+            addedBy: message.author
         };
+        logger.debug(`Selected song is ${song.title} at guild:${message.guild.id} by:${message.author.id}`);
 
         if (!serverQueue) {
             const queueContruct = {
@@ -75,7 +78,7 @@ module.exports = {
                 volume: 1,
                 playing: null,
                 loop: 0,
-                lastPlayMessage: null,
+                lastPlayMessage: null
             };
 
             queue.set(message.guild.id, queueContruct);
@@ -84,7 +87,7 @@ module.exports = {
             try {
                 voiceChannel.join().then(connection => {
                     connection.voice.setSelfDeaf(true).then(() => {
-                        logger.info(`${message.client.user.tag} is connected to voice and set to deaf`, message.guild.id);
+                        logger.info(`${message.client.user.tag} has connected to voice and set to deaf at guild:${message.guild.id}`);
                     });
                     queueContruct.connection = connection;
                     play(message.guild, 0);
@@ -103,5 +106,5 @@ module.exports = {
             } else
                 return message.channel.send(`${song.title} has been added to the queue!`);
         }
-    },
+    }
 };

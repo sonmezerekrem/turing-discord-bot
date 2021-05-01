@@ -11,6 +11,7 @@ module.exports = {
     usage: '[<value>  |  +  |  -]',
     example: `${prefix}volume +, ${prefix}volume -, ${prefix}volume 0.5, ${prefix}volume`,
     execute(message, args) {
+        logger.debug(`Volume command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
         if (!message.member.voice.channel)
             return message.channel.send('You have to be in a voice channel to set  the volume!');
@@ -38,13 +39,15 @@ module.exports = {
                     const newVolume = parseFloat(args[0]);
                     if (newVolume < 0.1 || newVolume > 2)
                         return message.channel.send('Invalid volume value. Possible volumes are between 0.1 and 2');
+
                     serverQueue.volume = newVolume;
+                    logger.debug(`Volume is set to ${newVolume} at guild:${message.guild.id} by:${message.author.id}`);
                 } catch (e) {
                     return message.channel.send('Invalid volume value. Possible volumes -> +, - , value');
                 }
             }
         }
         serverQueue.connection.dispatcher.setVolume(serverQueue.volume);
-    },
+    }
 }
 ;

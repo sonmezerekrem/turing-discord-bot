@@ -10,6 +10,7 @@ module.exports = {
     aliases: ['server', 'i'],
     usage: '',
     execute(message, args) {
+        logger.debug(`Info command has been used at guild:${message.guild.id} by:${message.author.id}`);
         return message.channel.send(infoEmbed(message));
-    },
+    }
 };

@@ -11,6 +11,7 @@ module.exports = {
     usage: '[user  |  users]',
     permissions: 'KICK_MEMBERS',
     execute(message, args) {
+        logger.debug(`Kick command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const client = message.client;
         const kickUsers = args.map(arg => mention(client, arg));
 
@@ -19,15 +20,15 @@ module.exports = {
                 kickUsers.slice(i, 1);
             }
         }
-
+        logger.debug(`${kickUsers.join(', ')} have been given to ban from guild:${message.guild.id} by:${message.author.id}`);
         kickUsers.forEach(user => {
             user.kick()
                 .then((kicked) => {
-                    logger.info(`User: ${kicked.id} is kicked by: ${message.user.id}`, message.guild.id);
-                    message.channel.send(`User: ${kicked.user.tag} is kicked from ${message.guild.name}`);
+                    logger.info(`Member: ${kicked.id} was kicked at guild:${message.guild.id} by:${message.user.id} `);
+                    message.channel.send(`Member: ${kicked.user.tag} is kicked from ${message.guild.name}`);
                 })
-                .catch(error => logger.error(error, message.guild.id));
+                .catch(error => logger.error(`${error} guild:${message.guild.id}`));
         });
 
-    },
+    }
 };

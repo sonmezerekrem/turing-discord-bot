@@ -10,6 +10,7 @@ module.exports = {
     aliases: ['lp'],
     usage: '',
     execute(message, args) {
+        logger.debug(`Loop command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
         if (!message.member.voice.channel)
             return message.channel.send('You have to be in a voice channel to loop the music!');
@@ -19,5 +20,5 @@ module.exports = {
         serverQueue.loop = 1;
 
         message.channel.send('Play queue is looped.');
-    },
+    }
 };

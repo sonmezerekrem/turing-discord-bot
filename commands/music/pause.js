@@ -10,6 +10,7 @@ module.exports = {
     aliases: ['ps'],
     usage: '',
     execute(message, args) {
+        logger.debug(`Pause command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
         if (!message.member.voice.channel)
             return message.channel.send('You have to be in a voice channel to pause the music!');
@@ -18,5 +19,5 @@ module.exports = {
 
         if (!serverQueue.connection.dispatcher.paused)
             serverQueue.connection.dispatcher.pause();
-    },
+    }
 };

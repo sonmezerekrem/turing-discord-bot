@@ -13,5 +13,5 @@ function getUserFromMention(client, mention) {
 }
 
 module.exports = {
-    mention: getUserFromMention,
+    mention: getUserFromMention
 };

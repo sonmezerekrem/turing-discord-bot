@@ -10,6 +10,7 @@ module.exports = {
     aliases: [],
     usage: '',
     execute(message, args) {
+        logger.debug(`Song command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
         if (!message.member.voice.channel)
             return message.channel.send('You have to be in a voice channel to show song information!');
@@ -24,5 +25,5 @@ module.exports = {
             }
         } else
             return message.channel.send('There is no song that I could show!');
-    },
+    }
 };

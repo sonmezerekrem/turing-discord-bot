@@ -10,6 +10,7 @@ module.exports = {
     aliases: ['ls'],
     usage: '',
     execute(message, args) {
+        logger.debug(`Loopself command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
         if (!message.member.voice.channel)
             return message.channel.send('You have to be in a voice channel to loop the music!');
@@ -19,5 +20,5 @@ module.exports = {
         serverQueue.loop = 2;
 
         message.channel.send('Current song is looped.');
-    },
+    }
 };

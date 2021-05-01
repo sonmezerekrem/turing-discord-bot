@@ -10,6 +10,7 @@ module.exports = {
     aliases: ['member'],
     usage: '',
     execute(message, args) {
+        logger.debug(`Me command has been used at guild:${message.guild.id} by:${message.author.id}`);
         return message.reply(memberEmbed(message));
-    },
+    }
 };

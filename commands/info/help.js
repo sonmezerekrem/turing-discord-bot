@@ -10,6 +10,7 @@ module.exports = {
     aliases: ['h', 'commands'],
     usage: '[command name]',
     execute(message, args) {
-        return message.channel.send(helpEmbed(message,args))
-    },
+        logger.debug(`Help command has been used at guild:${message.guild.id} by:${message.author.id}`);
+        return message.channel.send(helpEmbed(message, args));
+    }
 };
