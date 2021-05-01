@@ -3,6 +3,6 @@ const logger = require('../utils/logger');
 module.exports = {
     name: 'guildMemberAdd',
     execute(member) {
-        logger.info(`New User "${member.user.username}" has joined "${member.guild.name}"`, member.guild.id);
+        logger.info(`New member is joined to guild:${member.guild.id} member:${member.id}`);
     }
 };

@@ -17,6 +17,7 @@ for (const folder of commandFolders) {
         client.commands.set(command.name, command);
     }
 }
+logger.debug('Commands has been read and set');
 
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
@@ -28,8 +29,9 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args, client));
     }
 }
+logger.debug('Events has been read and set');
 
-process.on('uncaughtException', error => logger.error(error, 1));
+process.on('uncaughtException', error => logger.error(error));
 
 
 client.login(token);

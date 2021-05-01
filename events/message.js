@@ -6,6 +6,7 @@ const { prefix } = require('../config.json');
 module.exports = {
     name: 'message',
     execute(message) {
+        logger.debug(`Message event has emitted at guild:${message.guild.id} member:${message.author.id}`);
         const client = message.client;
 
         if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -19,12 +20,14 @@ module.exports = {
         if (!command) return;
 
         if (command.guildOnly && message.channel.type === 'dm') {
+            logger.debug(`${command.name} is available only at guilds`);
             return message.reply('I can\'t execute that command inside DMs!');
         }
 
         if (command.permissions) {
             const authorPerms = message.channel.permissionsFor(message.author);
             if (!authorPerms || !authorPerms.has(command.permissions)) {
+                logger.info(`Member does not have permission(s): ${command.permissions} for ${command.name} at guild:${message.guild.id}`);
                 return message.reply('You do not have permission for this!');
             }
         }
@@ -54,7 +57,8 @@ module.exports = {
 
             if (now < expirationTime) {
                 const timeLeft = (expirationTime - now) / 1000;
-                return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+                logger.warning(`Too many request before cooldown at guild:${message.guild.id} member:${message.author.id}`);
+                return message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
             }
         }
 
@@ -62,9 +66,10 @@ module.exports = {
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
         try {
+            logger.debug(`${command.name} command is being called with args:${args.join(' ')} guild:${message.guild.id} member:${message.author.id}`);
             command.execute(message, args);
         } catch (error) {
-            console.error(error);
+            logger.error(`${error} guild:${message.guild.id}`);
             message.reply('there was an error trying to execute that command!');
         }
     }

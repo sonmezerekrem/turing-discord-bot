@@ -6,6 +6,6 @@ module.exports = {
     once: true,
     execute(client) {
         connect(client);
-        logger.info(`${client.user.tag} is ready now.`, 0);
+        logger.info(`${client.user.tag} has started and it is ready now.`);
     }
 };
