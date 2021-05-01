@@ -6,10 +6,11 @@ const { prefix } = require('../config.json');
 module.exports = {
     name: 'message',
     execute(message) {
-        logger.debug(`Message event has emitted at guild:${message.guild.id} member:${message.author.id}`);
         const client = message.client;
 
         if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+        logger.debug(`Message event has emitted at guild:${message.guild.id} member:${message.author.id}`);
 
         const args = message.content.slice(prefix.length).trim().split(/ +/);
         const commandName = args.shift().toLowerCase();
