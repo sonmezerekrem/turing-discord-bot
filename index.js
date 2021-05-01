@@ -8,19 +8,7 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
 
-const commandFolders = fs.readdirSync('./commands');
-
-for (const folder of commandFolders) {
-    const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js') && !file.includes('commons'));
-    for (const file of commandFiles) {
-        const command = require(`./commands/${folder}/${file}`);
-        client.commands.set(command.name, command);
-    }
-}
-logger.debug('Commands has been read and set');
-
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
-
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {
@@ -31,8 +19,17 @@ for (const file of eventFiles) {
 }
 logger.debug('Events has been read and set');
 
+const commandFolders = fs.readdirSync('./commands');
+for (const folder of commandFolders) {
+    const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js') && !file.includes('commons'));
+    for (const file of commandFiles) {
+        const command = require(`./commands/${folder}/${file}`);
+        client.commands.set(command.name, command);
+    }
+}
+logger.debug('Commands has been read and set');
+
 process.on('uncaughtException', error => logger.error(error));
 
-
-client.login(token);
+client.login(token).catch(error => logger.error(error));
 
