@@ -12,23 +12,14 @@ module.exports = {
     permissions: 'KICK_MEMBERS',
     execute(message, args) {
         logger.debug(`Kick command has been used at guild:${message.guild.id} by:${message.author.id}`);
-        const client = message.client;
-        const kickUsers = args.map(arg => mention(client, arg));
 
-        for (let i = 0; i < kickUsers; i++) {
-            if (!kickUsers[i]) {
-                kickUsers.slice(i, 1);
-            }
-        }
-        logger.debug(`${kickUsers.join(', ')} have been given to ban from guild:${message.guild.id} by:${message.author.id}`);
-        kickUsers.forEach(user => {
-            user.kick()
-                .then((kicked) => {
-                    logger.info(`Member: ${kicked.id} was kicked at guild:${message.guild.id} by:${message.user.id} `);
-                    message.channel.send(`Member: ${kicked.user.tag} is kicked from ${message.guild.name}`);
-                })
-                .catch(error => logger.error(`${error} guild:${message.guild.id}`));
-        });
+        const kickUser =  mention(message.client, args[0]);
+
+        kickUser.ban().then(kicked => {
+            logger.info(`Member: ${kicked.id} was kicked at guild:${message.guild.id} by:${message.author.id} reason:${args[1] ? args.length > 1 : 'no reason given'}`);
+            message.channel.send(`Member: ${kicked.user.tag} is kicked from ${message.guild.name}. Reason:${args[1] ? args.length > 1 : 'no reason given'}`);
+        }).catch(error => logger.error(`${error} guild:${message.guild.id}`));
+
 
     }
 };

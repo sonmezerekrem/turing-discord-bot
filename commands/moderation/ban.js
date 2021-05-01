@@ -8,27 +8,17 @@ module.exports = {
     guildOnly: true,
     args: true,
     aliases: [],
-    usage: '[user  |  users]',
+    usage: '<member> <reason>',
     permissions: 'BAN_MEMBERS',
     execute(message, args) {
         logger.debug(`Ban command has been used at guild:${message.guild.id} by:${message.author.id}`);
-        const client = message.client;
-        const banUsers = args.map(arg => mention(client, arg));
 
-        for (let i = 0; i < banUsers; i++) {
-            if (!banUsers[i]) {
-                banUsers.slice(i, 1);
-            }
-        }
-        logger.debug(`${banUsers.join(', ')} have been given to ban from guild:${message.guild.id} by:${message.author.id}`);
-        banUsers.forEach(user => {
-            user.ban()
-                .then((banned) => {
-                    logger.info(`Member: ${banned.id} was banned at guild:${message.guild.id} by:${message.user.id} `);
-                    message.channel.send(`Member: ${banned.user.tag} is banned from ${message.guild.name}`);
-                })
-                .catch(error => logger.error(`${error} guild:${message.guild.id}`));
-        });
+        const banMember = mention(message.client, args[0]);
+
+        banMember.ban().then(banned => {
+            logger.info(`Member: ${banned.id} was banned at guild:${message.guild.id} by:${message.author.id} reason:${args[1] ? args.length > 1 : 'no reason given'}`);
+            message.channel.send(`Member: ${banned.user.tag} is banned from ${message.guild.name}. Reason:${args[1] ? args.length > 1 : 'no reason given'}`);
+        }).catch(error => logger.error(`${error} guild:${message.guild.id}`));
 
     }
 };
