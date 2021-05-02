@@ -32,6 +32,10 @@ module.exports = {
                 return message.reply('You do not have permission for this!');
             }
         }
+        if (command.channel) {
+            if (!message.member.voice.channel)
+                return message.channel.send('You have to be in a voice channel to use this command!');
+        }
 
         if (command.args && !args.length) {
             let reply = `You didn't provide any arguments, ${message.author}!`;

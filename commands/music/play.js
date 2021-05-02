@@ -16,14 +16,12 @@ module.exports = {
     args: false,
     aliases: ['p'],
     usage: '[query  |  URL]',
+    channel: true,
     execute: async function(message, args) {
         logger.debug(`Play command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
 
-        const voiceChannel = message.member.voice.channel;
-        if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
-
-        const permissions = voiceChannel.permissionsFor(message.client.user);
+        const permissions = message.member.voice.channel.permissionsFor(message.client.user);
         if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
             logger.debug(`Bot needs permission to speak and connect at guild:${message.guild.id} by:${message.author.id}`);
             return message.channel.send('I need the permissions to join and speak in your voice channel!');
@@ -72,7 +70,7 @@ module.exports = {
         if (!serverQueue) {
             const queueContruct = {
                 textChannel: message.channel,
-                voiceChannel: voiceChannel,
+                voiceChannel: message.member.voice.channel,
                 connection: null,
                 songs: [],
                 volume: 1,

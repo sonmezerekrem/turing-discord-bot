@@ -57,11 +57,24 @@ const deletePlayMessage = (guild) => {
     }
 };
 
+const songInfo = async (url, author) => {
+    const song = await ytdl.getInfo(url);
+    return {
+        title: song.videoDetails.title,
+        url: song.videoDetails.video_url,
+        image: song.videoDetails.thumbnails[0].url,
+        length: song.videoDetails.lengthSeconds,
+        year: song.videoDetails.publishDate,
+        addedBy: author
+    };
+};
+
 module.exports = {
     queue: queue,
     play: play,
     isValidUrl: isValidUrl,
-    deletePlayMessage: deletePlayMessage
+    deletePlayMessage: deletePlayMessage,
+    songInfo: songInfo
 };
 
 

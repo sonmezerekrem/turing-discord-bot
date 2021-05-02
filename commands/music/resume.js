@@ -9,11 +9,10 @@ module.exports = {
     args: false,
     aliases: ['r'],
     usage: '',
+    channel: true,
     execute(message, args) {
         logger.debug(`Resume command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
-        if (!message.member.voice.channel)
-            return message.channel.send('You have to be in a voice channel to resume the music!');
 
         if (!serverQueue) return message.channel.send('There is no song that I could resume!');
 

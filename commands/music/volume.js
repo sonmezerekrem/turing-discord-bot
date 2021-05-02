@@ -10,11 +10,10 @@ module.exports = {
     aliases: ['v'],
     usage: '[<value>  |  +  |  -]',
     example: `${prefix}volume +, ${prefix}volume -, ${prefix}volume 0.5, ${prefix}volume`,
+    channel: true,
     execute(message, args) {
         logger.debug(`Volume command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
-        if (!message.member.voice.channel)
-            return message.channel.send('You have to be in a voice channel to set  the volume!');
 
         if (!serverQueue) return message.channel.send('There is no connection that I set volume!');
 
