@@ -1,7 +1,6 @@
 const ytdl = require('ytdl-core');
-const { playingEmbed } = require('../../utils/embed');
+const embed = require('../../embeds/playingEmbed');
 const logger = require('../../utils/logger');
-const { defaultActivity } = require('../../config.json');
 
 const queue = new Map();
 
@@ -30,9 +29,9 @@ const play = (guild, songNo) => {
             } else
                 play(guild, songNo);
         })
-        .on('error', (error) => logger.error(`${error} guild:${message.guild.id}`));
+        .on('error', (error) => logger.error(`${error} guild:${guild.id}`));
     dispatcher.setVolume(serverQueue.volume);
-    serverQueue.textChannel.send(playingEmbed(guild, song)).then(sent => {
+    serverQueue.textChannel.send(embed.execute(guild, [song])).then(sent => {
         serverQueue.lastPlayMessage = sent.id;
     });
 };

@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const { queueEmbed } = require('../../utils/embed');
+const embed = require('../../embeds/queueEmbed');
 const { queue } = require('./commons');
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
         if (!serverQueue) return message.channel.send('There is no song that I could show!');
 
         if (serverQueue.songs.length > 0)
-            return message.channel.send(queueEmbed(message, serverQueue.songs, serverQueue.playing));
+            return message.channel.send(embed.execute(message, [serverQueue.songs, serverQueue.playing]));
         else
             return message.channel.send('There is no song that I could show!');
     }

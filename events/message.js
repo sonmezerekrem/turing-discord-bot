@@ -58,7 +58,7 @@ module.exports = {
 
             if (now < expirationTime) {
                 const timeLeft = (expirationTime - now) / 1000;
-                logger.warning(`Too many request before cooldown at guild:${message.guild.id} member:${message.author.id}`);
+                logger.warn(`Too many request before cooldown at guild:${message.guild.id} member:${message.author.id}`);
                 return message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
             }
         }
@@ -67,7 +67,6 @@ module.exports = {
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
         try {
-            logger.debug(`${command.name} command is being called with args:${args.join(' ')} guild:${message.guild.id} member:${message.author.id}`);
             command.execute(message, args);
         } catch (error) {
             logger.error(`${error} guild:${message.guild.id}`);

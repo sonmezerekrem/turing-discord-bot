@@ -67,7 +67,7 @@ module.exports = {
             year: songInfo.videoDetails.publishDate,
             addedBy: message.author
         };
-        logger.debug(`Selected song is ${song.title} at guild:${message.guild.id} by:${message.author.id}`);
+        logger.debug(`Found song is ${song.title} at guild:${message.guild.id} by:${message.author.id}`);
 
         if (!serverQueue) {
             const queueContruct = {

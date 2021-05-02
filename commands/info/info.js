@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
+const embed = require('../../embeds/infoEmbed');
 
-const { infoEmbed } = require('../../utils/embed');
 
 module.exports = {
     name: 'info',
@@ -11,6 +11,6 @@ module.exports = {
     usage: '',
     execute(message, args) {
         logger.debug(`Info command has been used at guild:${message.guild.id} by:${message.author.id}`);
-        return message.channel.send(infoEmbed(message));
+        return message.channel.send(embed.execute(message, []));
     }
 };

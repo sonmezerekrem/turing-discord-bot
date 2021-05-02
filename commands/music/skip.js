@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
 
-const { queue, deletePlayMessage } = require('./commons');
+const { queue } = require('./commons');
 
 module.exports = {
     name: 'skip',
