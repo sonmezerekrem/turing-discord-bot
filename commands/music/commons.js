@@ -6,13 +6,14 @@ const queue = new Map();
 
 const play = (guild, songNo) => {
     const serverQueue = queue.get(guild.id);
-    logger.info(`Play method has been called with songNo:${serverQueue.songs[songNo].title} guild:${guild.id}`);
+
     if (songNo > serverQueue.songs.length - 1) {
         if (serverQueue.loop === 1)
             songNo = 0;
         else
             return;
     }
+    logger.info(`Play method has been called with song:${serverQueue.songs[songNo].title} guild:${guild.id}`);
 
     deletePlayMessage(guild);
 
@@ -35,6 +36,47 @@ const play = (guild, songNo) => {
         serverQueue.lastPlayMessage = sent.id;
     });
 };
+
+const setServerQueue = (message, serverQueue, song) => {
+    if (!serverQueue) {
+        const queueContruct = {
+            textChannel: message.channel,
+            voiceChannel: message.member.voice.channel,
+            connection: null,
+            songs: [],
+            volume: 1,
+            playing: null,
+            loop: 0,
+            lastPlayMessage: null
+        };
+
+        queue.set(message.guild.id, queueContruct);
+
+        queueContruct.songs.push(song);
+        try {
+            message.member.voice.channel.join().then(connection => {
+                connection.voice.setSelfDeaf(true).then(() => {
+                    logger.info(`${message.client.user.tag} has connected to voice and set to deaf at guild:${message.guild.id}`);
+                });
+                queueContruct.connection = connection;
+                play(message.guild, 0);
+            })
+                .catch(error => {
+                    logger.error(error, message.guild.id);
+                });
+        } catch (err) {
+            logger.error(err.toString(), message.guild.id);
+            queue.delete(message.guild.id);
+        }
+    }
+    else {
+        serverQueue.songs.push(song);
+        if (serverQueue.songs.length === 1) {
+            play(message.guild, 0);
+        } else
+            return message.channel.send(`${song.title} has been added to the queue!`);
+    }
+}
 
 const isValidUrl = (url) => {
     try {
@@ -74,7 +116,8 @@ module.exports = {
     play: play,
     isValidUrl: isValidUrl,
     deletePlayMessage: deletePlayMessage,
-    songInfo: songInfo
+    songInfo: songInfo,
+    setServerQueue: setServerQueue
 };
 
 
