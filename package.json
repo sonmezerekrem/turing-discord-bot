@@ -16,6 +16,7 @@
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.3.0",
     "fluent-ffmpeg": "^2.1.2",
+    "jsdom": "^16.5.3",
     "moment": "^2.29.1",
     "string-similarity": "^4.0.4",
     "unique-names-generator": "^4.4.0",
