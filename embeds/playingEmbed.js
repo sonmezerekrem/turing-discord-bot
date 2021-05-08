@@ -10,11 +10,11 @@ module.exports = {
     execute(guild, args) {
         const song = args[0];
         return new Discord.MessageEmbed()
-            .setTitle(song.title)
-            .setColor('#0099ff')
-            .setURL(song.url)
+            .setTitle(song.title != null ? song.title : song.youtubeTitle)
+            .setColor(song.color)
+            .setURL(song.youtubeUrl)
             .setAuthor('Now Playing')
             .setFooter(`${guild.name} -  Discord`)
-            .setThumbnail(song.image);
+            .setThumbnail(song.thumbnail != null ? song.thumbnail : song.youtubeThumbnail);
     }
 };

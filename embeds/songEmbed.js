@@ -13,24 +13,36 @@ module.exports = {
 
         const embed = new Discord.MessageEmbed()
             .setAuthor('Song Information')
-            .setTitle(song.title)
-            .setThumbnail(song.image)
-            .setURL(song.url);
+            .setTitle(song.title != null ? song.title : song.youtubeTitle)
+            .setThumbnail(song.thumbnail != null ? song.thumbnail : song.youtubeThumbnail)
+            .setURL(song.youtubeUrl)
+            .setFooter('Powered by Genius' + '\u3000'.repeat(10));
 
-        const toMinute = (s) => {
-            return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
-        };
+        if (song.length != null) {
+            const toMinute = (s) => {
+                return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
+            };
 
-        const point = Math.round((streamTime) * 30 / song.length);
-        let current = Array(30).fill('–');
-        current[point] = '⁕';
-        current = current.join('');
+            const point = Math.round((streamTime) * 30 / song.length);
+            let current = Array(30).fill('–');
+            current[point] = '⁕';
+            current = current.join('');
 
-        embed.setDescription(`♪ ${toMinute(streamTime)} ${current} ${toMinute(song.length)}`);
+            embed.setDescription(`♪ ${toMinute(streamTime)} ${current} ${toMinute(song.length)}`);
+        }
 
-        embed.addFields(
-            { name: 'Year', value: `${song.year.substr(0, 4)}`, inline: true },
-            { name: 'Added by', value: song.addedBy, inline: true });
+        if (song.artist != null)
+            embed.addField('Artist', song.artist, true);
+        if (song.album != null)
+            embed.addField('Album', song.album, true);
+
+        embed.addField('Year', song.release, true);
+
+        if (song.lyricsUrl != null)
+            embed.addField('Lyrics', song.lyricsUrl);
+        if (song.spotifyUrl != null)
+            embed.addField('Spotify', song.spotifyUrl);
+
         return embed;
     }
 };
