@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
 const embed = require('../../embeds/teamEmbed');
-const { mention } = require('./commons');
+const { mention } = require('./utils');
 
 module.exports = {
     name: 'teams',
