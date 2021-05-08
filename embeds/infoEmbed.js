@@ -1,6 +1,5 @@
 const logger = require('../utils/logger');
 const Discord = require('discord.js');
-const { prefix } = require('../config.json');
 
 
 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',

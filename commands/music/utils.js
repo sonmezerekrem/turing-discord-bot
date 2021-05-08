@@ -17,6 +17,7 @@ const songInfo = async (args, author) => {
         album: null,
         release: null,
         lyricsUrl: null,
+        lyrics: null,
         color: '#0099ff',
         length: null,
         thumbnail: null,
@@ -79,28 +80,30 @@ const songInfo = async (args, author) => {
         }).catch(error => logger.error(error));
         if (result.status === 200 && result.data.meta.status === 200) {
             for (let i = 0; i < result.data.response.hits.length; i++) {
-                if (result.data.response.hits[i].type === 'song' && stringSimilarity.compareTwoStrings(title, result.data.response.hits[i].result.primary_artist.name + ' ' + result.data.response.hits[i].result.title) > 0.5) {
-                    const songDetail = await axios({
-                        method: 'get',
-                        url: geniusApi + result.data.response.hits[0].result.api_path,
-                        headers: {
-                            Authorization: 'Bearer ' + geniusToken
-                        }
-                    }).catch(error => logger.error(error));
+                if (result.data.response.hits[i].type === 'song') {
+                    if (stringSimilarity.compareTwoStrings(title, result.data.response.hits[i].result.full_title) > 0.4) {
+                        const songDetail = await axios({
+                            method: 'get',
+                            url: geniusApi + result.data.response.hits[i].result.api_path,
+                            headers: {
+                                Authorization: 'Bearer ' + geniusToken
+                            }
+                        }).catch(error => logger.error(error));
 
-                    if (songDetail.status === 200 && songDetail.data.meta.status === 200) {
-                        song.title = songDetail.data.response.song.title_with_featured;
-                        song.artist = songDetail.data.response.song.primary_artist.name;
-                        song.album = songDetail.data.response.song.album.name;
-                        song.release = songDetail.data.response.song.release_date.substr(0, 4);
-                        song.lyricsUrl = songDetail.data.response.song.url;
-                        song.color = songDetail.data.response.song.song_art_primary_color;
-                        song.thumbnail = songDetail.data.response.song.song_art_image_thumbnail_url;
-                        song.spotifyUrl = songDetail.data.response.song.media[1].url;
-                        song.soundcloudUrl = songDetail.data.response.song.media[2].url;
-                        song.geniusSongUrl = songDetail.data.response.song.description_annotation.url;
+                        if (songDetail.status === 200 && songDetail.data.meta.status === 200) {
+                            song.title = songDetail.data.response.song.title_with_featured;
+                            song.artist = songDetail.data.response.song.primary_artist.name;
+                            song.album = songDetail.data.response.song.album.name;
+                            song.release = songDetail.data.response.song.release_date.substr(0, 4);
+                            song.lyricsUrl = songDetail.data.response.song.url;
+                            song.color = songDetail.data.response.song.song_art_primary_color;
+                            song.thumbnail = songDetail.data.response.song.song_art_image_thumbnail_url;
+                            song.spotifyUrl = songDetail.data.response.song.media[1].url;
+                            song.soundcloudUrl = songDetail.data.response.song.media[2].url;
+                            song.geniusSongUrl = songDetail.data.response.song.description_annotation.url;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -120,10 +123,10 @@ const getTitle = (youtubeTitle) => {
         .replace(/\(/g, '')
         .replace(/\)/g, '')
         .replace(/lyrics/g, '')
+        .replace(/lyric/g, '')
         .replace(/music/g, '')
         .replace(/original/g, '')
         .replace(/clip/g, '');
-
 };
 
 
@@ -163,7 +166,7 @@ const play = (guild, songNo) => {
 
 
 const setServerQueue = (message, serverQueue, song) => {
-    if (message.client.voice.connections.has(message.guild.id) || !serverQueue) {
+    if (!message.client.voice.connections.has(message.guild.id) || !serverQueue) {
         const queueContruct = {
             textChannel: message.channel,
             voiceChannel: message.member.voice.channel,
@@ -201,7 +204,7 @@ const setServerQueue = (message, serverQueue, song) => {
             play(message.guild, 0);
         }
         else
-            return message.channel.send(`${song.title} has been added to the queue!`);
+            return message.channel.send(`${song.title != null ? song.artist + ' - ' + song.title : song.youtubeTitle} has been added to the queue!`);
     }
 };
 

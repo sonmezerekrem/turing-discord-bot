@@ -16,7 +16,8 @@ module.exports = {
             .setTitle(song.title != null ? song.title : song.youtubeTitle)
             .setThumbnail(song.thumbnail != null ? song.thumbnail : song.youtubeThumbnail)
             .setURL(song.youtubeUrl)
-            .setFooter('Powered by Genius' + '\u3000'.repeat(10));
+            .setColor(song.color)
+            .setFooter('Powered by Genius');
 
         if (song.length != null) {
             const toMinute = (s) => {
