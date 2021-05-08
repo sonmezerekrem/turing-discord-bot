@@ -1,7 +1,6 @@
-const { defaultActivity } = require('../../config.json');
 const logger = require('../../utils/logger');
 
-const { queue } = require('./commons');
+const { queue } = require('./utils');
 
 module.exports = {
     name: 'leave',
@@ -14,7 +13,9 @@ module.exports = {
     execute(message, args) {
         logger.debug(`Leave command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        message.member.voice.channel.leave();
+        if (message.client.voice.connections.has(message.guild.id))
+            message.member.voice.channel.leave();
+
         queue.delete(message.guild.id);
         logger.info(`${message.client.user.tag} has disconnected to voice at guild:${message.guild.id}`);
         return message.channel.send(`I am leaving from ${message.member.voice.channel}`);

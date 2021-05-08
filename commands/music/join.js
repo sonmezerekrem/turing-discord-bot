@@ -19,7 +19,8 @@ module.exports = {
                 logger.error(error, message.guild.id);
             });
             message.channel.send(`I am joined to ${message.member.voice.channel}`);
-        } else {
+        }
+        else {
             message.channel.send('You need to be in a voice channel!');
         }
     }

@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
-const embed= require('../../embeds/songEmbed');
-const { queue } = require('./commons');
+const embed = require('../../embeds/songEmbed');
+const { queue } = require('./utils');
 
 module.exports = {
     name: 'song',
@@ -16,13 +16,18 @@ module.exports = {
 
         if (!serverQueue) return message.channel.send('There is no song that I could show!');
 
+        if (!message.client.voice.connections.has(message.guild.id))
+            return message.channel.send('There is no song that I could show!');
+
         if (serverQueue.songs.length > 0) {
             if (serverQueue.playing !== null) {
-                return message.channel.send(embed.execute(message,[serverQueue.songs[serverQueue.playing], serverQueue.connection.dispatcher.streamTime]));
-            } else {
+                return message.channel.send(embed.execute(message, [serverQueue.songs[serverQueue.playing], serverQueue.connection.dispatcher.streamTime]));
+            }
+            else {
                 return message.channel.send('There is no song that I could show!');
             }
-        } else
+        }
+        else
             return message.channel.send('There is no song that I could show!');
     }
 };

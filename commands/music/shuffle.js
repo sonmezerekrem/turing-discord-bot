@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
 
-const { queue } = require('./commons');
+const { queue } = require('./utils');
 
 module.exports = {
     name: 'shuffle',
@@ -16,6 +16,9 @@ module.exports = {
 
         if (!serverQueue) return message.channel.send('There is no song that I could shuffle!');
 
+        if (!message.client.voice.connections.has(message.guild.id))
+            return message.channel.send('There is no song that I could shuffle!');
+
         if (serverQueue.songs.length > 0) {
             let array = serverQueue.songs;
             for (let i = array.length - 1; i > 0; i--) {
@@ -28,7 +31,8 @@ module.exports = {
             }
             serverQueue.songs = array;
             return message.channel.send('The play queue has shuffled.');
-        } else
+        }
+        else
             return message.channel.send('There is no song that I could shuffle!');
     }
 };

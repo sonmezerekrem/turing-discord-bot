@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
 
-const { queue, deletePlayMessage } = require('./commons');
+const { queue, deletePlayMessage } = require('./utils');
 
 module.exports = {
     name: 'stop',
@@ -15,6 +15,9 @@ module.exports = {
         const serverQueue = queue.get(message.guild.id);
 
         if (!serverQueue) return message.channel.send('There is no song that I could stop!');
+
+        if (!message.client.voice.connections.has(message.guild.id))
+            return message.channel.send('There is no song that I could stop!');
 
         serverQueue.songs = [];
         serverQueue.playing = null;

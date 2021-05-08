@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
 
-const { queue } = require('./commons');
+const { queue } = require('./utils');
 
 module.exports = {
     name: 'resume',
@@ -15,6 +15,9 @@ module.exports = {
         const serverQueue = queue.get(message.guild.id);
 
         if (!serverQueue) return message.channel.send('There is no song that I could resume!');
+
+        if (!message.client.voice.connections.has(message.guild.id))
+            return message.channel.send('There is no song that I could resume!');
 
         if (serverQueue.connection.dispatcher.paused)
             serverQueue.connection.dispatcher.resume();

@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
 const { prefix } = require('../../config.json');
-const { queue } = require('./commons');
+const { queue } = require('./utils');
 
 module.exports = {
     name: 'volume',
@@ -17,22 +17,29 @@ module.exports = {
 
         if (!serverQueue) return message.channel.send('There is no connection that I set volume!');
 
+        if (!message.client.voice.connections.has(message.guild.id))
+            return message.channel.send('There is no song that I could volume!');
+
         if (args.length === 0) {
             serverQueue.volume = 1;
-        } else if (args.length > 1) {
+        }
+        else if (args.length > 1) {
             return message.channel.send('Invalid volume value. Possible volumes -> +, - , value');
-        } else {
+        }
+        else {
             if (args[0] === '+') {
                 if (serverQueue.volume + 0.2 > 2)
                     serverQueue.volume = 2;
                 else
                     serverQueue.volume += 0.2;
-            } else if (args[0] === '-') {
+            }
+            else if (args[0] === '-') {
                 if (serverQueue.volume - 0.2 < 0.1)
                     serverQueue.volume = 0.1;
                 else
                     serverQueue.volume -= 0.2;
-            } else {
+            }
+            else {
                 try {
                     args[0] = args[0].replace(',', '.');
                     const newVolume = parseFloat(args[0]);
@@ -41,7 +48,8 @@ module.exports = {
 
                     serverQueue.volume = newVolume;
                     logger.debug(`Volume is set to ${newVolume} at guild:${message.guild.id} by:${message.author.id}`);
-                } catch (e) {
+                }
+                catch (e) {
                     return message.channel.send('Invalid volume value. Possible volumes -> +, - , value');
                 }
             }
