@@ -74,7 +74,7 @@ module.exports = {
             command.execute(message, args);
         } catch (error) {
             logger.error(`${error} guild:${message.guild.id}`);
-            message.reply('there was an error trying to execute that command!');
+            message.reply('Sorry, there was an error trying to execute that command!');
         }
     }
 };
