@@ -4,7 +4,7 @@ const { mention } = require('./commons');
 
 module.exports = {
     name: 'ban',
-    description: 'Bans the tagged user/users from server',
+    description: 'Bans the tagged user from server',
     guildOnly: true,
     args: true,
     aliases: [],
