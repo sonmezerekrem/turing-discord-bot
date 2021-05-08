@@ -1,13 +1,5 @@
-const axios = require('axios').default;
-const ytdl = require('ytdl-core');
-
 const logger = require('../../utils/logger');
-
-const { queue, play, isValidUrl, songInfo, setServerQueue } = require('./commons');
-
-const { youtubeKey } = require('../../env.json');
-
-const { youtubeUrl, youtubeApiUrl } = require('../../config.json');
+const { queue, play, songInfo, setServerQueue } = require('./utils');
 
 module.exports = {
     name: 'play',
@@ -15,7 +7,7 @@ module.exports = {
     guildOnly: true,
     args: false,
     aliases: ['p'],
-    usage: '[query  |  URL]',
+    usage: '< query | URL >',
     channel: true,
     execute: async function(message, args) {
         logger.debug(`Play command has been used at guild:${message.guild.id} by:${message.author.id}`);
@@ -33,33 +25,19 @@ module.exports = {
                     return message.channel.send('There is no song in history');
                 }
                 play(message.guild, 0);
-            } else {
+            }
+            else {
                 return message.channel.send('There is no song in history');
             }
         }
 
-        let searchUrl = args[0];
+        const x = message.client.voice;
 
-        if (!isValidUrl(searchUrl)) {
-            logger.debug(`Making axios get request to ${youtubeApiUrl} with query:${args.join(' ')} at guild:${message.guild.id} by:${message.author.id}`);
-            const youtubeResponse = await axios.get(youtubeApiUrl, {
-                params: {
-                    key: youtubeKey,
-                    type: 'video',
-                    part: 'snippet',
-                    q: args.join(' ')
-                }
-            });
-            if (youtubeResponse.status === 200) {
-                searchUrl = youtubeUrl + youtubeResponse.data.items[0].id.videoId;
-            } else {
-                return message.channel.send('Song couldn\'t found');
-            }
+        const song = await songInfo(args, message.author);
+
+        if (song == null) {
+            return message.channel.send('Sorry, something went wrong');
         }
-
-        const song = await songInfo(searchUrl, message.author);
-
-        logger.debug(`Found song is ${song.title} at guild:${message.guild.id} by:${message.author.id}`);
 
         setServerQueue(message, serverQueue, song);
     }

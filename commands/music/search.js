@@ -2,7 +2,7 @@ const axios = require('axios').default;
 
 const logger = require('../../utils/logger');
 
-const { queue, songInfo, setServerQueue } = require('./commons');
+const { queue, songInfo, setServerQueue } = require('./utils');
 
 const { youtubeKey } = require('../../env.json');
 
@@ -56,20 +56,28 @@ module.exports = {
                             const emoji = collected.first().emoji;
                             if (emoji.name === '1️⃣') {
                                 searchUrl = youtubeUrl + youtubeResponse.data.items[0].id.videoId;
-                            } else if (emoji.name === '2️⃣') {
+                            }
+                            else if (emoji.name === '2️⃣') {
                                 searchUrl = youtubeUrl + youtubeResponse.data.items[1].id.videoId;
-                            } else if (emoji.name === '3️⃣') {
+                            }
+                            else if (emoji.name === '3️⃣') {
                                 searchUrl = youtubeUrl + youtubeResponse.data.items[2].id.videoId;
-                            } else if (emoji.name === '4️⃣') {
+                            }
+                            else if (emoji.name === '4️⃣') {
                                 searchUrl = youtubeUrl + youtubeResponse.data.items[3].id.videoId;
-                            } else if (emoji.name === '5️⃣') {
+                            }
+                            else if (emoji.name === '5️⃣') {
                                 searchUrl = youtubeUrl + youtubeResponse.data.items[4].id.videoId;
                             }
                             setTimeout(() => {
                                 msg.reactions.removeAll();
                             }, 30000);
 
-                            const song = await songInfo(searchUrl, message.author);
+                            const song = await songInfo([searchUrl], message.author);
+
+                            if (song == null) {
+                                return message.channel.send('Sorry, something went wrong');
+                            }
 
                             logger.debug(`Selected song is ${song.title} at guild:${message.guild.id} by:${message.author.id}`);
 
@@ -78,11 +86,13 @@ module.exports = {
                             logger.error(error, message.guild.id);
                             return msg.reply('No reaction after 30 seconds, operation canceled');
                         });
-                    } catch (error) {
+                    }
+                    catch (error) {
                         logger.error(`One of the emojis failed to react in search guild:${message.guild.id}`);
                     }
                 });
-        } else {
+        }
+        else {
             return message.channel.send('Song couldn\'t found');
         }
 
