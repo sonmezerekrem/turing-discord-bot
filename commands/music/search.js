@@ -1,13 +1,8 @@
 const axios = require('axios').default;
-
 const logger = require('../../utils/logger');
-
 const { queue, songInfo, setServerQueue } = require('./utils');
-
-const { youtubeKey } = require('../../env.json');
-
+const youtubeKey = process.env.youtubeKey;
 const { youtubeUrl, youtubeApiUrl } = require('../../config.json');
-
 const embed = require('../../embeds/searchEmbed');
 
 module.exports = {

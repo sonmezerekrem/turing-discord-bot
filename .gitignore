@@ -6,6 +6,8 @@ node_modules/
 .desktop.ini
 desktop.ini
 
-env.json
+dev.env
+prod.env
+test.env
 
 TODO

@@ -4,7 +4,8 @@ const stringSimilarity = require('string-similarity');
 const embed = require('../../embeds/playingEmbed');
 const logger = require('../../utils/logger');
 const { geniusApi, youtubeUrl, youtubeApiUrl } = require('../../config.json');
-const { youtubeKey, geniusToken } = require('../../env.json');
+const youtubeKey = process.env.youtubeKey;
+const geniusToken = process.env.geniusToken;
 
 
 const queue = new Map();

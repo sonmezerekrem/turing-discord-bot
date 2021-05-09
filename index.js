@@ -1,7 +1,9 @@
+require('dotenv').config({ path: 'dev.env' });
+
 const fs = require('fs');
 const Discord = require('discord.js');
 const logger = require('./utils/logger');
-const { token } = require('./env.json');
+const token = process.env.token;
 
 
 const client = new Discord.Client();
@@ -13,7 +15,8 @@ for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {
         client.once(event.name, (...args) => event.execute(...args, client));
-    } else {
+    }
+    else {
         client.on(event.name, (...args) => event.execute(...args, client));
     }
 }
