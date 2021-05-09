@@ -1,12 +1,13 @@
 const { connect } = require('./utils');
 const logger = require('../utils/logger');
 
+
 module.exports = {
     name: 'reconnecting',
     once: true,
-    execute(client) {
+    execute: async function(client) {
         logger.info(`${client.user.tag} is reconnecting.`);
-        connect(client);
+        await connect(client);
         logger.info(`${client.user.tag} is reconnected.`);
     }
 };

@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const logger = require('../utils/logger');
-
 const { prefix } = require('../config.json');
+
 
 module.exports = {
     name: 'message',
@@ -72,7 +72,8 @@ module.exports = {
 
         try {
             command.execute(message, args);
-        } catch (error) {
+        }
+        catch (error) {
             logger.error(`${error} guild:${message.guild.id}`);
             message.reply('Sorry, there was an error trying to execute that command!');
         }
