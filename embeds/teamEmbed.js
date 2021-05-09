@@ -1,15 +1,7 @@
 const logger = require('../utils/logger');
 const Discord = require('discord.js');
 const { uniqueNamesGenerator, adjectives, colors } = require('unique-names-generator');
-
-function toTitleCase(str) {
-    return str.replace(
-        /\w\S*/g,
-        function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        }
-    );
-}
+const { toTitleCase } = require('../utils/functions');
 
 
 module.exports = {

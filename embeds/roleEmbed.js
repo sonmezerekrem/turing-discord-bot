@@ -1,17 +1,7 @@
 const logger = require('../utils/logger');
 const Discord = require('discord.js');
+const { monthNames } = require('../utils/variables');
 
-const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
-    'October', 'November', 'December'];
-
-function toTitleCase(str) {
-    return str.replace(
-        /\w\S*/g,
-        function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        }
-    );
-}
 
 module.exports = {
     name: 'role',
@@ -36,6 +26,6 @@ module.exports = {
             .addField('Hoist', role.hoist ? 'Yes' : 'No', true)
             .addField('Position', role.position, true)
             .addField('Color', role.hexColor, true)
-            .addField('Administrator', role.permissions.toArray().includes('ADMINISTRATOR') ? 'Yes' : 'No',true);
+            .addField('Administrator', role.permissions.toArray().includes('ADMINISTRATOR') ? 'Yes' : 'No', true);
     }
 };

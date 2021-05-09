@@ -1,9 +1,7 @@
 const logger = require('../utils/logger');
 const Discord = require('discord.js');
+const { monthNames } = require('../utils/variables');
 
-
-const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
-    'October', 'November', 'December'];
 
 module.exports = {
     name: 'help',

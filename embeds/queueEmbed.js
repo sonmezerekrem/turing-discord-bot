@@ -1,6 +1,5 @@
 const logger = require('../utils/logger');
 const Discord = require('discord.js');
-const { prefix } = require('../config.json');
 
 
 module.exports = {
@@ -20,7 +19,8 @@ module.exports = {
             if (playing != null && playing === i) {
                 embed.addField('   Now Playing', `${i + 1}-  ${songs[i].title}`);
                 embed.setThumbnail(songs[i].image);
-            } else
+            }
+            else
                 embed.addField('\u200b', `${i + 1}-  ${songs[i].title}`);
         }
         return embed;
