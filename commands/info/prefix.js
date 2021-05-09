@@ -1,6 +1,7 @@
 const logger = require('../../utils/logger');
 const { prefix } = require('../../config.json');
 
+
 module.exports = {
     name: 'prefix',
     description: 'Shows bot\'s prefix',

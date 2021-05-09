@@ -5,6 +5,7 @@ const youtubeKey = process.env.youtubeKey;
 const { youtubeUrl, youtubeApiUrl } = require('../../config.json');
 const embed = require('../../embeds/searchEmbed');
 
+
 module.exports = {
     name: 'search',
     description: 'Search for a music with given queries in YouTube',

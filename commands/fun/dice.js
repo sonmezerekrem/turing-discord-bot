@@ -1,11 +1,12 @@
 const logger = require('../../utils/logger');
 
+
 module.exports = {
     name: 'dice',
     description: 'Rolls a dice and give points if you know the number',
     guildOnly: true,
     args: false,
-    aliases: [],
+    aliases: ['roll'],
     usage: '',
     execute: async function(message, args) {
         logger.debug(`Dice command has been used at guild:${message.guild.id} by:${message.author.id}`);
@@ -27,7 +28,8 @@ module.exports = {
                 ).then(async collected => {
                     if (collected.first().emoji.name === dice) {
                         message.channel.send('Congratulations you guessed correctly and earn 20 points');
-                    } else {
+                    }
+                    else {
                         message.channel.send('Ops, not this time. One more try?');
                     }
                     setTimeout(() => {
@@ -37,7 +39,8 @@ module.exports = {
                     logger.error(error, message.guild.id);
                     msg.reply('No reaction after 30 seconds, operation canceled');
                 });
-            } catch (error) {
+            }
+            catch (error) {
                 logger.error(`One of the emojis failed to react in dice guild:${message.guild.id}`);
             }
 

@@ -2,6 +2,7 @@ const logger = require('../../utils/logger');
 const embed = require('../../embeds/queueEmbed');
 const { queue } = require('./utils');
 
+
 module.exports = {
     name: 'queue',
     description: 'Shows the play queue',

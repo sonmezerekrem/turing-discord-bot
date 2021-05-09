@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
-
 const embed = require('../../embeds/memberEmbed');
+
 
 module.exports = {
     name: 'me',

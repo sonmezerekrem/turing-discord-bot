@@ -6,8 +6,6 @@ const logger = require('../../utils/logger');
 const { geniusApi, youtubeUrl, youtubeApiUrl } = require('../../config.json');
 const youtubeKey = process.env.youtubeKey;
 const geniusToken = process.env.geniusToken;
-
-
 const queue = new Map();
 
 

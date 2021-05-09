@@ -2,6 +2,7 @@ const logger = require('../../utils/logger');
 const embed = require('../../embeds/songEmbed');
 const { queue } = require('./utils');
 
+
 module.exports = {
     name: 'song',
     description: 'Shows information about the current song',

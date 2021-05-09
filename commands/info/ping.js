@@ -1,5 +1,6 @@
 const logger = require('../../utils/logger');
 
+
 module.exports = {
     name: 'ping',
     description: 'Shows user latency',

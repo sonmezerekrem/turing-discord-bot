@@ -2,6 +2,7 @@ const logger = require('../../utils/logger');
 const { prefix } = require('../../config.json');
 const { queue } = require('./utils');
 
+
 module.exports = {
     name: 'volume',
     description: 'Changes the volume level. Without arguments sets to default. Min: 0.1, Max: 2, Default: 1. ',

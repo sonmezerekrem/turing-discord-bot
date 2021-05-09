@@ -2,6 +2,7 @@ const logger = require('../../utils/logger');
 const embed = require('../../embeds/teamEmbed');
 const { mention } = require('./utils');
 
+
 module.exports = {
     name: 'teams',
     description: 'Creates random teams with mentioned members',

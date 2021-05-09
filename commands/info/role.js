@@ -1,5 +1,6 @@
 const logger = require('../../utils/logger');
-const embed = require("../../embeds/roleEmbed")
+const embed = require('../../embeds/roleEmbed');
+
 
 module.exports = {
     name: 'role',

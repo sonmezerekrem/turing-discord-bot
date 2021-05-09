@@ -7,7 +7,7 @@ module.exports = {
     description: 'Shows server information.',
     guildOnly: true,
     args: false,
-    aliases: ['server', 'i'],
+    aliases: ['server', 'i', 'guild'],
     usage: '',
     execute(message, args) {
         logger.debug(`Info command has been used at guild:${message.guild.id} by:${message.author.id}`);

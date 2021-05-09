@@ -1,6 +1,7 @@
 const logger = require('../../utils/logger');
 const embed = require('../../embeds/helpEmbed');
 
+
 module.exports = {
     name: 'help',
     description: 'List all of commands or info about a specific command.',
