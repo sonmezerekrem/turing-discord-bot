@@ -11,3 +11,5 @@ prod.env
 test.env
 
 TODO
+
+.nyc_output/

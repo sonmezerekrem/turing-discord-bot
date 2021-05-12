@@ -10,8 +10,7 @@ const options = {
                 format: 'MMM-DD-YYYY HH:mm:ss'
             }),
             winston.format.json()
-        ),
-
+        )
     },
     develop: {
         level: 'debug',
@@ -23,8 +22,15 @@ const options = {
                 format: 'YYYY-MM-DD ZZ HH:mm:ss'
             }),
             winston.format.printf((info) => `[${info.level.toUpperCase()}]:  ${[info.timestamp]}: ${info.message}`),
-            winston.format.colorize({all:true, level:false} ),
+            winston.format.colorize({ all: true, level: false })
         )
+    },
+    test: {
+        level: 'info',
+        handleExceptions: true,
+        json: false,
+        colorize: false,
+        format: winston.format.printf((info) => `${info.level}: ${info.message}`)
     }
 };
 
@@ -32,7 +38,7 @@ const options = {
 const logger = winston.createLogger({
 
     transports: [
-        new winston.transports.Console(options.develop)
+        new winston.transports.Console(options[process.env.environment])
     ],
     exitOnError: false
 });
