@@ -9,5 +9,7 @@
   "color": "#9900ff",
   "youtubeUrl": "https://www.youtube.com/watch?v=",
   "youtubeApiUrl": "https://www.googleapis.com/youtube/v3/search",
-  "discordAvatarUrl": "https://discord-avatar-maker.app?bg=88C800&fg=FFFFFF&eyc=none&os=base-shape&is=wink"
+  "discordAvatarUrl": "https://discord-avatar-maker.app?bg=88C800&fg=FFFFFF&eyc=none&os=base-shape&is=wink",
+  "geniusApi": "https://api.genius.com",
+  "geniusUrl": "https://genius.com"
 }

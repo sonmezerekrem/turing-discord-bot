@@ -1,6 +1,7 @@
 const logger = require('../../utils/logger');
-const { songEmbed } = require('../../utils/embed');
-const { queue } = require('./commons');
+const embed = require('../../embeds/songEmbed');
+const { queue } = require('./utils');
+
 
 module.exports = {
     name: 'song',
@@ -9,20 +10,25 @@ module.exports = {
     args: false,
     aliases: [],
     usage: '',
+    channel: true,
     execute(message, args) {
+        logger.debug(`Song command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
-        if (!message.member.voice.channel)
-            return message.channel.send('You have to be in a voice channel to show song information!');
 
         if (!serverQueue) return message.channel.send('There is no song that I could show!');
 
+        if (!message.client.voice.connections.has(message.guild.id))
+            return message.channel.send('There is no song that I could show!');
+
         if (serverQueue.songs.length > 0) {
             if (serverQueue.playing !== null) {
-                return message.channel.send(songEmbed(serverQueue.songs[serverQueue.playing], serverQueue.connection.dispatcher.streamTime));
-            } else {
+                return message.channel.send(embed.execute(message, [serverQueue.songs[serverQueue.playing], serverQueue.connection.dispatcher.streamTime]));
+            }
+            else {
                 return message.channel.send('There is no song that I could show!');
             }
-        } else
+        }
+        else
             return message.channel.send('There is no song that I could show!');
-    },
+    }
 };

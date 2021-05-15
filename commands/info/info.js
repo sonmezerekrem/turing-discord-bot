@@ -1,15 +1,16 @@
 const logger = require('../../utils/logger');
+const embed = require('../../embeds/infoEmbed');
 
-const { infoEmbed } = require('../../utils/embed');
 
 module.exports = {
     name: 'info',
     description: 'Shows server information.',
     guildOnly: true,
     args: false,
-    aliases: ['server', 'i'],
+    aliases: ['server', 'i', 'guild'],
     usage: '',
     execute(message, args) {
-        return message.channel.send(infoEmbed(message));
-    },
+        logger.debug(`Info command has been used at guild:${message.guild.id} by:${message.author.id}`);
+        return message.channel.send(embed.execute(message, []));
+    }
 };

@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
+const { queue } = require('./utils');
 
-const { queue, deletePlayMessage } = require('./commons');
 
 module.exports = {
     name: 'clear',
@@ -9,14 +9,17 @@ module.exports = {
     args: false,
     aliases: ['c'],
     usage: '',
+    channel: true,
     async execute(message, args) {
+        logger.debug(`Clear command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
-        if (!message.member.voice.channel)
-            return message.channel.send('You have to be in a voice channel to clear the play queue!');
 
-        if (!serverQueue) return message.channel.send('There is no song that I could clear!');
+        if (!serverQueue)
+            return message.channel.send('There is no song that I could clear!');
 
+        if (!message.client.voice.connections.has(message.guild.id))
+            return message.channel.send('There is no song that I could clear!');
         serverQueue.songs = [];
         serverQueue.playing = null;
-    },
+    }
 };

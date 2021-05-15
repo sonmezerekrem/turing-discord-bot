@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
+const embed = require('../../embeds/memberEmbed');
 
-const { memberEmbed } = require('../../utils/embed');
 
 module.exports = {
     name: 'me',
@@ -10,6 +10,7 @@ module.exports = {
     aliases: ['member'],
     usage: '',
     execute(message, args) {
-        return message.reply(memberEmbed(message));
-    },
+        logger.debug(`Me command has been used at guild:${message.guild.id} by:${message.author.id}`);
+        return message.reply(embed.execute(message, []));
+    }
 };

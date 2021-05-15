@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
+const { queue, deletePlayMessage } = require('./utils');
 
-const { queue,deletePlayMessage } = require('./commons');
 
 module.exports = {
     name: 'stop',
@@ -9,16 +9,19 @@ module.exports = {
     args: false,
     aliases: ['s'],
     usage: '',
+    channel: true,
     execute(message, args) {
+        logger.debug(`Stop command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
-        if (!message.member.voice.channel)
-            return message.channel.send('You have to be in a voice channel to stop the music!');
 
         if (!serverQueue) return message.channel.send('There is no song that I could stop!');
+
+        if (!message.client.voice.connections.has(message.guild.id))
+            return message.channel.send('There is no song that I could stop!');
 
         serverQueue.songs = [];
         serverQueue.playing = null;
         serverQueue.connection.dispatcher.end();
-        deletePlayMessage(message.guild)
-    },
+        deletePlayMessage(message.guild);
+    }
 };

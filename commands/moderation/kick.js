@@ -1,33 +1,25 @@
 const logger = require('../../utils/logger');
+const { mention } = require('./utils');
 
-const { mention } = require('./commons');
 
 module.exports = {
     name: 'kick',
-    description: 'Kicks the tagged user/users from server',
+    description: 'Kicks the tagged user from server',
     guildOnly: true,
     args: true,
     aliases: [],
     usage: '[user  |  users]',
     permissions: 'KICK_MEMBERS',
     execute(message, args) {
-        const client = message.client;
-        const kickUsers = args.map(arg => mention(client, arg));
+        logger.debug(`Kick command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        for (let i = 0; i < kickUsers; i++) {
-            if (!kickUsers[i]) {
-                kickUsers.slice(i, 1);
-            }
-        }
+        const kickUser =  mention(message.client, args[0]);
 
-        kickUsers.forEach(user => {
-            user.kick()
-                .then((kicked) => {
-                    logger.info(`User: ${kicked.id} is kicked by: ${message.user.id}`, message.guild.id);
-                    message.channel.send(`User: ${kicked.user.tag} is kicked from ${message.guild.name}`);
-                })
-                .catch(error => logger.error(error, message.guild.id));
-        });
+        kickUser.ban().then(kicked => {
+            logger.info(`Member: ${kicked.id} was kicked at guild:${message.guild.id} by:${message.author.id} reason:${args[1] ? args.length > 1 : 'no reason given'}`);
+            message.channel.send(`Member: ${kicked.user.tag} is kicked from ${message.guild.name}. Reason:${args[1] ? args.length > 1 : 'no reason given'}`);
+        }).catch(error => logger.error(`${error} guild:${message.guild.id}`));
 
-    },
+
+    }
 };

@@ -9,17 +9,19 @@ module.exports = {
     aliases: ['j', 'connect'],
     usage: '',
     execute(message, args) {
+        logger.debug(`Join command has been used at guild:${message.guild.id} by:${message.author.id}`);
         if (message.member.voice.channel) {
             message.member.voice.channel.join().then(connection => {
                 connection.voice.setSelfDeaf(true).then(() => {
-                    logger.info(`${message.client.user.tag} is connected to voice and set to deaf`, message.guild.id);
+                    logger.info(`${message.client.user.tag} has connected to voice and set to deaf at guild:${message.guild.id}`);
                 });
             }).catch(error => {
                 logger.error(error, message.guild.id);
             });
             message.channel.send(`I am joined to ${message.member.voice.channel}`);
-        } else {
+        }
+        else {
             message.channel.send('You need to be in a voice channel!');
         }
-    },
+    }
 };
