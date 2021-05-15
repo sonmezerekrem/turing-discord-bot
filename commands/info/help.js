@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const embed = require('../../embeds/helpEmbed');
+const embed = require('../../utils/embeds').help;
 
 
 module.exports = {
@@ -11,6 +11,6 @@ module.exports = {
     usage: '[command name]',
     execute(message, args) {
         logger.debug(`Help command has been used at guild:${message.guild.id} by:${message.author.id}`);
-        return message.channel.send(embed.execute(message, args));
+        return message.channel.send(embed(message, args));
     }
 };

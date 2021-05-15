@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const embed = require('../../embeds/teamEmbed');
+const embed = require('../../utils/embeds').teams;
 const { mention } = require('./utils');
 
 
@@ -34,7 +34,7 @@ module.exports = {
                 }
                 teams.push(team);
             }
-            return message.channel.send(embed.execute(message, teams));
+            return message.channel.send(embed(message, teams));
         }
         catch (exception) {
             logger.error(exception);

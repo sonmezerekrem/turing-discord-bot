@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const embed = require('../../embeds/queueEmbed');
+const embed = require('../../utils/embeds').queue;
 const { queue } = require('./utils');
 
 
@@ -8,7 +8,7 @@ module.exports = {
     description: 'Shows the play queue',
     guildOnly: true,
     args: false,
-    aliases: ['q'],
+    aliases: ['q', 'list'],
     usage: '',
     channel: true,
     execute(message, args) {
@@ -21,7 +21,7 @@ module.exports = {
             return message.channel.send('There is no song that I could show!');
 
         if (serverQueue.songs.length > 0)
-            return message.channel.send(embed.execute(message, [serverQueue.songs, serverQueue.playing]));
+            return message.channel.send(embed(message.guild.name, serverQueue.songs, serverQueue.playing));
         else
             return message.channel.send('There is no song that I could show!');
     }

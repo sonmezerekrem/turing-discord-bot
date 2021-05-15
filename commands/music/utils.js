@@ -1,7 +1,7 @@
 const ytdl = require('ytdl-core');
 const axios = require('axios').default;
 const stringSimilarity = require('string-similarity');
-const embed = require('../../embeds/playingEmbed');
+const embed = require('../../utils/embeds').playingSong;
 const logger = require('../../utils/logger');
 const { geniusApi, youtubeUrl, youtubeApiUrl } = require('../../config.json');
 const youtubeKey = process.env.youtubeKey;
@@ -158,7 +158,7 @@ const play = (guild, songNo) => {
         })
         .on('error', (error) => logger.error(`${error} guild:${guild.id}`));
     dispatcher.setVolume(serverQueue.volume);
-    serverQueue.textChannel.send(embed.execute(guild, [song])).then(sent => {
+    serverQueue.textChannel.send(embed(guild, song)).then(sent => {
         serverQueue.lastPlayMessage = sent.id;
     });
 };

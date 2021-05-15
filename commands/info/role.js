@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const embed = require('../../embeds/roleEmbed');
+const embed = require('../../utils/embeds').role;
 
 
 module.exports = {
@@ -12,6 +12,6 @@ module.exports = {
     permissions: 'MANAGE_ROLES',
     execute(message, args) {
         logger.debug(`Role command has been used at guild:${message.guild.id} by:${message.author.id}`);
-        return message.reply(embed.execute(message, args));
+        return message.reply(embed(message, args));
     }
 };

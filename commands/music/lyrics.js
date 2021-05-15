@@ -1,7 +1,7 @@
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const logger = require('../../utils/logger');
-const embed = require('../../embeds/lyricsEmbed');
+const embed = require('../../utils/embeds').lyrics;
 const { queue } = require('./utils');
 
 
@@ -51,7 +51,7 @@ module.exports = {
             }
             song.lyrics = lyrics.substr(0, 2048);
         }
-        return message.channel.send(embed.execute(message, [song]));
+        return message.channel.send(embed(song));
 
 
     }

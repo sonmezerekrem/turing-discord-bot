@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const embed = require('../../embeds/songEmbed');
+const embed = require('../../utils/embeds').songInfo;
 const { queue } = require('./utils');
 
 
@@ -22,7 +22,7 @@ module.exports = {
 
         if (serverQueue.songs.length > 0) {
             if (serverQueue.playing !== null) {
-                return message.channel.send(embed.execute(message, [serverQueue.songs[serverQueue.playing], serverQueue.connection.dispatcher.streamTime]));
+                return message.channel.send(embed(serverQueue.songs[serverQueue.playing], serverQueue.connection.dispatcher.streamTime));
             }
             else {
                 return message.channel.send('There is no song that I could show!');
