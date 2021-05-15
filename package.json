@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --recursive",
     "covarage": "nyc mocha --recursive",
-    "start": "nodemon index.js"
+    "develop": "nodemon index.js",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
