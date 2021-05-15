@@ -5,7 +5,7 @@ const { queue } = require('./utils');
 
 module.exports = {
     name: 'volume',
-    description: 'Changes the volume level. Without arguments sets to default. Min: 0.1, Max: 2, Default: 1. ',
+    description: 'Changes the volume level. Without arguments sets to default. Min: 0.1, Max: 2, Default: 1.',
     guildOnly: true,
     args: false,
     aliases: ['v'],

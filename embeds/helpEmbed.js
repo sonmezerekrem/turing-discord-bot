@@ -28,7 +28,7 @@ module.exports = {
         const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 
         if (!command) {
-            return message.reply('That\'s not a valid command!');
+            return 'That\'s not a valid command!';
         }
         embed.setTitle(command.name);
         embed.setDescription(command.description);
