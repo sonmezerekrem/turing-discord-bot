@@ -75,17 +75,4 @@ describe('All Tests', function() {
             assert.isTrue(embed.fields.map(f=> f.name).includes("Owner"))
         });
     });
-
-    describe('Teams Command Test', function() {
-        it('Should return embed about server', async function() {
-            message.content = `+teams`;
-            const result = await info.execute(message, []);
-            const embed = result.embeds[0];
-            assert.equal(embed.title, 'TuringTestServer');
-            assert.equal(embed.description, 'TuringTestServer');
-            assert.isTrue(embed.fields.map(f=> f.name).includes("Owner"))
-        });
-    });
-
-
 });
