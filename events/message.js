@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const logger = require('../utils/logger');
 const { prefix } = require('../config.json');
+const assistant = require('../assistant/assistant');
 
 
 module.exports = {
@@ -8,9 +9,15 @@ module.exports = {
     execute(message) {
         const client = message.client;
 
-        if (!message.content.startsWith(prefix) || message.author.bot) return;
+        if (message.author.bot) return;
 
-        logger.debug(`Message event has emitted at guild:${message.guild.id} member:${message.author.id}`);
+        const assist = client.assists.get(message.author.id);
+
+        if (assist && message.channel.id === assist.channel && message.content !== `${prefix}end-assist`) {
+            return assistant(message);
+        }
+
+        if (!message.content.startsWith(prefix)) return;
 
         const args = message.content.slice(prefix.length).trim().split(/ +/);
         const commandName = args.shift().toLowerCase();
@@ -19,6 +26,8 @@ module.exports = {
             || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
         if (!command) return;
+
+        if (command.type === 'guild' && message.guild.id !== '840619177739419649') return;
 
         if (command.guildOnly && message.channel.type === 'dm') {
             logger.debug(`${command.name} is available only at guilds`);
@@ -75,7 +84,7 @@ module.exports = {
         }
         catch (error) {
             logger.error(`${error} guild:${message.guild.id}`);
-            message.reply('Sorry, there was an error trying to execute that command!');
+            message.reply(`Sorry, there was an error trying to execute that command! You can report this problem by using **${prefix}issue** command`);
         }
     }
 };
