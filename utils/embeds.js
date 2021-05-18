@@ -10,7 +10,7 @@ function help(message, args) {
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setThumbnail(message.client.user.avatarURL())
-        .setFooter(`${message.guild.name} -  Discord`)
+        .setFooter(`${message.guild ? message.guild.name : 'DM'} -  Discord`)
         .setTimestamp();
 
     const { commands } = message.client;
@@ -21,7 +21,7 @@ function help(message, args) {
         embed.addFields(
             {
                 name: 'Help',
-                value: commands.filter(command => command.category === 'Help').map(command => command.name).join(', ')
+                value: commands.filter(command => command.category === 'Helper').map(command => command.name).join(', ')
             },
             {
                 name: 'Info',
@@ -56,6 +56,7 @@ function help(message, args) {
     }
 
     const name = args[0].toLowerCase();
+
     if (categories.hasOwnProperty(name)) {
         embed.setTitle(`${toTitleCase(name)} Commands`);
         embed.setDescription(categories[name]);
@@ -71,7 +72,7 @@ function help(message, args) {
     const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 
     if (!command) {
-        return 'That\'s not a valid command!';
+        return 'That\'s not a valid category or command!';
     }
     embed.setTitle(command.name);
     embed.setDescription(command.description);
@@ -84,6 +85,7 @@ function help(message, args) {
     if (command.hasOwnProperty('example')) {
         embed.addField('Examples', command.example);
     }
+    embed.addField('Guild Only', `${command.guildOnly ? 'Yes' : 'No'}`);
     return embed;
 }
 
@@ -125,8 +127,8 @@ function lyrics(song) {
     const title = (song.artist != null ? song.artist + ' - ' : '') + (song.title != null ? song.title : song.youtubeTitle);
     return new Discord.MessageEmbed()
         .setColor(song.color)
-        .setTitle(`${title} Lyrics`)
-        .setDescription(song.lyrics)
+        .setTitle(`${title}`)
+        .setDescription(`You can find the lyrics on the link below\n\n ${song.lyricsUrl}\n`)
         .setThumbnail(song.thumbnail != null ? song.thumbnail : song.youtubeThumbnail)
         .setFooter('Powered by Genius')
         .setTimestamp();
@@ -259,11 +261,11 @@ function songInfo(song, streamTime) {
     }
 
     if (song.artist != null)
-        embed.addField('Artist', song.artist, true);
+        embed.addField('Artist', song.artist);
     if (song.album != null)
-        embed.addField('Album', song.album, true);
+        embed.addField('Album', song.album);
 
-    embed.addField('Year', song.release, true);
+    embed.addField('Release Date', getDateAsString(song.release));
 
     if (song.lyricsUrl != null)
         embed.addField('Lyrics', song.lyricsUrl);
@@ -358,65 +360,93 @@ function helloOnJoin(guild) {
 
 function moderation(action, args) {
     const embed = new Discord.MessageEmbed()
-        .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp();
-    ;
+    try {
+        if (action === 'Ban') {
+            embed.setTitle('Ban')
+                .setDescription('Ban Details')
+                .setColor(colorSet.Red)
+                .addField('Banned User', `${args[0].user.tag} (${args[0].user.id})`)
+                .addField('Reason', `${args[0].reason ? args[0].reason : 'No reason'}`)
+                .setThumbnail(args[0].user.avatarURL());
+        }
+        else if (action === 'Ban Remove') {
+            embed.setTitle('Ban Remove')
+                .setDescription('Ban Remove Details')
+                .setColor(colorSet.GreenYellow)
+                .addField('Unbanned User', `${args[0].tag} (${args[0].id})`)
+                .setThumbnail(args[0].avatarURL());
+        }
+        else if (action === 'Member Remove') {
+            embed.setTitle('Member Leave')
+                .setDescription('Member is left or kicked')
+                .setThumbnail(args[0].user.avatarURL())
+                .setColor(colorSet.DarkOrange)
+                .addField('Member', `${args[0].displayName} (${args[0].id})`);
+        }
+        else if (action === 'Channel Create') {
+            embed.setTitle('Channel Create')
+                .setDescription('New channel is created at guild')
+                .setColor(colorSet.RoyalBlue)
+                .addField('Type', args[0].type)
+                .addField('Name', `${args[0].name} (${args[0].id})`)
+                .setFooter(`${args[1]} -  Discord`)
+                .setThumbnail(args[2]);
+        }
+        else if (action === 'Channel Delete') {
+            embed.setTitle('Channel Delete')
+                .setDescription('Channel is deleted at guild')
+                .setColor(colorSet.Blue)
+                .addField('Type', args[0].type)
+                .addField('Name', `${args[0].name} (${args[0].id})`)
+                .setFooter(`${args[1]} -  Discord`)
+                .setThumbnail(args[2]);
+        }
+        else if (action === 'Channel Update') {
+            embed.setTitle('Channel Update')
+                .setDescription('Channel is updated at guild')
+                .setColor(colorSet.MediumBlue)
+                .addField('Type', args[1].type)
+                .addField('Name', `${args[1].name} (${args[1].id})`)
+                .setFooter(`${args[2]} -  Discord`)
+                .setThumbnail(args[3]);
+        }
+        else if (action === 'Invite Create') {
+            embed.setTitle('Invite Created')
+                .setDescription('New invite is created')
+                .setColor(colorSet.Indigo)
+                .addField('Url', args[1])
+                .setThumbnail(args[0].avatarURL())
+                .setFooter(`${args[3]} -  Discord`)
+                .addField('Creator User', `${args[0].tag} (${args[0].id})`)
+                .addField('Expires At', getDateAsString(args[2]));
+        }
+        else if (action === 'Role Request') {
+            embed.setTitle("Role Request")
+                .setDescription("New role is requested")
+                .setColor(colorSet.Lime)
+                .addField('User', `${args[0].tag} (${args[0].id})`)
+                .setThumbnail(args[0].avatarURL())
+                .setFooter(`${args[2]} -  Discord`)
+                .addField('Role', `${args[1]}`);
+        }
 
-    if (action === 'Ban') {
-        embed.setTitle('Ban')
-            .setDescription('Ban Details')
-            .setColor(colorSet.Red)
-            .addField('Banned User', `${args[0].user.tag} (${args[0].user.id})`)
-            .addField('Reason', `${args[0].reason ? args[0].reason : 'No reason'}`)
-            .setThumbnail(args[0].user.avatarURL());
     }
-    else if (action === 'Ban Remove') {
-        embed.setTitle('Ban Remove')
-            .setDescription('Ban Remove Details')
-            .setColor(colorSet.GreenYellow)
-            .addField('Unbanned User', `${args[0].tag} (${args[0].id})`)
-            .setThumbnail(args[0].avatarURL());
-        ;
-    }
-    else if (action === 'Member Remove') {
-        embed.setTitle('Member Leave')
-            .setDescription('Member is left or kicked')
-            .setThumbnail(args[0].user.avatarURL())
-            .setColor(colorSet.DarkOrange)
-            .addField('Member', `${args[0].displayName} (${args[0].id})`);
-    }
-    else if (action === 'Channel Create') {
-        embed.setTitle('Channel Create')
-            .setDescription('New channel is created at guild')
-            .setColor(colorSet.RoyalBlue)
-            .addField('Type', args[0].type)
-            .addField('Name', args[0].name);
-    }
-    else if (action === 'Channel Delete') {
-        embed.setTitle('Channel Delete')
-            .setDescription('Channel is deleted at guild')
-            .setColor(colorSet.Blue)
-            .addField('Type', args[0].type)
-            .addField('Name', args[0].name);
-    }
-    else if (action === 'Channel Update') {
-        embed.setTitle('Channel Update')
-            .setDescription('Channel is updated at guild')
-            .setColor(colorSet.MediumBlue)
-            .addField('Type', args[1].type)
-            .addField('Name', args[1].name);
-    }
-    else if (action === 'Invite Create') {
-        embed.setTitle('Invite Created')
-            .setDescription('New invite is created')
-            .setColor(colorSet.Indigo)
-            .addField('Url', args[1])
-            .setThumbnail(args[0].avatarURL())
-            .addField('Creator User', args[0].tag)
-            .addField('Expires At', args[2]);
+    catch (e) {
+        logger.error(e.message);
     }
 
     return embed;
+}
+
+function welcomeMessage(member) {
+    return new Discord.MessageEmbed()
+        .setTitle(`Welcome to The ${member.guild.name}`)
+        .setDescription(`We are happy to see you here. If you need me just use **${prefix}help** command.`)
+        .setThumbnail(member.guild.iconURL())
+        .setFooter(`${member.guild.name} -  Discord`)
+        .setColor(colorSet.LightYellow)
+        .setTimestamp();
 }
 
 module.exports = {
@@ -432,5 +462,6 @@ module.exports = {
     teams,
     botInfo,
     helloOnJoin,
-    moderation
+    moderation,
+    welcomeMessage
 };

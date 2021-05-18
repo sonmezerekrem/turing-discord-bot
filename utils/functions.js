@@ -11,6 +11,8 @@ function toTitleCase(str) {
 }
 
 function getDateAsString(date) {
+    if (typeof date === 'string')
+        return date.substring(8) + ' ' + monthNames[parseInt(date.substr(5, 2))] + ' ' + date.substr(0, 4);
     return date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
 }
 
