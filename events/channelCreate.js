@@ -5,13 +5,14 @@ const { turing } = require('../config.json');
 module.exports = {
     name: 'channelCreate',
     execute: async function(channel) {
-        logger.info(`New channel is created at guild: ${channel.guild.name} channel:${channel.id}`);
+        if (channel.type !== 'dm') {
+            logger.info(`New channel is created at guild: ${channel.guild.name} channel:${channel.id}`);
 
-        if (channel.type !== 'dm')
             if (channel.guild.id === turing) {
                 let moderatorChannel = channel.guild.channels.cache.find(channel => channel.name === 'moderation');
-                moderatorChannel.send(embed('Channel Create', [channel]));
+                moderatorChannel.send(embed('Channel Create', [channel, channel.guild.name, channel.guild.iconURL()]));
             }
+        }
 
     }
 };

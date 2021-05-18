@@ -12,7 +12,7 @@ module.exports = {
             logger.info(`New invite is created at guild: ${guild.name} user:${user.id}`);
             if (guild.id === turing) {
                 let moderatorChannel = guild.channels.cache.find(channel => channel.name === 'moderation');
-                moderatorChannel.send(embed('Invite Create', [user,invite.url, invite.expiresAt]));
+                moderatorChannel.send(embed('Invite Create', [user,invite.url, invite.expiresAt,guild.name]));
             }
         }
         catch (e) {

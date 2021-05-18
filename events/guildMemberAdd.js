@@ -1,6 +1,6 @@
 const logger = require('../utils/logger');
 const { prefix, turing } = require('../config.json');
-const embed = require('../utils/embeds').moderation;
+const embed = require('../utils/embeds').welcomeMessage;
 
 
 module.exports = {
@@ -27,6 +27,9 @@ module.exports = {
             member.roles.add(role).catch(error => logger.error(error.message));
             channel = guild.channels.cache.find(channel => channel.name === 'new-member');
             message = `Hello ${member}, welcome to ${member.guild.name}. We are happy to see you among us. Please read rules channel before you start your amazing experience here. If you need help you can use ${prefix}help, ${prefix}assist commands or just tag me. We wish you a nice Discord experience here.`;
+            member.send(embed(member)).then(() => {
+                logger.debug('DM is sent in welcome');
+            });
         }
 
         if (channel) {
