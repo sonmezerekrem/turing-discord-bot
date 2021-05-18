@@ -16,7 +16,6 @@ const songInfo = async (args, author) => {
         album: null,
         release: null,
         lyricsUrl: null,
-        lyrics: null,
         color: '#0099ff',
         length: null,
         thumbnail: null,

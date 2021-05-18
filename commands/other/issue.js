@@ -1,4 +1,5 @@
 const logger = require('../../utils/logger');
+const { turing, bugReporting } = require('../../config.json');
 
 
 module.exports = {
@@ -15,12 +16,23 @@ module.exports = {
 
         const guild = message.guild;
 
-        if (guild.id === '840619177739419649') {
-            if (message.channel.id !== '842156525635108874') {
-                return message.channel.send(`Please use **${guild.channels.cache.find(channel => channel.name === 'bug-reporting')}** to use issue command.`);
+        if (guild.id === turing) {
+            if (message.channel.id !== bugReporting) {
+                try {
+                    message.delete();
+                    message.channel.send(`Please use **${guild.channels.cache.find(channel => channel.name === 'bug-reporting')}** channel to use **issue** command.`)
+                        .then(msg => {
+                            msg.delete({ timeout: 5000 });
+                        });
+                    return;
+                }
+                catch (e) {
+                    logger.error(e.message);
+                }
+
             }
             logger.info(`An issue reported by ${message.author.id} at guild ${guild.id}. Issue: ${message.content}`);
-            return message.channel.send(`Thank you for reporting this issue. My developers will be analyze this issue.`);
+            return message.channel.send(`Thank you for reporting this issue. My developers will  analyze this issue.`);
         }
 
         logger.info(`An issue reported by ${message.author.id} at guild ${guild.id}. Issue: ${message.content}`);
