@@ -15,7 +15,7 @@ module.exports = {
 
         const kickUser = message.guild.member(message.mentions.users.first());
 
-        const reason = `${args.length > 1 ? args[1] : 'Kick without reason'}`;
+        const reason = `${args.length > 1 ? args[1] : 'No reason'}`;
         if (kickUser) {
             kickUser.kick(reason).then(kicked => {
                 logger.info(`Member: ${kicked.id} was kicked at guild:${message.guild.id} by:${message.author.id} reason:${args[1] ? args.length > 1 : 'no reason given'}`);

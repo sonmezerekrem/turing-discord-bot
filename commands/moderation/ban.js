@@ -16,7 +16,7 @@ module.exports = {
 
         const banMember = message.guild.member(message.mentions.users.first());
 
-        const reason = `${args.length > 1 ? args[1] : 'Ban without reason'}`;
+        const reason = `${args.length > 1 ? args[1] : 'No reason'}`;
         if (banMember) {
             banMember.ban(reason).then(banned => {
                 logger.info(`Member: ${banned.id} was banned at guild:${message.guild.id} by:${message.author.id} reason:${args[1] ? args.length > 1 : 'no reason given'}`);

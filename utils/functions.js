@@ -1,3 +1,6 @@
+const { monthNames } = require('./variables');
+
+
 function toTitleCase(str) {
     return str.replace(
         /\w\S*/g,
@@ -7,7 +10,11 @@ function toTitleCase(str) {
     );
 }
 
+function getDateAsString(date) {
+    return date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+}
+
 
 module.exports = {
-    toTitleCase
+    toTitleCase, getDateAsString
 };

@@ -1,14 +1,14 @@
 const logger = require('../utils/logger');
 const Discord = require('discord.js');
-const { prefix } = require('../config.json');
-const { monthNames } = require('./variables');
+const { prefix, color, website, defaultActivity, defaultState, version } = require('../config.json');
+const { categories, colorSet } = require('./variables');
 const { uniqueNamesGenerator, adjectives, colors } = require('unique-names-generator');
-const { toTitleCase } = require('./functions');
+const { toTitleCase, getDateAsString } = require('./functions');
 
 
 function help(message, args) {
     const embed = new Discord.MessageEmbed()
-        .setColor('#0099ff')
+        .setColor(color)
         .setThumbnail(message.client.user.avatarURL())
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp();
@@ -17,13 +17,57 @@ function help(message, args) {
 
     if (!args.length) {
         embed.setTitle('Help');
-        embed.setDescription('Here\'s a list of all commands:');
-        embed.addField('\u200b', commands.map(command => command.name).join(', '));
-        embed.addField('\u200b', `\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+        embed.setDescription('Here\'s a list of all commands by categories:');
+        embed.addFields(
+            {
+                name: 'Help',
+                value: commands.filter(command => command.category === 'Help').map(command => command.name).join(', ')
+            },
+            {
+                name: 'Info',
+                value: commands.filter(command => command.category === 'Info').map(command => command.name).join(', ')
+            },
+            {
+                name: 'Moderation',
+                value: commands.filter(command => command.category === 'Moderation').map(command => command.name).join(', ')
+            },
+            {
+                name: 'Music',
+                value: commands.filter(command => command.category === 'Music').map(command => command.name).join(', ')
+            },
+            {
+                name: 'Leveling',
+                value: commands.filter(command => command.category === 'Leveling').map(command => command.name).join(', ')
+            },
+            {
+                name: 'Fun',
+                value: commands.filter(command => command.category === 'Fun').map(command => command.name).join(', ')
+            },
+            {
+                name: 'Record',
+                value: commands.filter(command => command.category === 'Record').map(command => command.name).join(', ')
+            },
+            {
+                name: 'Other',
+                value: commands.filter(command => command.category === 'Other').map(command => command.name).join(', ')
+            });
+        embed.addField('\u200b', `\nYou can send  \`${prefix}help [category name]\` or \`${prefix}help [command name]\` to get info on a specific category or command!`);
         return embed;
     }
 
     const name = args[0].toLowerCase();
+    if (categories.hasOwnProperty(name)) {
+        embed.setTitle(`${toTitleCase(name)} Commands`);
+        embed.setDescription(categories[name]);
+        const categoryCommands = commands.filter(command => command.category === toTitleCase(name));
+        categoryCommands.forEach(command => {
+            embed.addField(command.name, command.description);
+        });
+
+        embed.addField('\u200b', `\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+        return embed;
+    }
+
     const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 
     if (!command) {
@@ -31,6 +75,7 @@ function help(message, args) {
     }
     embed.setTitle(command.name);
     embed.setDescription(command.description);
+    embed.addField('Category', command.category);
     let aliases = '-';
     if (command.aliases.length > 0)
         aliases = command.aliases.join(', ');
@@ -47,17 +92,21 @@ function serverInfo(message) {
 
     logger.info('Server info is requested', guild.id);
 
-    const date = guild.createdAt.getDate() + ' ' + monthNames[guild.createdAt.getMonth()] + ' ' + guild.createdAt.getFullYear();
+    const date = getDateAsString(guild.createdAt);
 
-    const embed = new Discord.MessageEmbed()
+    return new Discord.MessageEmbed()
         .setTitle(guild.name)
-        .setColor('#0099ff')
+        .setColor(color)
         .setDescription(guild.description ? guild.description : guild.name)
         .addFields(
             { name: 'Owner', value: `${guild.owner}`, inline: true },
-            { name: 'Members', value: `${guild.memberCount}`, inline: true },
-            { name: 'Bots', value: 0, inline: true },
-            { name: 'Most Online', value: 1, inline: true },
+            { name: 'Members', value: `${guild.members.cache.filter(member => !member.user.bot).size}`, inline: true },
+            { name: 'Bots', value: guild.members.cache.filter(member => member.user.bot).size, inline: true },
+            {
+                name: 'Most Online',
+                value: guild.members.cache.filter(member => member.presence.status === 'online').size,
+                inline: true
+            },
             { name: 'Roles', value: `${guild.roles.cache.size}`, inline: true },
             { name: 'AFK Channel', value: `${guild.afkChannel ? guild.afkChannel : 'Not Set'}`, inline: true },
             {
@@ -70,45 +119,54 @@ function serverInfo(message) {
         .setFooter(`${guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(guild.iconURL());
-    return embed;
 }
 
 function lyrics(song) {
     const title = (song.artist != null ? song.artist + ' - ' : '') + (song.title != null ? song.title : song.youtubeTitle);
-    const embed = new Discord.MessageEmbed()
+    return new Discord.MessageEmbed()
         .setColor(song.color)
         .setTitle(`${title} Lyrics`)
         .setDescription(song.lyrics)
         .setThumbnail(song.thumbnail != null ? song.thumbnail : song.youtubeThumbnail)
         .setFooter('Powered by Genius')
         .setTimestamp();
-    return embed;
 }
 
 function member(message) {
     const member = message.member;
     const roles = message.guild.roles;
 
-    const date = member.joinedAt.getDate() + ' ' + monthNames[member.joinedAt.getMonth()] + ' ' + member.joinedAt.getFullYear();
+    const date = getDateAsString(member.joinedAt);
     const roleList = member._roles.map((id) => roles.cache.get(id)['name']).join(', ');
+    const connections = [];
 
-    return new Discord.MessageEmbed()
+    const embed = new Discord.MessageEmbed()
         .setTitle(member.displayName)
-        .setColor('#0099ff')
+        .setDescription('General information about member')
+        .setColor(color)
         .addFields(
             { name: 'Roles', value: `${roleList.length > 0 ? roleList : 'No Roles'}` },
             { name: 'Joined At', value: `${date}`, inline: true },
-            { name: 'Message Points ', value: `${0}`, inline: true },
-            { name: 'Voice Points ', value: `${0}`, inline: true }
+            { name: 'Points ', value: 0, inline: true },
+            { name: 'Level ', value: 1, inline: true },
+            { name: 'Rank In The Server', value: '#' }
         )
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(member.user.avatarURL());
+
+    if (connections.length > 0) {
+        connections.forEach(conn => {
+            embed.addField(conn.name, conn.url);
+        });
+    }
+
+    return embed;
 }
 
 function playingSong(guild, song) {
     const title = (song.artist != null ? song.artist + ' - ' : '') + (song.title != null ? song.title : song.youtubeTitle);
-    const embed = new Discord.MessageEmbed()
+    return new Discord.MessageEmbed()
         .setTitle(title)
         .setColor(song.color)
         .setURL(song.youtubeUrl)
@@ -116,13 +174,13 @@ function playingSong(guild, song) {
         .setFooter(`${guild.name} -  Discord`)
         .setThumbnail(song.thumbnail != null ? song.thumbnail : song.youtubeThumbnail)
         .addField('\u200B', '\u200B'.repeat(500));
-    return embed;
+
 }
 
 function queue(guildName, songs, playing) {
     const embed = new Discord.MessageEmbed()
         .setTitle('The Play Queue')
-        .setColor('#0099ff')
+        .setColor(color)
         .setFooter(`${guildName} -  Discord`)
         .setTimestamp();
 
@@ -143,9 +201,9 @@ function role(message, roleName) {
     if (role == null)
         return 'This role is not exists in this guild!';
 
-    const date = role.createdAt.getDate() + ' ' + monthNames[role.createdAt.getMonth()] + ' ' + role.createdAt.getFullYear();
+    const date = getDateAsString(role.createdAt);
 
-    const embed = new Discord.MessageEmbed()
+    return new Discord.MessageEmbed()
         .setTitle(role.name)
         .setAuthor('Role Information')
         .setColor(role.hexColor)
@@ -157,25 +215,23 @@ function role(message, roleName) {
         .addField('Position', role.position, true)
         .addField('Color', role.hexColor, true)
         .addField('Administrator', role.permissions.toArray().includes('ADMINISTRATOR') ? 'Yes' : 'No', true);
-    return embed;
 }
 
 function search(message, args) {
     const songOptions = args.map(s => [s.snippet.title, s.snippet.channelTitle]);
-    const embed = new Discord.MessageEmbed()
-        .setColor('#0099ff')
+    return new Discord.MessageEmbed()
+        .setColor(color)
         .setThumbnail(args[0].snippet.thumbnails.medium.url)
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp()
         .setTitle('Here\'s what I found for you')
-        .setDescription('You can use reactions to choose a song');
-    embed.addFields(
-        { name: `1- ${songOptions[0][0]}`, value: `by ${songOptions[0][1]}` },
-        { name: `2- ${songOptions[1][0]}`, value: `by ${songOptions[0][1]}` },
-        { name: `3- ${songOptions[2][0]}`, value: `by ${songOptions[0][1]}` },
-        { name: `4- ${songOptions[3][0]}`, value: `by ${songOptions[0][1]}` },
-        { name: `5- ${songOptions[4][0]}`, value: `by ${songOptions[0][1]}` });
-    return embed;
+        .setDescription('You can use reactions to choose a song')
+        .addFields(
+            { name: `1- ${songOptions[0][0]}`, value: `by ${songOptions[0][1]}` },
+            { name: `2- ${songOptions[1][0]}`, value: `by ${songOptions[0][1]}` },
+            { name: `3- ${songOptions[2][0]}`, value: `by ${songOptions[0][1]}` },
+            { name: `4- ${songOptions[3][0]}`, value: `by ${songOptions[0][1]}` },
+            { name: `5- ${songOptions[4][0]}`, value: `by ${songOptions[0][1]}` });
 }
 
 function songInfo(song, streamTime) {
@@ -220,6 +276,7 @@ function songInfo(song, streamTime) {
 function teams(message, teams) {
     const embed = new Discord.MessageEmbed()
         .setTitle('Teams')
+        .setColor(color)
         .setDescription(`Here's the randomly created teams for you`)
         .setThumbnail(message.client.user.avatarURL())
         .setFooter(`${message.guild.name} -  Discord`)
@@ -243,26 +300,137 @@ function botInfo(message) {
 
     const roleList = member._roles.map((id) => roles.cache.get(id)['name']).join(', ');
 
-    const createDate = user.createdAt.getDate() + ' ' + monthNames[user.createdAt.getMonth()] + ' ' + user.createdAt.getFullYear();
-    const joinDate = member.joinedAt.getDate() + ' ' + monthNames[member.joinedAt.getMonth()] + ' ' + member.joinedAt.getFullYear();
+    const joinDate = getDateAsString(member.joinedAt);
 
     return new Discord.MessageEmbed()
         .setTitle(member.displayName)
-        .setColor('#0099ff')
+        .setColor(color)
         .addFields(
             { name: 'Roles', value: `${roleList.length > 0 ? roleList : 'No Roles'}` },
             { name: 'Server Count ', value: `${1}`, inline: true },
             { name: 'Joined At ', value: `${joinDate}`, inline: true },
             { name: 'Prefix ', value: `${prefix}`, inline: true },
+            { name: 'Help Command', value: `${prefix}help`, inline: true },
+            { name: 'Issue Report', value: `${prefix}issue`, inline: true },
+            { name: 'Language', value: 'English', inline: true },
+            {
+                name: 'Activity ',
+                value: `${prefix}${defaultActivity.name} ${toTitleCase(defaultActivity.type)}`,
+                inline: true
+            },
             { name: 'Status ', value: `online`, inline: true },
-            { name: 'Activity ', value: `Playing help`, inline: true },
-            { name: 'Help Command', value: `${prefix}help`, inline: true }
+            { name: 'Version', value: version, inline: true }
         )
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(user.avatarURL());
 }
 
+function helloOnJoin(guild) {
+    const user = guild.client.user;
+    const member = guild.members.cache.get(user.id);
+
+    const joinDate = getDateAsString(member.joinedAt);
+
+    return new Discord.MessageEmbed()
+        .setTitle(`Hello I am ${member.displayName}.`)
+        .setColor(color)
+        .setDescription(`I am happy to here. Thank you for adding me to ${guild.name}. I am a multipurpose bot with many capabilities.
+                        Here's a little bit information about me and configurations for this guild.`)
+        .addField('Website', website)
+        .addFields(
+            { name: 'Server Count', value: `${guild.client.guilds.cache.size}`, inline: true },
+            { name: 'Joined At ', value: `${joinDate}`, inline: true },
+            { name: 'Prefix ', value: `${prefix}`, inline: true },
+            { name: 'Status ', value: `online`, inline: true },
+            { name: 'Activity ', value: `Playing help`, inline: true },
+            { name: 'Help Command', value: `${prefix}help`, inline: true },
+            { name: 'Leveling', value: 'Active', inline: true },
+            { name: 'Role Management', value: 'Inactive', inline: true },
+            { name: 'Welcome/Leave Messages', value: 'Inactive', inline: true },
+            { name: 'Warnings', value: 'Inactive', inline: true },
+            { name: 'Moderation Messages', value: 'Inactive', inline: true }
+        )
+        .setFooter(`${guild.name} -  Discord`)
+        .setTimestamp()
+        .setThumbnail(user.avatarURL());
+}
+
+function moderation(action, args) {
+    const embed = new Discord.MessageEmbed()
+        .setFooter(`${message.guild.name} -  Discord`)
+        .setTimestamp();
+    ;
+
+    if (action === 'Ban') {
+        embed.setTitle('Ban')
+            .setDescription('Ban Details')
+            .setColor(colorSet.Red)
+            .addField('Banned User', `${args[0].user.tag} (${args[0].user.id})`)
+            .addField('Reason', `${args[0].reason ? args[0].reason : 'No reason'}`)
+            .setThumbnail(args[0].user.avatarURL());
+    }
+    else if (action === 'Ban Remove') {
+        embed.setTitle('Ban Remove')
+            .setDescription('Ban Remove Details')
+            .setColor(colorSet.GreenYellow)
+            .addField('Unbanned User', `${args[0].tag} (${args[0].id})`)
+            .setThumbnail(args[0].avatarURL());
+        ;
+    }
+    else if (action === 'Member Remove') {
+        embed.setTitle('Member Leave')
+            .setDescription('Member is left or kicked')
+            .setThumbnail(args[0].user.avatarURL())
+            .setColor(colorSet.DarkOrange)
+            .addField('Member', `${args[0].displayName} (${args[0].id})`);
+    }
+    else if (action === 'Channel Create') {
+        embed.setTitle('Channel Create')
+            .setDescription('New channel is created at guild')
+            .setColor(colorSet.RoyalBlue)
+            .addField('Type', args[0].type)
+            .addField('Name', args[0].name);
+    }
+    else if (action === 'Channel Delete') {
+        embed.setTitle('Channel Delete')
+            .setDescription('Channel is deleted at guild')
+            .setColor(colorSet.Blue)
+            .addField('Type', args[0].type)
+            .addField('Name', args[0].name);
+    }
+    else if (action === 'Channel Update') {
+        embed.setTitle('Channel Update')
+            .setDescription('Channel is updated at guild')
+            .setColor(colorSet.MediumBlue)
+            .addField('Type', args[1].type)
+            .addField('Name', args[1].name);
+    }
+    else if (action === 'Invite Create') {
+        embed.setTitle('Invite Created')
+            .setDescription('New invite is created')
+            .setColor(colorSet.Indigo)
+            .addField('Url', args[1])
+            .setThumbnail(args[0].avatarURL())
+            .addField('Creator User', args[0].tag)
+            .addField('Expires At', args[2]);
+    }
+
+    return embed;
+}
+
 module.exports = {
-    help, serverInfo, lyrics, member, playingSong, queue, role, search, songInfo, teams, botInfo
+    help,
+    serverInfo,
+    lyrics,
+    member,
+    playingSong,
+    queue,
+    role,
+    search,
+    songInfo,
+    teams,
+    botInfo,
+    helloOnJoin,
+    moderation
 };
