@@ -10,6 +10,8 @@ module.exports = {
     aliases: ['l', 'disconnect'],
     usage: '',
     channel: true,
+    category: 'Music',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Leave command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

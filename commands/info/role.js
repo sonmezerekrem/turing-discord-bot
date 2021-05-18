@@ -10,6 +10,8 @@ module.exports = {
     aliases: [],
     usage: '<role_name>',
     permissions: 'MANAGE_ROLES',
+    category: 'Info',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Role command has been used at guild:${message.guild.id} by:${message.author.id}`);
         return message.reply(embed(message, args));

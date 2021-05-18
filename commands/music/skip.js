@@ -10,6 +10,8 @@ module.exports = {
     aliases: ['next', 'n'],
     usage: '',
     channel: true,
+    category: 'Music',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Skip command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);

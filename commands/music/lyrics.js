@@ -12,6 +12,8 @@ module.exports = {
     args: false,
     usage: '',
     channel: true,
+    category: 'Music',
+    type: 'general',
     async execute(message, args) {
         logger.debug(`Lyrics command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);

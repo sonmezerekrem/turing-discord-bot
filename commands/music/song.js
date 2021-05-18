@@ -11,6 +11,8 @@ module.exports = {
     aliases: [],
     usage: '',
     channel: true,
+    category: 'Music',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Song command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);

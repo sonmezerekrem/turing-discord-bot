@@ -10,6 +10,8 @@ module.exports = {
     aliases: ['s'],
     usage: '',
     channel: true,
+    category: 'Music',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Stop command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);

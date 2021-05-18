@@ -8,8 +8,8 @@ module.exports = {
     args: false,
     aliases: ['report', 'bug'],
     usage: '',
-    category: "Other",
-    type: "general",
+    category: 'Other',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Issue command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

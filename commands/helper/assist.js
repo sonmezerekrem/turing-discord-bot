@@ -8,8 +8,8 @@ module.exports = {
     args: false,
     aliases: [],
     usage: '',
-    category: "Helper",
-    type: "general",
+    category: 'Helper',
+    type: 'general',
     execute(message, args) {
         logger.info(`Assist command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

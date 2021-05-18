@@ -9,6 +9,8 @@ module.exports = {
     args: false,
     aliases: [],
     usage: '',
+    category: 'Record',
+    type: 'general',
     execute: async function(message, args) {
         logger.debug(`Start-record command has been used at guild:${message.guild.id} by:${message.author.id}`);
         return message.channel.send('We are trying to implement this command. It will be ready soon. Thank you for your interest.');

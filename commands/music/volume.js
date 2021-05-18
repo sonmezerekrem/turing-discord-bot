@@ -12,6 +12,8 @@ module.exports = {
     usage: '[<value>  |  +  |  -]',
     example: `${prefix}volume +, ${prefix}volume -, ${prefix}volume 0.5, ${prefix}volume`,
     channel: true,
+    category: 'Music',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Volume command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);

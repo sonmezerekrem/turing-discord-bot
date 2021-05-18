@@ -14,6 +14,8 @@ module.exports = {
     aliases: [],
     usage: '<query>',
     channel: true,
+    category: 'Music',
+    type: 'general',
     execute: async function(message, args) {
         logger.debug(`Search command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);

@@ -1,5 +1,4 @@
 const logger = require('../../utils/logger');
-const { mention } = require('./utils');
 
 
 module.exports = {
@@ -10,15 +9,24 @@ module.exports = {
     aliases: [],
     usage: '<member> <reason>',
     permissions: 'BAN_MEMBERS',
+    category: 'Moderation',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Ban command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        const banMember = mention(message.client, args[0]);
+        const banMember = message.guild.member(message.mentions.users.first());
 
-        banMember.ban().then(banned => {
-            logger.info(`Member: ${banned.id} was banned at guild:${message.guild.id} by:${message.author.id} reason:${args[1] ? args.length > 1 : 'no reason given'}`);
-            message.channel.send(`Member: ${banned.user.tag} is banned from ${message.guild.name}. Reason:${args[1] ? args.length > 1 : 'no reason given'}`);
-        }).catch(error => logger.error(`${error} guild:${message.guild.id}`));
+        const reason = `${args.length > 1 ? args[1] : 'Ban without reason'}`;
+        if (banMember) {
+            banMember.ban(reason).then(banned => {
+                logger.info(`Member: ${banned.id} was banned at guild:${message.guild.id} by:${message.author.id} reason:${args[1] ? args.length > 1 : 'no reason given'}`);
+                message.channel.send(`Member: ${banned.user.tag} is banned from ${message.guild.name}. Reason:${args[1] ? args.length > 1 : 'no reason given'}`);
 
+                if (message.guild.id === turing) {
+                    message.guild.channels.cache.find(channel => channel.name === 'moderation').send(embed('Ban', [message.member, banned, reason]));
+                }
+
+            }).catch(error => logger.error(`${error} guild:${message.guild.id}`));
+        }
     }
 };
