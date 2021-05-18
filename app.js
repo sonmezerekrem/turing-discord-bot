@@ -8,6 +8,7 @@ function run(dirname) {
     const client = new Discord.Client();
     client.commands = new Discord.Collection();
     client.cooldowns = new Discord.Collection();
+    client.assists = new Discord.Collection();
 
 
     const eventsPath = path.resolve(dirname, './events');
