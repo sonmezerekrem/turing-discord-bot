@@ -49,7 +49,7 @@ function help(message, args) {
             },
             {
                 name: 'Other',
-                value: commands.filter(command => command.category === 'Other').map(command => command.name).join(', ')
+                value: commands.filter(command => command.category === 'Other' && command.name !== 'admin').map(command => command.name).join(', ')
             });
         embed.addField('\u200b', `\nYou can send  \`${prefix}help [category name]\` or \`${prefix}help [command name]\` to get info on a specific category or command!`);
         return embed;
@@ -60,7 +60,7 @@ function help(message, args) {
     if (categories.hasOwnProperty(name)) {
         embed.setTitle(`${toTitleCase(name)} Commands`);
         embed.setDescription(categories[name]);
-        const categoryCommands = commands.filter(command => command.category === toTitleCase(name));
+        const categoryCommands = commands.filter(command => command.category === toTitleCase(name) && command.name !== 'admin');
         categoryCommands.forEach(command => {
             embed.addField(command.name, command.description);
         });
@@ -71,7 +71,7 @@ function help(message, args) {
 
     const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 
-    if (!command) {
+    if (!command || command.name === 'admin') {
         return 'That\'s not a valid category or command!';
     }
     embed.setTitle(command.name);
@@ -422,8 +422,8 @@ function moderation(action, args) {
                 .addField('Expires At', getDateAsString(args[2]));
         }
         else if (action === 'Role Request') {
-            embed.setTitle("Role Request")
-                .setDescription("New role is requested")
+            embed.setTitle('Role Request')
+                .setDescription('New role is requested')
                 .setColor(colorSet.Lime)
                 .addField('User', `${args[0].tag} (${args[0].id})`)
                 .setThumbnail(args[0].avatarURL())
@@ -449,6 +449,28 @@ function welcomeMessage(member) {
         .setTimestamp();
 }
 
+function points(member, point, source) {
+    return new Discord.MessageEmbed()
+        .setTitle(`Congratulations ${member.displayName}!`)
+        .setDescription('You earn points')
+        .addField('Points', point)
+        .addField('Source', source)
+        .setColor(colorSet.Yellow)
+        .setFooter(`${member.guild.name} -  Discord`)
+        .setTimestamp()
+        .setThumbnail(member.user.avatarURL());
+}
+
+function warning(member, warner, reason) {
+    return new Discord.MessageEmbed()
+        .setTitle(`Warning: ${member.displayName}`)
+        .setFooter(`${member.guild.name} -  Discord`)
+        .setTimestamp()
+        .setColor(colorSet.Orange)
+        .setThumbnail(member.user.avatarURL())
+        .setDescription(`**Warned By:** ${warner} \n\n**Member:** ${member.user.tag} - (${member.id}) \n\n**Reason:** ${reason}`);
+}
+
 module.exports = {
     help,
     serverInfo,
@@ -463,5 +485,7 @@ module.exports = {
     botInfo,
     helloOnJoin,
     moderation,
-    welcomeMessage
+    welcomeMessage,
+    points,
+    warning
 };

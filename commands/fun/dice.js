@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-
+const embed = require('../../utils/embeds').points;
 
 module.exports = {
     name: 'dice',
@@ -31,10 +31,10 @@ module.exports = {
                 ).then(async collected => {
                     if (collected.first()) {
                         if (collected.first().emoji.name === dice) {
-                            message.channel.send('Congratulations you guessed correctly and earn 20 points');
+                            message.channel.send(embed(message.member, 20, 'Dice'));
                         }
                         else {
-                            message.channel.send('Ops, not this time. One more try?');
+                            message.channel.send('Opps, not this time. One more try?');
                         }
                         await msg.reactions.removeAll();
                     }

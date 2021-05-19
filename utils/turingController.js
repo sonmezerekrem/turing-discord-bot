@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const logger = require('../utils/logger');
+const logger = require('./logger');
 const {
     turing,
     prefix,
@@ -45,7 +45,7 @@ function channelController(message) {
 
         if ((message.channel.parentID === channels.lessons
             || message.channel.parentID === channels.project)
-            && message.channel.name !== 'general') {
+            && !message.channel.name.includes('general')) {
 
 
             if (message.content.length > 1000) {
@@ -107,7 +107,7 @@ function channelController(message) {
 function commandChannelController(message, command) {
     if ((command.category === 'Music' || command.category === 'Fun') && (message.channel.parentID === channels.lessons
         || message.channel.parentID === channels.project)
-        && message.channel.name !== 'general') {
+        && !message.channel.name.includes('general')) {
 
         try {
             message.delete();
@@ -121,6 +121,17 @@ function commandChannelController(message, command) {
             logger.error(e.message);
         }
     }
+
+    if(command.name === "admin" && message.channel.id !== channels.admin){
+        try {
+            message.delete();
+            return true;
+        }
+        catch (e) {
+            logger.error(e.message);
+        }
+    }
+
     return false;
 }
 

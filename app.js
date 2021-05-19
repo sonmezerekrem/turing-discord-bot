@@ -9,12 +9,12 @@ function run(dirname) {
     client.commands = new Discord.Collection();
     client.cooldowns = new Discord.Collection();
     client.assists = new Discord.Collection();
-
+    client.timers = new Discord.Collection();
 
     const eventsPath = path.resolve(dirname, './events');
     const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js') && !file.includes('utils'));
     for (const file of eventFiles) {
-        const event = require(path.resolve(eventsPath,file));
+        const event = require(path.resolve(eventsPath, file));
         if (event.once) {
             client.once(event.name, (...args) => event.execute(...args, client));
         }
