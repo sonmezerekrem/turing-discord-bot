@@ -2,8 +2,8 @@ const logger = require('../../utils/logger');
 
 
 module.exports = {
-    name: 'charts',
-    description: 'Shows server detailed charts.',
+    name: 'stats',
+    description: 'Shows server detailed stats.',
     guildOnly: true,
     args: false,
     aliases: [],
