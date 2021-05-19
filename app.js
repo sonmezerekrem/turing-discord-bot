@@ -36,9 +36,6 @@ function run(dirname) {
     }
     logger.debug('Commands has been read and set');
 
-
-    process.on('uncaughtException', error => logger.error(error.message));
-
     return client;
 }
 
