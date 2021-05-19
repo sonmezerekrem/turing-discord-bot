@@ -10,6 +10,8 @@ module.exports = {
     aliases: ['p'],
     usage: '< query | URL >',
     channel: true,
+    category: 'Music',
+    type: 'general',
     execute: async function(message, args) {
         logger.debug(`Play command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);

@@ -8,7 +8,9 @@ module.exports = {
     args: true,
     aliases: ['clc'],
     usage: '< all | number of messages (eg. 124) >',
-    permissions: 'MANAGE_CHANNELS',
+    permissions: 'ADMINISTRATOR',
+    category: 'Moderation',
+    type: 'general',
     execute: async function(message, args) {
         logger.debug(`Clear-channel command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
@@ -34,7 +36,7 @@ module.exports = {
             }
         }
         else {
-            return message.channel.send('You entered a invalid argument for clean channel. You can type "+help clear-channel"');
+            return message.channel.send('You entered a invalid argument for clean channel. You can type "+helper clear-channel"');
         }
 
     }

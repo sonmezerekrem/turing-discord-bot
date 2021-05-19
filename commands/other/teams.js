@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
-const embed = require('../../embeds/teamEmbed');
-const { mention } = require('./utils');
+const embed = require('../../utils/embeds').teams;
+const { mention } = require('../moderation/utils');
 
 
 module.exports = {
@@ -11,6 +11,8 @@ module.exports = {
     aliases: [],
     usage: '<number of teams> <members>',
     permissions: '',
+    category: 'Moderation',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Teams command has been used at guild:${message.guild.id} by:${message.author.id}`);
         try {
@@ -34,7 +36,7 @@ module.exports = {
                 }
                 teams.push(team);
             }
-            return message.channel.send(embed.execute(message, teams));
+            return message.channel.send(embed(message, teams));
         }
         catch (exception) {
             logger.error(exception);

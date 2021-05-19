@@ -5,9 +5,10 @@ const logger = require('./utils/logger');
 
 
 function run(dirname) {
-    const client = new Discord.Client();
+    const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
     client.commands = new Discord.Collection();
     client.cooldowns = new Discord.Collection();
+    client.assists = new Discord.Collection();
 
 
     const eventsPath = path.resolve(dirname, './events');

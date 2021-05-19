@@ -8,6 +8,8 @@ module.exports = {
     args: false,
     aliases: ['j', 'connect'],
     usage: '',
+    category: 'Music',
+    type: 'general',
     execute(message, args) {
         logger.debug(`Join command has been used at guild:${message.guild.id} by:${message.author.id}`);
         if (message.member.voice.channel) {

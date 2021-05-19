@@ -10,6 +10,8 @@ module.exports = {
     aliases: ['c'],
     usage: '',
     channel: true,
+    category: 'Music',
+    type: 'general',
     async execute(message, args) {
         logger.debug(`Clear command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);

@@ -7,8 +7,8 @@ const expect = chai.expect;
 const assert = chai.assert;
 
 const run = require('../app');
-const help = require('../commands/info/help');
-const info = require('../commands/info/info');
+const help = require('../commands/helper/help');
+const info = require('../commands/info/guild');
 
 const dirname = path.dirname(__dirname);
 
@@ -47,23 +47,6 @@ describe('All Tests', function() {
         });
     });
 
-
-    describe('Help Command Test', function() {
-        it('Should return list of commands embed', async function() {
-            message.content = '+help';
-            const result = await help.execute(message, []);
-            const embed = result.embeds[0];
-            assert.equal(embed.title, 'Help');
-            assert.equal(embed.description, 'Here\'s a list of all commands:');
-        });
-        it('Should return play command information', async function() {
-            message.content = '+help';
-            const result = await help.execute(message, ['volume']);
-            const embed = result.embeds[0];
-            assert.equal(embed.title, 'volume');
-            assert.equal(embed.description, 'Changes the volume level. Without arguments sets to default. Min: 0.1, Max: 2, Default: 1.');
-        });
-    });
 
     describe('Info Command Test', function() {
         it('Should return embed about server', async function() {
