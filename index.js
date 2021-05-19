@@ -1,6 +1,13 @@
 require('dotenv').config({ path: 'dev.env' });
+const logger = require('./utils/logger');
 const run = require('./app');
 
 const client = run(__dirname);
 
-client.login(process.env.token).catch(error => logger.error(error.message));
+try {
+    process.on('uncaughtException', error => logger.error(error.message));
+    client.login(process.env.token).catch(error => logger.error(error.message));
+}
+catch (e) {
+    logger.error(e.message);
+}
