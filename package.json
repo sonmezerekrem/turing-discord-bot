@@ -24,6 +24,7 @@
     "string-similarity": "^4.0.4",
     "unique-names-generator": "^4.5.0",
     "winston": "^3.3.3",
+    "winston-mongodb": "^5.0.7",
     "ytdl-core": "^4.8.0"
   },
   "devDependencies": {

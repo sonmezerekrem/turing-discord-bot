@@ -1,4 +1,5 @@
 const winston = require('winston');
+require('winston-mongodb');
 
 const options = {
     production: {
@@ -10,7 +11,13 @@ const options = {
                 format: 'MMM-DD-YYYY HH:mm:ss'
             }),
             winston.format.json()
-        )
+        ),
+        db: process.env.mongo,
+        options: {
+            useUnifiedTopology: true
+        },
+        collection: 'logs'
+
     },
     develop: {
         level: 'debug',
@@ -34,11 +41,19 @@ const options = {
     }
 };
 
+let transport;
+if (process.env.environment === 'develop')
+    transport = new winston.transports.Console(options.develop);
+else if (process.env.environment === 'production')
+    transport = new winston.transports.MongoDB(options.production);
+else
+    transport = new winston.transports.Console(options.test);
+
 
 const logger = winston.createLogger({
 
     transports: [
-        new winston.transports.Console(options[process.env.environment])
+        transport
     ],
     exitOnError: false
 });

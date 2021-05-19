@@ -1,6 +1,5 @@
 const logger = require('../utils/logger');
 const embed = require('../utils/embeds').helloOnJoin;
-const saveGuild = require('../utils/api').saveGuildToDatabase;
 
 module.exports = {
     name: 'guildCreate',
@@ -19,12 +18,5 @@ module.exports = {
         if (channel) {
             channel.send(embed(guild));
         }
-
-        // try {
-        //     await saveGuild(guild);
-        // }
-        // catch (error) {
-        //     logger.error(error.message);
-        // }
     }
 };
