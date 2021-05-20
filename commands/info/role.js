@@ -14,6 +14,6 @@ module.exports = {
     type: 'general',
     execute(message, args) {
         logger.debug(`Role command has been used at guild:${message.guild.id} by:${message.author.id}`);
-        return message.reply(embed(message, args));
+        return message.channel.send(embed(message, args));
     }
 };

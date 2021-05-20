@@ -1,6 +1,6 @@
 const logger = require('../utils/logger');
 const Discord = require('discord.js');
-const { prefix, color, website, defaultActivity, version } = require('../config.json');
+const { prefix, color, website, defaultActivity, version, contact } = require('../config.json');
 const { categories, colorSet } = require('./variables');
 const { uniqueNamesGenerator, adjectives, colors } = require('unique-names-generator');
 const { toTitleCase, getDateAsString } = require('./functions');
@@ -483,6 +483,20 @@ function warning(member, warner, reason) {
         .setDescription(`**Warned By:** ${warner} \n\n**Member:** ${member.user.tag} - (${member.id}) \n\n**Reason:** ${reason}`);
 }
 
+function support(message) {
+    return new Discord.MessageEmbed()
+        .setTitle(`Here\'s support channels for ${message.client.user.username}`)
+        .setDescription('You can reach community from this channels')
+        .addFields(
+            { name: 'Discord Community', value: contact.invite },
+            { name: 'Website', value: contact.website },
+            { name: 'Instagram', value: contact.instagram })
+        .setThumbnail()
+        .setFooter(`${message.guild.name} -  Discord`)
+        .setTimestamp()
+        .setThumbnail(message.client.user.avatarURL());
+}
+
 module.exports = {
     help,
     serverInfo,
@@ -499,5 +513,6 @@ module.exports = {
     moderation,
     welcomeMessage,
     points,
-    warning
+    warning,
+    support
 };
