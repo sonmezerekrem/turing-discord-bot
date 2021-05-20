@@ -26,35 +26,89 @@ const songInfo = async (args, author) => {
         spotifyUrl: null,
         soundcloudUrl: null,
         geniusSongUrl: null,
+        isGenius: null,
         addedBy: author
     };
 
     if (!isSongUrl(args[0])) {
-        const youtubeSearch = await axios.get(youtubeApiUrl, {
-            params: {
-                key: youtubeKey,
-                type: 'video',
-                part: 'snippet',
-                q: args.join(' ')
-            }
-        })
-            .catch(error => {
-                logger.error(error);
-                return null;
-            });
+        const title = args.join(' ');
+        try {
+            const result = await axios({
+                method: 'get',
+                url: geniusApi + '/search',
+                data: {
+                    q: title
+                },
+                headers: {
+                    Authorization: 'Bearer ' + geniusToken
+                }
+            }).catch(error => logger.error(error.message));
+            if (result.status === 200 && result.data.meta.status === 200) {
+                for (let i = 0; i < result.data.response.hits.length; i++) {
+                    if (result.data.response.hits[i].type === 'song') {
+                            const songDetail = await axios({
+                                method: 'get',
+                                url: geniusApi + result.data.response.hits[i].result.api_path,
+                                headers: {
+                                    Authorization: 'Bearer ' + geniusToken
+                                }
+                            }).catch(error => logger.error(error.message));
 
-        if (youtubeSearch.status === 200) {
-            song.youtubeUrl = youtubeUrl + youtubeSearch.data.items[0].id.videoId;
-            song.youtubeChannel = youtubeSearch.data.items[0].snippet.channelTitle;
-            song.youtubeTitle = youtubeSearch.data.items[0].snippet.title;
-            song.youtubeThumbnail = youtubeSearch.data.items[0].snippet.thumbnails.default.url;
-            song.release = youtubeSearch.data.items[0].snippet.publishedAt.substr(0, 4);
+                            if (songDetail.status === 200 && songDetail.data.meta.status === 200) {
+                                song.title = songDetail.data.response.song.title_with_featured;
+                                song.artist = songDetail.data.response.song.primary_artist.name;
+                                song.album = songDetail.data.response.song.album.name;
+                                song.release = songDetail.data.response.song.release_date;
+                                song.lyricsUrl = songDetail.data.response.song.url;
+                                song.color = songDetail.data.response.song.song_art_primary_color;
+                                song.thumbnail = songDetail.data.response.song.song_art_image_thumbnail_url;
+                                for(let j=0; j<songDetail.data.response.song.media.length;j++){
+                                    if(songDetail.data.response.song.media[j].provider === "youtube")
+                                        song.youtubeUrl = songDetail.data.response.song.media[j].url;
+                                    if(songDetail.data.response.song.media[j].provider === "spotify")
+                                        song.spotifyUrl = songDetail.data.response.song.media[j].url;
+                                    if(songDetail.data.response.song.media[j].provider === "soundcloud")
+                                        song.soundcloudUrl = songDetail.data.response.song.media[j].url;
+                                }
+                                song.geniusSongUrl = songDetail.data.response.song.description_annotation.url;
+                                song.isGenius = true;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+        catch (e) {
+            logger.error(e.message);
+        }
+
+        if(song.youtubeUrl == null) {
+            const youtubeSearch = await axios.get(youtubeApiUrl, {
+                params: {
+                    key: youtubeKey,
+                    type: 'video',
+                    part: 'snippet',
+                    q: args.join(' ')
+                }
+            })
+                .catch(error => {
+                    logger.error(error.message);
+                    return null;
+                });
+
+            if (youtubeSearch.status === 200) {
+                song.youtubeUrl = youtubeUrl + youtubeSearch.data.items[0].id.videoId;
+                song.youtubeChannel = youtubeSearch.data.items[0].snippet.channelTitle;
+                song.youtubeTitle = youtubeSearch.data.items[0].snippet.title;
+                song.youtubeThumbnail = youtubeSearch.data.items[0].snippet.thumbnails.default.url;
+                song.release = youtubeSearch.data.items[0].snippet.publishedAt.substr(0, 10);
+            }
         }
     }
     else {
         const youtubeSearch = await ytdl.getInfo(args[0])
             .catch(error => {
-                logger.error(error);
+                logger.error(error.message);
                 return null;
             });
         song.youtubeTitle = youtubeSearch.videoDetails.title;
@@ -64,55 +118,8 @@ const songInfo = async (args, author) => {
         song.release = youtubeSearch.videoDetails.publishDate;
     }
 
-    const title = getTitle(song.youtubeTitle);
-    try {
-        const result = await axios({
-            method: 'get',
-            url: geniusApi + '/search',
-            data: {
-                q: title
-            },
-            headers: {
-                Authorization: 'Bearer ' + geniusToken
-            }
-        }).catch(error => logger.error(error));
-        if (result.status === 200 && result.data.meta.status === 200) {
-            for (let i = 0; i < result.data.response.hits.length; i++) {
-                if (result.data.response.hits[i].type === 'song') {
-                    if (stringSimilarity.compareTwoStrings(title, result.data.response.hits[i].result.full_title) > 0.4) {
-                        const songDetail = await axios({
-                            method: 'get',
-                            url: geniusApi + result.data.response.hits[i].result.api_path,
-                            headers: {
-                                Authorization: 'Bearer ' + geniusToken
-                            }
-                        }).catch(error => logger.error(error));
-
-                        if (songDetail.status === 200 && songDetail.data.meta.status === 200) {
-                            song.title = songDetail.data.response.song.title_with_featured;
-                            song.artist = songDetail.data.response.song.primary_artist.name;
-                            song.album = songDetail.data.response.song.album.name;
-                            song.release = songDetail.data.response.song.release_date.substr(0, 4);
-                            song.lyricsUrl = songDetail.data.response.song.url;
-                            song.color = songDetail.data.response.song.song_art_primary_color;
-                            song.thumbnail = songDetail.data.response.song.song_art_image_thumbnail_url;
-                            song.spotifyUrl = songDetail.data.response.song.media[1].url;
-                            song.soundcloudUrl = songDetail.data.response.song.media[2].url;
-                            song.geniusSongUrl = songDetail.data.response.song.description_annotation.url;
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    catch (e) {
-        logger.error(e);
-    }
-
     return song;
 };
-
 
 const getTitle = (youtubeTitle) => {
     let title = youtubeTitle.toLowerCase();
@@ -155,7 +162,7 @@ const play = (guild, songNo) => {
             else
                 play(guild, songNo);
         })
-        .on('error', (error) => logger.error(`${error} guild:${guild.id}`));
+        .on('error', (error) => logger.error(`${error.message} guild:${guild.id}`));
     dispatcher.setVolume(serverQueue.volume);
     serverQueue.textChannel.send(embed(guild, song)).then(sent => {
         serverQueue.lastPlayMessage = sent.id;
@@ -188,11 +195,11 @@ const setServerQueue = (message, serverQueue, song) => {
                 play(message.guild, 0);
             })
                 .catch(error => {
-                    logger.error(error, message.guild.id);
+                    logger.error(error.message);
                 });
         }
         catch (err) {
-            logger.error(err.toString(), message.guild.id);
+            logger.error(err.message, message.guild.id);
             queue.delete(message.guild.id);
         }
     }
