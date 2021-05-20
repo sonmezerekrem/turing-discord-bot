@@ -83,7 +83,7 @@ module.exports = {
                                 setServerQueue(message, serverQueue, song);
                             }
                         }).catch((error) => {
-                            logger.error(error, message.guild.id);
+                            logger.error(error.message);
                             msg.reactions.removeAll();
                         });
                     }

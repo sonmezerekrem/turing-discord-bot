@@ -39,7 +39,7 @@ module.exports = {
                     headers: {
                         Authorization: 'Bearer ' + geniusToken
                     }
-                }).catch(error => logger.error(error));
+                }).catch(error => logger.error(error.message));
                 if (result.status === 200 && result.data.meta.status === 200) {
                     for (let i = 0; i < result.data.response.hits.length; i++) {
                         if (result.data.response.hits[i].type === 'song') {
@@ -49,7 +49,7 @@ module.exports = {
                                 headers: {
                                     Authorization: 'Bearer ' + geniusToken
                                 }
-                            }).catch(error => logger.error(error));
+                            }).catch(error => logger.error(error.message));
 
                             if (songDetail.status === 200 && songDetail.data.meta.status === 200) {
                                 song.title = songDetail.data.response.song.title_with_featured;
@@ -66,7 +66,7 @@ module.exports = {
                 return message.channel.send('Sorry, no lyrics found for this song');
             }
             catch (e) {
-                logger.error(e);
+                logger.error(e.message);
             }
         }
         if (!message.member.voice.channel)

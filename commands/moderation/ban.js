@@ -26,7 +26,7 @@ module.exports = {
                     message.guild.channels.cache.find(channel => channel.name === 'moderation').send(embed('Ban', [message.member, banned, reason]));
                 }
 
-            }).catch(error => logger.error(`${error} guild:${message.guild.id}`));
+            }).catch(error => logger.error(`${error.message} guild:${message.guild.id}`));
         }
     }
 };

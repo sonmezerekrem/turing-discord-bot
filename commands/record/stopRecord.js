@@ -20,6 +20,6 @@ module.exports = {
         //         message.channel.send('Record started');
         //         audio.pipe(fs.createWriteStream('user_audio'));
         //     }
-        // ).catch(error => logger.error(error));
+        // ).catch(error => logger.error(error.message));
     }
 };

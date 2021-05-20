@@ -39,7 +39,7 @@ module.exports = {
             return message.channel.send(embed(message, teams));
         }
         catch (exception) {
-            logger.error(exception);
+            logger.error(exception.message);
         }
     }
 };

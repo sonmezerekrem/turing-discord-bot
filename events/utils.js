@@ -10,7 +10,7 @@ const connect = async (client) => {
             type: defaultActivity.type
         }
     }).catch((error) => {
-        logger.error(error);
+        logger.error(error.message);
     });
 
     logger.info(`Status is set to default: '${defaultState}'`);

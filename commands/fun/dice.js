@@ -39,7 +39,7 @@ module.exports = {
                         await msg.reactions.removeAll();
                     }
                 }).catch((error) => {
-                    logger.error(error, message.guild.id);
+                    logger.error(error.message);
                 });
                 setTimeout(() => {
                     msg.reactions.removeAll();

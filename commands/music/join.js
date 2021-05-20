@@ -18,7 +18,7 @@ module.exports = {
                     logger.info(`${message.client.user.tag} has connected to voice and set to deaf at guild:${message.guild.id}`);
                 });
             }).catch(error => {
-                logger.error(error, message.guild.id);
+                logger.error(error.message, message.guild.id);
             });
             message.channel.send(`I am joined to ${message.member.voice.channel}`);
         }
