@@ -1,6 +1,6 @@
 const logger = require('../utils/logger');
 const Discord = require('discord.js');
-const { prefix, color, website, defaultActivity, defaultState, version } = require('../config.json');
+const { prefix, color, website, defaultActivity, version } = require('../config.json');
 const { categories, colorSet } = require('./variables');
 const { uniqueNamesGenerator, adjectives, colors } = require('unique-names-generator');
 const { toTitleCase, getDateAsString } = require('./functions');
@@ -49,8 +49,11 @@ function help(message, args) {
             },
             {
                 name: 'Other',
-                value: commands.filter(command => command.category === 'Other' && command.name !== 'admin').map(command => command.name).join(', ')
+                value: commands.filter(command => command.category === 'Other').map(command => command.name).join(', ')
             });
+        if (message.author.id === message.guild.ownerID) {
+            embed.addField('Owner', commands.filter(command => command.category === 'Owner').map(command => command.name).join(', '));
+        }
         embed.addField('\u200b', `\nYou can send  \`${prefix}help [category name]\` or \`${prefix}help [command name]\` to get info on a specific category or command!`);
         return embed;
     }
@@ -58,9 +61,12 @@ function help(message, args) {
     const name = args[0].toLowerCase();
 
     if (categories.hasOwnProperty(name)) {
+        if (name === 'owner' && message.author.id !== message.guild.ownerID) {
+            return 'Only owner of this guild access this commands!';
+        }
         embed.setTitle(`${toTitleCase(name)} Commands`);
         embed.setDescription(categories[name]);
-        const categoryCommands = commands.filter(command => command.category === toTitleCase(name) && command.name !== 'admin');
+        const categoryCommands = commands.filter(command => command.category === toTitleCase(name));
         categoryCommands.forEach(command => {
             embed.addField(command.name, command.description);
         });
@@ -71,9 +77,10 @@ function help(message, args) {
 
     const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 
-    if (!command || command.name === 'admin') {
+    if (!command || (command.category === 'Owner' && message.author.id !== message.guild.ownerID)) {
         return 'That\'s not a valid category or command!';
     }
+
     embed.setTitle(command.name);
     embed.setDescription(command.description);
     embed.addField('Category', command.category);
@@ -96,7 +103,7 @@ function serverInfo(message) {
 
     const date = getDateAsString(guild.createdAt);
 
-    return new Discord.MessageEmbed()
+    const embed = new Discord.MessageEmbed()
         .setTitle(guild.name)
         .setColor(color)
         .setDescription(guild.description ? guild.description : guild.name)
@@ -121,6 +128,11 @@ function serverInfo(message) {
         .setFooter(`${guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(guild.iconURL());
+
+    if (guild.rulesChannel) {
+        embed.addField('Rules Channel', guild.rulesChannel.name);
+    }
+    return embed;
 }
 
 function lyrics(song) {
@@ -167,33 +179,33 @@ function member(message) {
 }
 
 function playingSong(guild, song) {
-    const title = (song.artist != null ? song.artist + ' - ' : '') + (song.title != null ? song.title : song.youtubeTitle);
     return new Discord.MessageEmbed()
-        .setTitle(title)
+        .setTitle(song.isGenius ? song.artist + ' - ' + song.title : song.youtubeTitle)
         .setColor(song.color)
         .setURL(song.youtubeUrl)
         .setAuthor('Now Playing')
-        .setFooter(`${guild.name} -  Discord`)
-        .setThumbnail(song.thumbnail != null ? song.thumbnail : song.youtubeThumbnail)
+        .setFooter(`Powered By Genius -  ${guild.name} -  Discord`)
+        .setThumbnail(song.isGenius ? song.thumbnail : song.youtubeThumbnail)
         .addField('\u200B', '\u200B'.repeat(500));
-
 }
 
 function queue(guildName, songs, playing) {
     const embed = new Discord.MessageEmbed()
         .setTitle('The Play Queue')
         .setColor(color)
-        .setFooter(`${guildName} -  Discord`)
+        .setFooter(`Powered By Genius -  ${guildName} -  Discord`)
         .setTimestamp();
-
+    let content = [];
     for (let i = 0; i < songs.length; i++) {
         if (playing != null && playing === i) {
-            embed.addField('   Now Playing', `${i + 1}-  ${songs[i].title}`);
-            embed.setThumbnail(songs[i].image);
+            content.push(`**Now Playing**\n__${i + 1}- ${songs[i].isGenius ? songs[i].artist + ' - ' + songs[i].title : songs[i].youtubeTitle}__\n`);
+            embed.setThumbnail(songs[i].isGenius ? songs[i].thumbnail : songs[i].youtubeThumbnail);
         }
-        else
-            embed.addField('\u200b', `${i + 1}-  ${songs[i].title}`);
+        else {
+            content.push(`${i + 1}- ${songs[i].isGenius ? songs[i].artist + ' - ' + songs[i].title : songs[i].youtubeTitle}\n`);
+        }
     }
+    embed.setDescription(content);
     return embed;
 }
 
@@ -241,8 +253,8 @@ function songInfo(song, streamTime) {
 
     const embed = new Discord.MessageEmbed()
         .setAuthor('Song Information')
-        .setTitle(song.title != null ? song.title : song.youtubeTitle)
-        .setThumbnail(song.thumbnail != null ? song.thumbnail : song.youtubeThumbnail)
+        .setTitle(song.isGenius ? song.title : song.youtubeTitle)
+        .setThumbnail(song.isGenius ? song.thumbnail : song.youtubeThumbnail)
         .setURL(song.youtubeUrl)
         .setColor(song.color)
         .setFooter('Powered by Genius');
@@ -260,12 +272,12 @@ function songInfo(song, streamTime) {
         embed.setDescription(`♪ ${toMinute(streamTime)} ${current} ${toMinute(song.length)}`);
     }
 
-    if (song.artist != null)
+    if (song.isGenius) {
         embed.addField('Artist', song.artist);
-    if (song.album != null)
         embed.addField('Album', song.album);
-
-    embed.addField('Release Date', getDateAsString(song.release));
+    }
+    if (song.release)
+        embed.addField('Release Date', getDateAsString(song.release));
 
     if (song.lyricsUrl != null)
         embed.addField('Lyrics', song.lyricsUrl);

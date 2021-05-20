@@ -122,16 +122,6 @@ function commandChannelController(message, command) {
         }
     }
 
-    if(command.name === "admin" && message.channel.id !== channels.admin){
-        try {
-            message.delete();
-            return true;
-        }
-        catch (e) {
-            logger.error(e.message);
-        }
-    }
-
     return false;
 }
 

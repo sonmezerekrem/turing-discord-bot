@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const logger = require('../utils/logger');
-const { prefix, grovvy, turing, admin } = require('../config.json');
+const { prefix, grovvy, turing } = require('../config.json');
 const assistant = require('../assistant/assistant');
 const { controllers, commandChannelController } = require('../utils/turingController');
 const { timerController } = require('../utils/functions');
@@ -38,17 +38,20 @@ module.exports = {
 
         if (command.type === 'guild' && message.guild.id !== turing) return;
 
-        if (command.name === 'admin' && message.author.id !== admin) return;
+        if (command.category && message.author.id !== message.guild.ownerID) {
+            message.channel.stopTyping(true);
+            return message.reply('This command can only be used by the guild owner!');
+        }
 
         if (command.guildOnly && message.channel.type === 'dm') {
             logger.debug(`${command.name} is available only at guilds`);
-            message.channel.stopTyping();
+            message.channel.stopTyping(true);
             return message.reply('I can\'t execute that command inside DMs!');
         }
 
         if (commandChannelController(message, command)) return;
 
-        message.channel.startTyping();
+        message.channel.startTyping().then().catch();
 
         if (command.permissions) {
             const authorPerms = message.channel.permissionsFor(message.author);
@@ -115,7 +118,7 @@ module.exports = {
             message.channel.stopTyping(true);
         }
         catch (error) {
-            logger.error(`${error} guild:${message.guild ? message.guild.name : 'DM'}`);
+            logger.error(`${error.message} guild:${message.guild ? message.guild.name : 'DM'}`);
             message.channel.send(`Sorry, there was an error trying to execute that command! You can report this problem by using **${prefix}issue** command`)
                 .then(msg => {
                     msg.delete({ timeout: 5000 });

@@ -153,5 +153,6 @@ exports.categories = {
     'leveling': 'Commands about level and rank system.',
     'fun': 'commands prepared for entertainment purposes',
     'record': 'Commands related to voice recording',
-    'other': 'Other commands'
+    'other': 'Other commands',
+    'owner': 'Commands reserved for guild owners'
 };
