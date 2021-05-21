@@ -162,6 +162,7 @@ function member(message) {
             { name: 'Roles', value: `${roleList.length > 0 ? roleList : 'No Roles'}` },
             { name: 'Joined At', value: `${date}`, inline: true },
             { name: 'Points ', value: 0, inline: true },
+            { name: 'Weekly Points', value: 0, inline: true },
             { name: 'Level ', value: 1, inline: true },
             { name: 'Rank In The Server', value: '#' }
         )
@@ -496,6 +497,10 @@ function support(message) {
         .setTimestamp()
         .setThumbnail(message.client.user.avatarURL());
 }
+
+
+
+
 
 module.exports = {
     help,

@@ -10,7 +10,8 @@ versions:
       - Support command has added to share support and contact information about bot.
       - Announce command has added to make announcement every text channel in guild with ADMINISTRATOR permission.
       - Version command has added to show changes in last version.
-      - Are you sure question has added to clean-channel command
+      - Are you sure question has added to clean-channel command.
+      - Calendar command has added with new image sending feature.
     Fixed or Changed:
       - The shut down problem when using assist command has fixed.
       - Stuck in typing sate has fixed.
