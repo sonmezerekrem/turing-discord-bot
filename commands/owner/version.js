@@ -24,7 +24,7 @@ module.exports = {
             const added = doc.versions[version]['Added'];
             const fixed = doc.versions[version]['Fixed or Changed'];
             let content = `**VERSION ${version}**\n\n__Added__\n- ${added.join('\n- ')}\n\n__Fixed or Changed__\n- ${fixed.join('\n- ')}`;
-            channel.send(content);
+            message.author.send(content);
         }
         catch (e) {
             console.log(e.message);

@@ -1,5 +1,6 @@
 const logger = require('../../utils/logger');
 const embed = require('../../utils/embeds').serverInfo;
+const api = require('../../utils/api');
 
 
 module.exports = {
@@ -11,8 +12,9 @@ module.exports = {
     usage: '',
     category: 'Info',
     type: 'general',
-    execute(message, args) {
+    execute: async function(message, args) {
         logger.debug(`Info command has been used at guild:${message.guild.id} by:${message.author.id}`);
-        return message.channel.send(embed(message));
+        const result = await api.getGuild(message.guild.id);
+        return message.channel.send(embed(message, result));
     }
 };

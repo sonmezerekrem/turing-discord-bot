@@ -1,7 +1,7 @@
 versions:
   2.0.0:
     Added:
-      - Leave voice if no one in voice channel in last 5 minutes.
+      - Finally here! Leveling System with points and weekly points.
       - Owner category has added for commands. This category can only used by owner of guild.
       - Message command has added in owner category to sent messages by bot.
       - Warning command has added in owner category to warn member by guild owner.
@@ -12,6 +12,8 @@ versions:
       - Version command has added to show changes in last version.
       - Are you sure question has added to clean-channel command.
       - Calendar command has added with new image sending feature.
+      - Invite command has added for creating invite links by bot.
+      - Leave voice if no one in voice channel in last 5 minutes.
     Fixed or Changed:
       - The shut down problem when using assist command has fixed.
       - Stuck in typing sate has fixed.

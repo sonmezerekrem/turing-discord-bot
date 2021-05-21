@@ -1,16 +1,18 @@
 const logger = require('../../utils/logger');
-const { points, warning } = require('../../utils/embeds');
+const { points } = require('../../utils/embeds');
+const api = require('../../utils/api');
+
 
 module.exports = {
     name: 'points',
-    description: 'Gives points to tagged member and sends an embed in given channel. Max point is 20 and this command can be used up to twice a day',
+    description: 'Gives points to tagged member and sends an embed in given channel. Max point is 20',
     guildOnly: true,
     args: true,
     aliases: [],
     usage: '<channel name> <points> <member>',
     category: 'Owner',
     type: 'general',
-    execute(message, args) {
+    execute: async function(message, args) {
         logger.info(`Admin command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         const guild = message.guild;
@@ -19,9 +21,11 @@ module.exports = {
         if (channel && channel.type === 'text') {
             const member = message.guild.member(message.mentions.users.first());
             if (member) {
-                const point = parseInt(args[1]);
+                let point = parseInt(args[1]);
                 if (!isNaN(point)) {
+                    point = Math.min(point, 20);
                     channel.send(points(member, point, 'Gift'));
+                    api.givePoints(message.guild.id, member.user.id, point);
                 }
             }
         }

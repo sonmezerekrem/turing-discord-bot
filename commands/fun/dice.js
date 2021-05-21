@@ -2,6 +2,7 @@ const logger = require('../../utils/logger');
 const embed = require('../../utils/embeds').points;
 const api = require('../../utils/api');
 
+
 module.exports = {
     name: 'dice',
     description: 'Rolls a dice and give points if you know the number',

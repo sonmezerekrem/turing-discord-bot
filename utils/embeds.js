@@ -96,12 +96,8 @@ function help(message, args) {
     return embed;
 }
 
-function serverInfo(message) {
+function serverInfo(message, result) {
     const guild = message.guild;
-
-    logger.info('Server info is requested', guild.id);
-
-    const date = getDateAsString(guild.createdAt);
 
     const embed = new Discord.MessageEmbed()
         .setTitle(guild.name)
@@ -123,7 +119,7 @@ function serverInfo(message) {
                 value: `${guild.region.charAt(0).toUpperCase() + guild.region.substring(1)}`,
                 inline: true
             },
-            { name: 'Created', value: `${date}`, inline: true }
+            { name: 'Created', value: `${getDateAsString(guild.createdAt)}`, inline: true }
         )
         .setFooter(`${guild.name} -  Discord`)
         .setTimestamp()
@@ -131,6 +127,14 @@ function serverInfo(message) {
 
     if (guild.rulesChannel) {
         embed.addField('Rules Channel', guild.rulesChannel.name);
+    }
+
+    if (result && result.connections.length > 0) {
+        const connections = [];
+        result.connections.forEach(conn => {
+            connections.push(`__${conn.name}__\n${conn.url}\n`);
+        });
+        embed.addField('Connections', connections.join(''));
     }
     return embed;
 }
@@ -146,13 +150,13 @@ function lyrics(song) {
         .setTimestamp();
 }
 
-function member(message) {
+function member(message, result) {
     const member = message.member;
     const roles = message.guild.roles;
 
     const date = getDateAsString(member.joinedAt);
     const roleList = member._roles.map((id) => roles.cache.get(id)['name']).join(', ');
-    const connections = [];
+
 
     const embed = new Discord.MessageEmbed()
         .setTitle(member.displayName)
@@ -161,19 +165,19 @@ function member(message) {
         .addFields(
             { name: 'Roles', value: `${roleList.length > 0 ? roleList : 'No Roles'}` },
             { name: 'Joined At', value: `${date}`, inline: true },
-            { name: 'Points ', value: 0, inline: true },
-            { name: 'Weekly Points', value: 0, inline: true },
-            { name: 'Level ', value: 1, inline: true },
-            { name: 'Rank In The Server', value: '#' }
+            { name: 'Weekly Points', value: result.weeklyPoints, inline: true },
+            { name: 'Level ', value: result.level, inline: true }
         )
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(member.user.avatarURL());
 
-    if (connections.length > 0) {
-        connections.forEach(conn => {
-            embed.addField(conn.name, conn.url);
+    if (result.connections.length > 0) {
+        const connections = [];
+        result.connections.forEach(conn => {
+            connections.push(`__${conn.name}__\n${conn.url}\n`);
         });
+        embed.addField('Connections', connections.join(''));
     }
 
     return embed;
@@ -497,9 +501,6 @@ function support(message) {
         .setTimestamp()
         .setThumbnail(message.client.user.avatarURL());
 }
-
-
-
 
 
 module.exports = {
