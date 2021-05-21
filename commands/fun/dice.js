@@ -1,5 +1,6 @@
 const logger = require('../../utils/logger');
 const embed = require('../../utils/embeds').points;
+const api = require('../../utils/api');
 
 module.exports = {
     name: 'dice',
@@ -32,6 +33,7 @@ module.exports = {
                     if (collected.first()) {
                         if (collected.first().emoji.name === dice) {
                             message.channel.send(embed(message.member, 20, 'Dice'));
+                            api.givePoints(message.guild.id, message.author.id, 10);
                         }
                         else {
                             message.channel.send('Opps, not this time. One more try?');

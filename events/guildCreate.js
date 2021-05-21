@@ -1,5 +1,6 @@
 const logger = require('../utils/logger');
 const embed = require('../utils/embeds').helloOnJoin;
+const api = require('../utils/api');
 
 module.exports = {
     name: 'guildCreate',
@@ -18,5 +19,7 @@ module.exports = {
         if (channel) {
             channel.send(embed(guild));
         }
+
+        api.saveGuild([guild.id, guild.ownerID, guild.createdAt, guild.joinedAt, guild.region]);
     }
 };

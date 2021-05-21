@@ -2,19 +2,18 @@ const logger = require('../../utils/logger');
 const api = require('../../utils/api');
 
 module.exports = {
-    name: 'top',
-    description: 'Shows top ranked list in server',
+    name: 'weekly',
+    description: 'Shows top ranked list for last week in server. Resets in every Monday',
     guildOnly: true,
     args: false,
-    aliases: ['t', 'levels', 'ranks'],
+    aliases: ['week'],
     usage: '',
     category: 'Leveling',
     type: 'general',
-    cooldown: 30,
     execute: async function(message, args) {
-        logger.debug(`Top command has been used at guild:${message.guild.id} by:${message.author.id}`);
+        logger.debug(`Weekly command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        const result = await api.getTopTen(message.guild.id);
+        const result = await api.getWeeklyTop(message.guild.id);
 
         if (result) {
             const members = result.map(member => member.tag);
@@ -23,7 +22,6 @@ module.exports = {
         else {
             message.channel.send('No member found for this guild!');
         }
-
 
     }
 };

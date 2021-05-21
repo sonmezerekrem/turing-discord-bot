@@ -1,5 +1,5 @@
 versions:
-  1.2.0:
+  2.0.0:
     Added:
       - Leave voice if no one in voice channel in last 5 minutes.
       - Owner category has added for commands. This category can only used by owner of guild.

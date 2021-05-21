@@ -21,14 +21,14 @@ module.exports = {
         const canvas = Canvas.createCanvas(750, 450);
         const context = canvas.getContext('2d');
 
-        const background = await Canvas.loadImage('assets/calendar.jpg');
+        const background = await Canvas.loadImage(`assets/calendar/img${Math.ceil(Math.random() * 4)}.jpg`);
         context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
         context.strokeRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = '#ffffff';
 
         context.font = '48px sans-serif';
-        context.fillText(`${today.getFullYear()}  ${monthNames[today.getMonth()]}`, 60, 72);
+        context.fillText(`${today.getFullYear()}  ${monthNames[today.getMonth()]}`, 64, 72);
 
         context.font = '32px sans-serif';
 

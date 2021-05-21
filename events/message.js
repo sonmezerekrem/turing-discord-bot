@@ -3,11 +3,11 @@ const logger = require('../utils/logger');
 const { prefix, grovvy, turing } = require('../config.json');
 const assistant = require('../assistant/assistant');
 const { controllers, commandChannelController } = require('../utils/turingController');
-const { timerController } = require('../utils/functions');
+const { timerController, getMessagePoints } = require('../utils/functions');
 
 module.exports = {
     name: 'message',
-    execute(message) {
+    async execute(message) {
         const client = message.client;
 
         if (message.author.bot && message.author.id !== grovvy) return;
@@ -15,6 +15,8 @@ module.exports = {
         controllers(message);
 
         if (message.author.bot) return;
+
+        await getMessagePoints(message);
 
         const assist = client.assists.get(message.author.id);
 
@@ -38,13 +40,12 @@ module.exports = {
 
         if (command.type === 'guild' && message.guild.id !== turing) return;
 
-        if (command.category && message.author.id !== message.guild.ownerID) {
+        if (command.category === 'Owner' && message.author.id !== message.guild.ownerID) {
             message.channel.stopTyping(true);
             return message.reply('This command can only be used by the guild owner!');
         }
 
         if (command.guildOnly && message.channel.type === 'dm') {
-            logger.debug(`${command.name} is available only at guilds`);
             message.channel.stopTyping(true);
             return message.reply('I can\'t execute that command inside DMs!');
         }

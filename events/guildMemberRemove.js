@@ -1,6 +1,7 @@
 const logger = require('../utils/logger');
 const embed = require('../utils/embeds').moderation;
 const { turing } = require('../config.json');
+const api = require('../utils/api');
 
 
 module.exports = {
@@ -12,5 +13,7 @@ module.exports = {
             let moderatorChannel = member.guild.channels.cache.find(channel => channel.name === 'moderation');
             moderatorChannel.send(embed('Member Remove', [member]));
         }
+
+        api.deleteMember(member.guild.id, member.user.id);
     }
 };

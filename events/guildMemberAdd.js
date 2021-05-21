@@ -1,11 +1,12 @@
 const logger = require('../utils/logger');
 const { prefix, turing } = require('../config.json');
 const embed = require('../utils/embeds').welcomeMessage;
+const api = require('../utils/api');
 
 
 module.exports = {
     name: 'guildMemberAdd',
-    execute(member) {
+    async execute(member) {
         logger.info(`New member is joined to guild:${member.guild.id} member:${member.id}`);
 
         if (member.user.bot) return;
@@ -35,5 +36,7 @@ module.exports = {
         if (channel) {
             channel.send(message);
         }
+
+        await api.saveMember(member.guild.id, [member.guild.id, member.user.id, member.user.tag, member.joinedAt]);
     }
 };

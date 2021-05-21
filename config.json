@@ -1,7 +1,7 @@
 {
   "defaultActivity": {
     "name": "help",
-    "type": "PLAYING"
+    "type": "LISTENING"
   },
   "defaultState": "online",
   "prefix": "+",
@@ -9,13 +9,11 @@
   "color": "#00BFFF",
   "youtubeUrl": "https://www.youtube.com/watch?v=",
   "youtubeApiUrl": "https://www.googleapis.com/youtube/v3/search",
-  "discordAvatarUrl": "https://discord-avatar-maker.app?bg=88C800&fg=FFFFFF&eyc=none&os=base-shape&is=wink",
   "geniusApi": "https://api.genius.com",
   "geniusUrl": "https://genius.com",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "turing": "840619177739419649",
   "grovvy": "234395307759108106",
-  "admin": "575379400657469448",
   "channels": {
     "bugReporting": "842156525635108874",
     "suggestions": "844260900906598451",
@@ -40,5 +38,6 @@
     "pause",
     "queue",
     "clear"
-  ]
+  ],
+  "backendPath": "http://localhost:3000"
 }
