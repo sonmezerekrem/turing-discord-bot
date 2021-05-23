@@ -44,8 +44,8 @@ function help(message, args) {
                 value: commands.filter(command => command.category === 'Fun').map(command => command.name).join(', ')
             },
             {
-                name: 'Record',
-                value: commands.filter(command => command.category === 'Record').map(command => command.name).join(', ')
+                name: 'Member',
+                value: commands.filter(command => command.category === 'Member').map(command => command.name).join(', ')
             },
             {
                 name: 'Other',
@@ -502,6 +502,43 @@ function support(message) {
         .setThumbnail(message.client.user.avatarURL());
 }
 
+function user(member, result) {
+    const roles = message.guild.roles;
+    const roleList = member._roles.map((id) => roles.cache.get(id)['name']).join(', ');
+
+    const embed = new Discord.MessageEmbed()
+        .setTitle(member.displayName)
+        .setDescription('General information about member')
+        .setColor(color)
+        .addFields(
+            { name: 'Roles', value: `${roleList.length > 0 ? roleList : 'No Roles'}` },
+            { name: 'Level ', value: result.level, inline: true }
+        )
+        .setFooter(`${message.guild.name} -  Discord`)
+        .setTimestamp()
+        .setThumbnail(member.user.avatarURL());
+
+    if (result.connections.length > 0) {
+        const connections = [];
+        let length = 0;
+        result.connections.forEach(conn => {
+            const text = `__${conn.name}__\n${conn.url}\n`;
+            if (length + text.length > 1024) {
+                embed.addField('\u200B', connections.join('').substr());
+                connections.length = 0;
+            }
+            else {
+                connections.push(text);
+            }
+        });
+        if (connections.length > 0) {
+            embed.addField('\u200B', connections.join('').substr());
+        }
+    }
+
+    return embed;
+}
+
 
 module.exports = {
     help,
@@ -520,5 +557,6 @@ module.exports = {
     welcomeMessage,
     points,
     warning,
-    support
+    support,
+    user
 };

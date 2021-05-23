@@ -10,7 +10,7 @@ module.exports = {
     args: false,
     aliases: ['member', 'profile'],
     usage: '',
-    category: 'Info',
+    category: 'Member',
     type: 'general',
     execute: async function(message, args) {
         logger.debug(`Me command has been used at guild:${message.guild.id} by:${message.author.id}`);

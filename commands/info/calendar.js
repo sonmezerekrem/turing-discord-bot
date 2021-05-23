@@ -39,23 +39,29 @@ module.exports = {
         let height = 180;
         let week = firstDay.getDay();
         for (let i = 1; i < lastDay.getDate(); i++) {
+            let text = `${i < 10 ? '0' + i : i}`;
+            if (i === today.getDate()) {
+                context.font = 'bold 32px sans-serif';
+            }else {
+                context.font = '32px sans-serif';
+            }
             if (week % 7 === 0) {
-                context.fillText(`${i < 10 ? '0' + i : i}`, 632, height);
+                context.fillText(text, 632, height);
             }
             else if (week % 7 === 1) {
-                context.fillText(`${i < 10 ? '0' + i : i}`, 80, height);
+                context.fillText(text, 80, height);
             }
             else if (week % 7 === 2) {
-                context.fillText(`${i < 10 ? '0' + i : i}`, 172, height);
+                context.fillText(text, 172, height);
             }
             else if (week % 7 === 3) {
-                context.fillText(`${i < 10 ? '0' + i : i}`, 264, height);
+                context.fillText(text, 264, height);
             }
             else if (week % 7 === 4) {
-                context.fillText(`${i < 10 ? '0' + i : i}`, 356, height);
+                context.fillText(text, 356, height);
             }
             else if (week % 7 === 5) {
-                context.fillText(`${i < 10 ? '0' + i : i}`, 448, height);
+                context.fillText(text, 448, height);
             }
             else if (week % 7 === 6) {
                 context.fillText(`${i < 10 ? '0' + i : i}`, 540, height);
