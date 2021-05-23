@@ -8,9 +8,15 @@ module.exports = {
         if (newChannel.type !== 'dm') {
             logger.info(`Channel is updated at guild: ${newChannel.guild.name} channel:${newChannel.id}`);
 
-            if (newChannel.guild.id === turing) {
-                let moderatorChannel = newChannel.guild.channels.cache.find(channel => channel.name === 'moderation');
-                moderatorChannel.send(embed('Channel Update', [oldChannel, newChannel, newChannel.guild.name, newChannel.guild.iconURL()]));
+            const guildDb = await api.getGuild(channel.guild.id);
+
+            if (guildDb) {
+                if (guildDb.moderationMessages.enabled) {
+                    let moderatorChannel = channel.guild.channels.cache.find(channel => channel.name === guildDb.moderationMessages.channel);
+                    if (moderatorChannel) {
+                        moderatorChannel.send(embed('Channel Update', [oldChannel, newChannel, newChannel.guild.name, newChannel.guild.iconURL()]));
+                    }
+                }
             }
         }
     }

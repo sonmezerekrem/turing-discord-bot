@@ -1,15 +1,21 @@
 const logger = require('../utils/logger');
 const embed = require('../utils/embeds').moderation;
-const { turing } = require('../config.json');
+const api = require('../utils/api');
 
 module.exports = {
     name: 'guildBanRemove',
     execute: async function(guild, user) {
         logger.info(`User ban is removed at guild: ${guild.name} user:${user.id}`);
 
-        if (guild.id === turing) {
-            let moderatorChannel = guild.channels.cache.find(channel => channel.name === 'moderation');
-            moderatorChannel.send(embed('Ban Remove', [user]));
+        const guildDb = await api.getGuild(channel.guild.id);
+
+        if (guildDb) {
+            if (guildDb.moderationMessages.enabled) {
+                let moderatorChannel = channel.guild.channels.cache.find(channel => channel.name === guildDb.moderationMessages.channel);
+                if (moderatorChannel) {
+                    moderatorChannel.send(embed('Ban Remove', [user]));
+                }
+            }
         }
     }
 };

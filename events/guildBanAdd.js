@@ -7,10 +7,17 @@ module.exports = {
     execute: async function(guild, user) {
         logger.info(`User is banned at guild: ${guild.name} user:${user.id}`);
 
-        if (guild.id === turing) {
-            const banInfo = await guild.fetchBan(user)
-            let moderatorChannel = guild.channels.cache.find(channel => channel.name === 'moderation');
-            moderatorChannel.send(embed('Ban', [banInfo]));
+
+        const guildDb = await api.getGuild(channel.guild.id);
+
+        if (guildDb) {
+            if (guildDb.moderationMessages.enabled) {
+                let moderatorChannel = channel.guild.channels.cache.find(channel => channel.name === guildDb.moderationMessages.channel);
+                if (moderatorChannel) {
+                    const banInfo = await guild.fetchBan(user)
+                    moderatorChannel.send(embed('Ban', [banInfo]));
+                }
+            }
         }
     }
 };

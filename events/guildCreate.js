@@ -20,6 +20,6 @@ module.exports = {
             channel.send(embed(guild));
         }
 
-        api.saveGuild([guild.id, guild.ownerID, guild.createdAt, guild.joinedAt, guild.region]);
+        await api.saveGuild([guild.id, guild.ownerID, guild.createdAt, guild.joinedAt, guild.region]);
     }
 };

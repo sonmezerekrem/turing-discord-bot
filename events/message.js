@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 const { prefix, grovvy, turing } = require('../config.json');
 const assistant = require('../assistant/assistant');
 const { controllers, commandChannelController } = require('../utils/turingController');
-const { timerController, getMessagePoints } = require('../utils/functions');
+const { timerController, pointsAndLevels } = require('../utils/functions');
 
 module.exports = {
     name: 'message',
@@ -16,11 +16,11 @@ module.exports = {
 
         if (message.author.bot) return;
 
-        await getMessagePoints(message);
+        await pointsAndLevels(message);
 
         const assist = client.assists.get(message.author.id);
 
-        if (assist && (message.channel.id === assist.channel) && message.content !== `${prefix}end-assist`) {
+        if (assist && (message.channel.type === 'dm') && message.content !== `${prefix}end-assist`) {
             return assistant(message, assist);
         }
 
@@ -48,6 +48,11 @@ module.exports = {
         if (command.guildOnly && message.channel.type === 'dm') {
             message.channel.stopTyping(true);
             return message.reply('I can\'t execute that command inside DMs!');
+        }
+
+        if (command.dmOnly && message.channel.type !== 'dm') {
+            message.channel.stopTyping(true);
+            return message.reply('I can\'t execute that command inside guilds!');
         }
 
         if (commandChannelController(message, command)) return;

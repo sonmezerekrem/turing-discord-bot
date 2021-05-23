@@ -1,5 +1,5 @@
 const logger = require('../utils/logger');
-const { prefix, turing } = require('../config.json');
+const { prefix } = require('../config.json');
 const embed = require('../utils/embeds').welcomeMessage;
 const api = require('../utils/api');
 
@@ -12,30 +12,36 @@ module.exports = {
         if (member.user.bot) return;
 
         const guild = member.guild;
+        const guildDb = api.getGuild(guild.id);
 
-        let channel = guild.channels.cache.find(channel => channel.name === 'general');
-        let message = `Hello ${member}, welcome to ${member.guild.name}. We are happy to see you among us. If you need help you can use ${prefix}help or ${prefix}assist command. We wish you a nice Discord experience here.`;
-        if (channel == null) {
-            channel = guild.channels.cache
-                .filter(c => c.type === 'text'
-                    && c.permissionsFor(guild.client.user).has('SEND_MESSAGES')
-                    && c.permissionsFor(guild.roles.everyone))
-                .first();
+        if (guildDb) {
+            if (guildDb.roleManagement) {
+                let newMember = message.guild.roles.cache.find(role => role.name === 'New Member');
+                if (newMember == null) {
+                    await message.guild.roles.create({
+                            name: 'New Member',
+                            color: 'DEFAULT'
+                        },
+                        'Role for New Members'
+                    );
+                    newMember = message.guild.roles.cache.find(role => role.name === 'New Member');
+                }
+                message.member.roles.add(newMember).catch(error => logger.error(error.message));
+            }
+
+            if (guildDb.welcomeMessage.enabled) {
+                let message = `Hello there! Welcome to our server. We are happy to see you among us. If you need help you can use ${prefix}help command. We wish you a nice Discord experience here.`;
+                message = guildDb.welcomeMessage.text;
+                let channel = guild.channels.cache.find(channel => channel.name === guildDb.welcomeMessage.channel);
+                if (channel) {
+                    channel.send(message);
+                }
+            }
         }
 
-        if (member.guild.id === turing) {
-            const role = guild.roles.cache.find(role => role.name === 'New Member');
-            member.roles.add(role).catch(error => logger.error(error.message));
-            channel = guild.channels.cache.find(channel => channel.name === 'new-member');
-            message = `Hello ${member}, welcome to ${member.guild.name}. We are happy to see you among us. Please read rules channel before you start your amazing experience here. If you need help you can use ${prefix}help, ${prefix}assist command. We wish you a nice Discord experience here.`;
-            member.send(embed(member)).then(() => {
-                logger.debug('DM is sent in welcome');
-            });
-        }
-
-        if (channel) {
-            channel.send(message);
-        }
+        member.send(embed(member)).then(() => {
+            logger.debug('DM is sent in welcome');
+        });
 
         await api.saveMember(member.guild.id, [member.guild.id, member.user.id, member.user.tag, member.joinedAt]);
     }

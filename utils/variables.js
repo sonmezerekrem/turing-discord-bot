@@ -152,7 +152,27 @@ exports.categories = {
     'music': 'Commands related to playing music.',
     'leveling': 'Commands about level and rank system.',
     'fun': 'commands prepared for entertainment purposes',
-    'record': 'Commands related to voice recording',
+    'member': 'Commands for member his/her self',
     'other': 'Other commands',
     'owner': 'Commands reserved for guild owners'
+};
+
+exports.levels = {
+    '1': 250,
+    '2': 500,
+    '3': 800,
+    '4': 1200,//bronze
+    '5': 1740,
+    '6': 2450,
+    '7': 3300,
+    '8': 4500,
+    '9': 5800,
+    '10': 7100,
+    '11': 8500,
+    '12': 10000, // silver
+    '13': 12000,
+    '14': 14000,
+    '15': 16000,
+    '16': 18000,
+    '17': 20000 // gold
 };

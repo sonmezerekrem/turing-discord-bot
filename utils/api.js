@@ -133,7 +133,7 @@ function deleteMember(guildId, memberId) {
 async function getTopTen(guildId) {
     const result = await axios({
         method: 'get',
-        url: backendPath + '/guilds/' + guildId + '/members/toplist'
+        url: backendPath + '/guilds/' + guildId + '/toplist'
     }).catch(error => logger.error(error.message));
 
     if (result.status === 200)
@@ -144,7 +144,7 @@ async function getTopTen(guildId) {
 async function getWeeklyTop(guildId) {
     const result = await axios({
         method: 'get',
-        url: backendPath + '/guilds/' + guildId + '/members/weekly'
+        url: backendPath + '/guilds/' + guildId + '/weekly'
     }).catch(error => logger.error(error.message));
 
     if (result.status === 200)
