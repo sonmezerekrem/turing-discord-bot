@@ -5,6 +5,7 @@ module.exports = {
     name: 'end-assist',
     description: 'Ends interact with bot',
     guildOnly: false,
+    dmOnly: true,
     args: false,
     aliases: ['end-chat'],
     usage: '',
@@ -17,7 +18,6 @@ module.exports = {
         const assistObject = client.assists.get(message.author.id);
         if (assistObject) {
             const content = 'Thanks for the chat. If you need assist you can always use the \'assist\' command';
-            assistObject.messages.push(content);
             client.assists.delete(message.author.id);
             message.channel.send(content);
         }
