@@ -12,11 +12,12 @@ module.exports = {
     channel: true,
     category: 'Music',
     type: 'general',
-    execute(message, args) {
+    execute(message) {
         logger.debug(`Leave command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        if (message.client.voice.connections.has(message.guild.id))
+        if (message.client.voice.connections.has(message.guild.id)) {
             message.member.voice.channel.leave();
+        }
 
         queue.delete(message.guild.id);
         logger.info(`${message.client.user.tag} has disconnected to voice at guild:${message.guild.id}`);

@@ -11,7 +11,7 @@ module.exports = {
     usage: '',
     category: 'Leveling',
     type: 'general',
-    execute: async function(message, args) {
+    execute: async function(message) {
         logger.debug(`Daily command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         const result = await api.getMember(message.guild.id, message.author.id);

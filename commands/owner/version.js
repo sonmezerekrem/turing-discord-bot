@@ -14,7 +14,7 @@ module.exports = {
     category: 'Owner',
     type: 'general',
     cooldown: 60,
-    execute(message, args) {
+    execute(message) {
         logger.debug(`Version command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         try {

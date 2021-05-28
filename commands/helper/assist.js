@@ -11,7 +11,7 @@ module.exports = {
     usage: '',
     category: 'Helper',
     type: 'general',
-    execute(message, args) {
+    execute(message) {
         logger.info(`Assist command has been used at guild:${message.guild ? message.guild.id : 'DM'} by:${message.author.id}`);
 
         const client = message.client;
@@ -22,7 +22,7 @@ module.exports = {
 
         const content = 'Hi, it\'s good to see you. How can I assist you? You can use \'end-assist\' command to end assist.';
 
-        message.author.send(content).then((msg) => {
+        message.author.send(content).then(() => {
             logger.debug('DM is sent for assist');
             client.assists.set(message.author.id,
                 {

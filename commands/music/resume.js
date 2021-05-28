@@ -12,16 +12,18 @@ module.exports = {
     channel: true,
     category: 'Music',
     type: 'general',
-    execute(message, args) {
+    execute(message) {
         logger.debug(`Resume command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
 
         if (!serverQueue) return message.channel.send('There is no song that I could resume!');
 
-        if (!message.client.voice.connections.has(message.guild.id))
+        if (!message.client.voice.connections.has(message.guild.id)) {
             return message.channel.send('There is no song that I could resume!');
+        }
 
-        if (serverQueue.connection.dispatcher.paused)
+        if (serverQueue.connection.dispatcher.paused) {
             serverQueue.connection.dispatcher.resume();
+        }
     }
 };

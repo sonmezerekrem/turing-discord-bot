@@ -12,15 +12,17 @@ module.exports = {
     channel: true,
     category: 'Music',
     type: 'general',
-    async execute(message, args) {
+    async execute(message) {
         logger.debug(`Clear command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
 
-        if (!serverQueue)
+        if (!serverQueue) {
             return message.channel.send('There is no song that I could clear!');
+        }
 
-        if (!message.client.voice.connections.has(message.guild.id))
+        if (!message.client.voice.connections.has(message.guild.id)) {
             return message.channel.send('There is no song that I could clear!');
+        }
         serverQueue.songs = [];
         serverQueue.playing = null;
     }

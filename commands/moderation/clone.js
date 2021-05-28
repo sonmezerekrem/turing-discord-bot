@@ -11,7 +11,7 @@ module.exports = {
     permissions: 'MANAGE_CHANNELS',
     category: 'Moderation',
     type: 'general',
-    execute(message, args) {
+    execute(message) {
         logger.debug(`Clone command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         try {

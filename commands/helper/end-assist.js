@@ -11,7 +11,7 @@ module.exports = {
     usage: '',
     category: 'Helper',
     type: 'general',
-    execute(message, args) {
+    execute(message) {
         logger.info(`End-Assist command has been used at guild:${message.guild ? message.guild.id : 'DM'} by:${message.author.id}`);
         const client = message.client;
 

@@ -1,9 +1,8 @@
 const ytdl = require('ytdl-core');
 const axios = require('axios').default;
-const stringSimilarity = require('string-similarity');
 const embed = require('../../utils/embeds').playingSong;
 const logger = require('../../utils/logger');
-const { geniusApi, youtubeUrl, youtubeApiUrl } = require('../../config.json');
+const { geniusApi, youtubeUrl, youtubeSearchApiUrl } = require('../../config.json');
 const youtubeKey = process.env.youtubeKey;
 const geniusToken = process.env.geniusToken;
 const queue = new Map();
@@ -83,7 +82,7 @@ const songInfo = async (args, author) => {
         }
 
         if(song.youtubeUrl == null) {
-            const youtubeSearch = await axios.get(youtubeApiUrl, {
+            const youtubeSearch = await axios.get(youtubeSearchApiUrl, {
                 params: {
                     key: youtubeKey,
                     type: 'video',

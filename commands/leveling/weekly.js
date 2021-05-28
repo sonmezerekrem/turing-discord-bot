@@ -10,7 +10,7 @@ module.exports = {
     usage: '',
     category: 'Leveling',
     type: 'general',
-    execute: async function(message, args) {
+    execute: async function(message) {
         logger.debug(`Weekly command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         const result = await api.getWeeklyTop(message.guild.id);

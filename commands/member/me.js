@@ -12,7 +12,7 @@ module.exports = {
     usage: '',
     category: 'Member',
     type: 'general',
-    execute: async function(message, args) {
+    execute: async function(message) {
         logger.debug(`Me command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const result = await api.getMember(message.guild.id, message.author.id);
         return message.reply(embed(message, result));

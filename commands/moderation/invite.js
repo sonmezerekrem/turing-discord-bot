@@ -11,7 +11,7 @@ module.exports = {
     permissions: 'CREATE_INSTANT_INVITE',
     category: 'Moderation',
     type: 'general',
-    execute(message, args) {
+    execute(message) {
         logger.debug(`Invite command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         const channel = message.channel;

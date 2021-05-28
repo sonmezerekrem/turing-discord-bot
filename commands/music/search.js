@@ -2,7 +2,7 @@ const axios = require('axios').default;
 const logger = require('../../utils/logger');
 const { queue, songInfo, setServerQueue } = require('./utils');
 const youtubeKey = process.env.youtubeKey;
-const { youtubeUrl, youtubeApiUrl } = require('../../config.json');
+const { youtubeUrl, youtubeSearchApiUrl } = require('../../config.json');
 const embed = require('../../utils/embeds').search;
 
 
@@ -26,8 +26,8 @@ module.exports = {
             return message.channel.send('I need the permissions to join and speak in your voice channel!');
         }
 
-        logger.debug(`Making axios get request for search command to ${youtubeApiUrl} with query:'${args.join(' ')}' at guild:${message.guild.id} by:${message.author.id}`);
-        const youtubeResponse = await axios.get(youtubeApiUrl, {
+        logger.debug(`Making axios get request for search command to ${youtubeSearchApiUrl} with query:'${args.join(' ')}' at guild:${message.guild.id} by:${message.author.id}`);
+        const youtubeResponse = await axios.get(youtubeSearchApiUrl, {
             params: {
                 key: youtubeKey,
                 type: 'video',

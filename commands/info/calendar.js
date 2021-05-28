@@ -13,7 +13,7 @@ module.exports = {
     usage: '',
     category: 'Info',
     type: 'general',
-    async execute(message, args) {
+    async execute(message) {
         logger.debug(`Calendar command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         const today = new Date();
@@ -42,7 +42,8 @@ module.exports = {
             let text = `${i < 10 ? '0' + i : i}`;
             if (i === today.getDate()) {
                 context.font = 'bold 32px sans-serif';
-            }else {
+            }
+            else {
                 context.font = '32px sans-serif';
             }
             if (week % 7 === 0) {
@@ -66,8 +67,9 @@ module.exports = {
             else if (week % 7 === 6) {
                 context.fillText(`${i < 10 ? '0' + i : i}`, 540, height);
             }
-            if (week % 7 === 0)
+            if (week % 7 === 0) {
                 height += 46;
+            }
             week++;
         }
 

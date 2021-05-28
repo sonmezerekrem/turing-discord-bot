@@ -11,7 +11,7 @@ module.exports = {
     usage: '',
     category: 'Other',
     type: 'general',
-    execute(message, args) {
+    execute(message) {
         logger.debug(`Issue command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         const guild = message.guild;

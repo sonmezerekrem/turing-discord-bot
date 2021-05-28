@@ -13,7 +13,7 @@ module.exports = {
     category: 'Info',
     type: 'general',
     cooldown: 300,
-    execute: async function(message, args) {
+    execute: async function(message) {
         logger.debug(`Me command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const member = message.guild.member(message.mentions.users.first());
         if (member) {

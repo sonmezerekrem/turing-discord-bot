@@ -10,7 +10,7 @@ module.exports = {
     usage: '',
     category: 'Music',
     type: 'general',
-    execute(message, args) {
+    execute(message) {
         logger.debug(`Join command has been used at guild:${message.guild.id} by:${message.author.id}`);
         if (message.member.voice.channel) {
             message.member.voice.channel.join().then(connection => {
