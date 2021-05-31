@@ -20,10 +20,6 @@ function help(message, args) {
         embed.setDescription('Here\'s a list of all commands by categories:');
         embed.addFields(
             {
-                name: 'Help',
-                value: commands.filter(command => command.category === 'Helper').map(command => command.name).join(', ')
-            },
-            {
                 name: 'Info',
                 value: commands.filter(command => command.category === 'Info').map(command => command.name).join(', ')
             },
@@ -51,7 +47,7 @@ function help(message, args) {
                 name: 'Other',
                 value: commands.filter(command => command.category === 'Other').map(command => command.name).join(', ')
             });
-        if (message.author.id === message.guild.ownerID) {
+        if (message.channel.type !== 'dm' && message.author.id === message.guild.ownerID) {
             embed.addField('Owner', commands.filter(command => command.category === 'Owner').map(command => command.name).join(', '));
         }
         embed.addField('\u200b', `\nYou can send  \`${prefix}help [category name]\` or \`${prefix}help [command name]\` to get info on a specific category or command!`);
@@ -85,8 +81,9 @@ function help(message, args) {
     embed.setDescription(command.description);
     embed.addField('Category', command.category);
     let aliases = '-';
-    if (command.aliases.length > 0)
+    if (command.aliases.length > 0) {
         aliases = command.aliases.join(', ');
+    }
     embed.addField('Aliases', aliases);
     embed.addField('Usage', `${prefix}${command.name} ${command.usage}`);
     if (command.hasOwnProperty('example')) {
@@ -157,6 +154,12 @@ function member(message, result) {
     const date = getDateAsString(member.joinedAt);
     const roleList = member._roles.map((id) => roles.cache.get(id)['name']).join(', ');
 
+    if (result == null) {
+        result = {};
+        result.weeklyPoints = '-';
+        result.level = '-';
+        result.connections = [];
+    }
 
     const embed = new Discord.MessageEmbed()
         .setTitle(member.displayName)
@@ -217,8 +220,9 @@ function queue(guildName, songs, playing) {
 function role(message, roleName) {
     const role = message.guild.roles.cache.find(role => role.name === roleName.join(' '));
 
-    if (role == null)
+    if (role == null) {
         return 'This role is not exists in this guild!';
+    }
 
     const date = getDateAsString(role.createdAt);
 
@@ -281,13 +285,16 @@ function songInfo(song, streamTime) {
         embed.addField('Artist', song.artist);
         embed.addField('Album', song.album);
     }
-    if (song.release)
+    if (song.release) {
         embed.addField('Release Date', getDateAsString(song.release));
+    }
 
-    if (song.lyricsUrl != null)
+    if (song.lyricsUrl != null) {
         embed.addField('Lyrics', song.lyricsUrl);
-    if (song.spotifyUrl != null)
+    }
+    if (song.spotifyUrl != null) {
         embed.addField('Spotify', song.spotifyUrl);
+    }
 
     return embed;
 }

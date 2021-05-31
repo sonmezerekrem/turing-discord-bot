@@ -6,8 +6,8 @@
   "scripts": {
     "test": "mocha --recursive",
     "covarage": "nyc mocha --recursive",
-    "develop": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "nodemon index.js",
+    "start": "pm2-runtime start ecosystem.config.js --env production"
   },
   "author": "",
   "license": "ISC",

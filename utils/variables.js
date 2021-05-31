@@ -147,7 +147,6 @@ exports.colorSet = {
 
 exports.categories = {
     'info': 'Informational commands for the server, bot or user, etc.',
-    'helper': 'Auxiliary commands on server or bot.',
     'moderation': 'Commands related to server administration.',
     'music': 'Commands related to playing music.',
     'leveling': 'Commands about level and rank system.',

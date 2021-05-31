@@ -19,7 +19,7 @@ const options = {
         collection: 'logs'
 
     },
-    develop: {
+    development: {
         level: 'debug',
         handleExceptions: true,
         json: false,
@@ -42,12 +42,15 @@ const options = {
 };
 
 let transport;
-if (process.env.environment === 'develop')
-    transport = new winston.transports.Console(options.develop);
-else if (process.env.environment === 'production')
+if (process.env.NODE_ENV === 'development') {
+    transport = new winston.transports.Console(options.development);
+}
+else if (process.env.NODE_ENV === 'production') {
     transport = new winston.transports.MongoDB(options.production);
-else
+}
+else {
     transport = new winston.transports.Console(options.test);
+}
 
 
 const logger = winston.createLogger({

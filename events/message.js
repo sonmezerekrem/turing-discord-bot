@@ -1,32 +1,25 @@
 const Discord = require('discord.js');
 const logger = require('../utils/logger');
-const { prefix, grovvy, turing } = require('../config.json');
-const assistant = require('../assistant/assistant');
-const { controllers, commandChannelController } = require('../utils/turingController');
-const { timerController, pointsAndLevels } = require('../utils/functions');
+const { prefix } = require('../config.json');
+const { timerController, pointsAndLevels, rules, getFromDatabase, basicControllers } = require('../utils/functions');
 
 module.exports = {
     name: 'message',
     async execute(message) {
         const client = message.client;
 
-        if (message.author.bot && message.author.id !== grovvy) return;
+        if (message.author.bot || message.webhookID) return;
 
-        controllers(message);
+        //const [member, guild] = await getFromDatabase(message);
 
-        if (message.author.bot) return;
+        //basicControllers(message, guild);
 
-        await pointsAndLevels(message);
+        //await pointsAndLevels(message, member, guild);
 
-        const assist = client.assists.get(message.author.id);
-
-        if (assist && (message.channel.type === 'dm') && message.content !== `${prefix}end-assist`) {
-            return assistant(message, assist);
+        if (message.channel.type !== 'dm') {
+            const timer = client.timers.get(message.guild.id + message.channel.id);
+            if (timer && timerController(message, timer)) return;
         }
-
-        const timer = client.timers.get(message.guild.id + message.channel.id);
-
-        if (timer && timerController(message, timer)) return;
 
         if (!message.content.startsWith(prefix)) return;
 
@@ -37,8 +30,6 @@ module.exports = {
             || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
         if (!command) return;
-
-        if (command.type === 'guild' && message.guild.id !== turing) return;
 
         if (command.category === 'Owner' && message.author.id !== message.guild.ownerID) {
             message.channel.stopTyping(true);
@@ -55,7 +46,22 @@ module.exports = {
             return message.reply('I can\'t execute that command inside guilds!');
         }
 
-        if (commandChannelController(message, command)) return;
+        // if (message.channel.type !== 'dm') {
+        //     const [rule, ruleMessage] = await rules(message, command, guild);
+        //     if (rule) {
+        //         message.channel.stopTyping(true);
+        //         try {
+        //             message.delete();
+        //             message.channel.send(ruleMessage)
+        //                 .then(msg => {
+        //                     msg.delete({ timeout: 3000 });
+        //                 });
+        //         }
+        //         catch (e) {
+        //             logger.error(e.message);
+        //         }
+        //     }
+        // }
 
         message.channel.startTyping().then().catch();
 

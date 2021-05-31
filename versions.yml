@@ -14,9 +14,16 @@ versions:
       - Calendar command has added with new image sending feature.
       - Invite command has added for creating invite links by bot.
       - Leave voice if no one in voice channel in last 5 minutes.
+      - Clone command has added to clone a text channel.
+      - With user command tag the user to get the information about user.
+      - Wallpaper command has added for daily wallpaper from Unsplash.
+      - Breaking Bad command has added for random Breaking Bad quotes.
     Fixed or Changed:
       - The shut down problem when using assist command has fixed.
       - Stuck in typing sate has fixed.
       - Queue embed has a new style.
       - Now our search algorithm for playing songs is searching on Genius first.
-      - Clear-channel command has moved to owner commands
+      - Clear-channel command has moved to owner commands.
+      - Record commands removed due to difficulties in Discord API.
+      - Assist has removed.
+      -
