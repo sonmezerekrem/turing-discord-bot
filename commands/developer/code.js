@@ -1,5 +1,4 @@
 const logger = require('../../utils/logger');
-const { turing, bugReporting } = require('../../config.json');
 
 
 module.exports = {
@@ -9,7 +8,7 @@ module.exports = {
     args: true,
     aliases: [],
     usage: '',
-    category: 'Other',
+    category: 'Developer',
     type: 'general',
     execute(message) {
         logger.debug(`Code command has been used at guild:${message.guild.id} by:${message.author.id}`);
@@ -17,6 +16,5 @@ module.exports = {
         message.delete();
         message.channel.send(`By ${message.author}
 >>> ${message.content.substring(6)}`);
-
     }
 };
