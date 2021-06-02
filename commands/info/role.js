@@ -12,7 +12,7 @@ module.exports = {
     permissions: 'MANAGE_ROLES',
     category: 'Info',
     type: 'general',
-    execute(message) {
+    execute(message, args) {
         logger.debug(`Role command has been used at guild:${message.guild.id} by:${message.author.id}`);
         return message.channel.send(embed(message, args));
     }

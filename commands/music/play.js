@@ -1,5 +1,10 @@
 const logger = require('../../utils/logger');
-const { queue, play, songInfo, setServerQueue } = require('./utils');
+const {
+    queue,
+    play,
+    songInfo,
+    setServerQueue
+} = require('./utils');
 
 
 module.exports = {
@@ -12,7 +17,7 @@ module.exports = {
     channel: true,
     category: 'Music',
     type: 'general',
-    execute: async function(message, args) {
+    async execute(message, args) {
         logger.debug(`Play command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const serverQueue = queue.get(message.guild.id);
 
@@ -34,11 +39,9 @@ module.exports = {
             }
         }
 
-        const x = message.client.voice;
-
         const song = await songInfo(args, message.author);
 
-        if (song == null) {
+        if (song.youtubeUrl == null) {
             return message.channel.send('Sorry, something went wrong');
         }
 

@@ -1,6 +1,20 @@
 const logger = require('../../utils/logger');
 const embed = require('../../utils/embeds').teams;
-const { mention } = require('../moderation/utils');
+
+
+function mention(client, mentionText) {
+    if (!mentionText) return;
+
+    if (mentionText.startsWith('<@') && mentionText.endsWith('>')) {
+        mentionText = mentionText.slice(2, -1);
+
+        if (mentionText.startsWith('!')) {
+            mentionText = mentionText.slice(1);
+        }
+
+        return client.users.cache.get(mentionText);
+    }
+}
 
 
 module.exports = {
@@ -16,13 +30,14 @@ module.exports = {
     execute(message, args) {
         logger.debug(`Teams command has been used at guild:${message.guild.id} by:${message.author.id}`);
         try {
-            const client = message.client;
-            let teamCount = parseInt(args[0]);
+            const { client } = message;
+            let teamCount = parseInt(args[0], 10);
             args.shift();
-            const mentions = args.map(member => mention(client, member));
-            if (teamCount > mentions.length)
+            const mentions = args.map((member) => mention(client, member));
+            if (teamCount > mentions.length) {
                 teamCount = mentions.length;
-            const memberCount = parseInt(Math.ceil(mentions.length / teamCount));
+            }
+            const memberCount = parseInt(Math.ceil(mentions.length / teamCount), 10);
             const teams = [];
             for (let i = 0; i < teamCount; i++) {
                 let team = [];

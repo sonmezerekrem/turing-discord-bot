@@ -1,6 +1,6 @@
-const logger = require('../../utils/logger');
 const Canvas = require('canvas');
 const Discord = require('discord.js');
+const logger = require('../../utils/logger');
 const { monthNames } = require('../../utils/variables');
 
 
@@ -11,7 +11,7 @@ module.exports = {
     args: false,
     aliases: [],
     usage: '',
-    category: 'Info',
+    category: 'Tool',
     type: 'general',
     async execute(message) {
         logger.debug(`Calendar command has been used at guild:${message.guild.id} by:${message.author.id}`);
@@ -35,11 +35,10 @@ module.exports = {
         const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-
         let height = 180;
         let week = firstDay.getDay();
         for (let i = 1; i < lastDay.getDate(); i++) {
-            let text = `${i < 10 ? '0' + i : i}`;
+            const text = `${i < 10 ? `0${i}` : i}`;
             if (i === today.getDate()) {
                 context.font = 'bold 32px sans-serif';
             }
@@ -65,7 +64,7 @@ module.exports = {
                 context.fillText(text, 448, height);
             }
             else if (week % 7 === 6) {
-                context.fillText(`${i < 10 ? '0' + i : i}`, 540, height);
+                context.fillText(`${i < 10 ? `0${i}` : i}`, 540, height);
             }
             if (week % 7 === 0) {
                 height += 46;
@@ -74,7 +73,6 @@ module.exports = {
         }
 
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'calendar.png');
-
 
         return message.channel.send(attachment);
     }

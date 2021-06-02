@@ -14,12 +14,12 @@ module.exports = {
     execute(message) {
         logger.debug(`Invite command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        const channel = message.channel;
+        const { channel } = message;
 
         channel.createInvite()
-            .then(invite => {
+            .then((invite) => {
                 channel.send(`Here is your invite link: ${invite.url}`);
             })
-            .catch(console.error);
+            .catch((error) => logger.error(error.message));
     }
 };

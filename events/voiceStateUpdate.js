@@ -2,10 +2,8 @@ const logger = require('../utils/logger');
 
 module.exports = {
     name: 'voiceStateUpdate',
-    execute: async function(oldState, newState) {
-
-        if (oldState.channelID !== oldState.guild.me.voice.channelID || newState.channel)
-            return;
+    async execute(oldState, newState) {
+        if (oldState.channelID !== oldState.guild.me.voice.channelID || newState.channel) return;
 
         if (oldState.channel.members.size === 1) {
             setTimeout(() => {

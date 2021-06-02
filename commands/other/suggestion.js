@@ -1,5 +1,8 @@
 const logger = require('../../utils/logger');
-const { turing, suggestions } = require('../../config.json');
+const {
+    turing,
+    suggestions
+} = require('../../config.json');
 
 
 module.exports = {
@@ -14,14 +17,14 @@ module.exports = {
     execute(message) {
         logger.debug(`Suggestion command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        const guild = message.guild;
+        const { guild } = message;
 
         if (guild.id === turing) {
             if (message.channel.id !== suggestions) {
                 try {
                     message.delete();
-                    message.channel.send(`Please use **${guild.channels.cache.find(channel => channel.name === 'suggestions')}** channel to use **suggestion** command.`)
-                        .then(msg => {
+                    message.channel.send(`Please use **${guild.channels.cache.find((channel) => channel.name === 'suggestions')}** channel to use **suggestion** command.`)
+                        .then((msg) => {
                             msg.delete({ timeout: 5000 });
                         });
                     return;
@@ -31,11 +34,10 @@ module.exports = {
                 }
             }
             logger.info(`A suggestion is written by ${message.author.id} at guild ${guild.id}. Suggestion: ${message.content}`);
-            return message.channel.send(`Thank you for your suggestion. My developers will evaluate this suggestion.`);
+            return message.channel.send('Thank you for your suggestion. My developers will evaluate this suggestion.');
         }
 
         logger.info(`A suggestion is written by ${message.author.id} at guild ${guild.id}. Suggestion: ${message.content}`);
-        return message.channel.send(`Thank you for your suggestion. My developers will evaluate this suggestion.`);
-
+        return message.channel.send('Thank you for your suggestion. My developers will evaluate this suggestion.');
     }
 };

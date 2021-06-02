@@ -1,3 +1,4 @@
+/* eslint-disable */
 const fs = require('fs');
 const path = require('path');
 const Discord = require('discord.js');
@@ -11,7 +12,8 @@ function run(dirname) {
     client.timers = new Discord.Collection();
 
     const eventsPath = path.resolve(dirname, './events');
-    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js') && !file.includes('utils'));
+    const eventFiles = fs.readdirSync(eventsPath)
+        .filter((file) => file.endsWith('.js') && !file.includes('utils'));
     for (const file of eventFiles) {
         const event = require(path.resolve(eventsPath, file));
         if (event.once) {
@@ -27,7 +29,8 @@ function run(dirname) {
     const commandsPath = path.resolve(dirname, './commands');
     const commandFolders = fs.readdirSync(commandsPath);
     for (const folder of commandFolders) {
-        const commandFiles = fs.readdirSync(path.resolve(commandsPath, folder)).filter(file => file.endsWith('.js') && !file.includes('utils'));
+        const commandFiles = fs.readdirSync(path.resolve(commandsPath, folder))
+            .filter((file) => file.endsWith('.js') && !file.includes('utils'));
         for (const file of commandFiles) {
             const command = require(path.resolve(commandsPath, folder, file));
             client.commands.set(command.name, command);

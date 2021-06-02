@@ -11,7 +11,7 @@ module.exports = {
     usage: '<connection name>',
     category: 'Member',
     type: 'general',
-    execute: async function(message, args) {
+    async execute(message, args) {
         logger.debug(`Remconn command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         const result = api.removeMemberConnection(message.author.id, args[0]);

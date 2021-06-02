@@ -11,10 +11,11 @@ module.exports = {
     usage: '<connection url> <connection name>',
     category: 'Member',
     type: 'general',
-    execute: async function(message, args) {
+    async execute(message, args) {
         logger.debug(`Addconn command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        const result = api.addMemberConnection(message.author.id, args[0], args.slice(0, 1).join(' '));
+        const result = api.addMemberConnection(message.author.id, args[0], args.slice(0, 1)
+            .join(' '));
         if (result) {
             message.channel.send('Connection added');
         }

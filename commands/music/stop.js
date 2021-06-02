@@ -1,5 +1,8 @@
 const logger = require('../../utils/logger');
-const { queue, deletePlayMessage } = require('./utils');
+const {
+    queue,
+    deletePlayMessage
+} = require('./utils');
 
 
 module.exports = {

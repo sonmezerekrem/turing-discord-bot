@@ -12,7 +12,7 @@ module.exports = {
     category: 'Owner',
     type: 'general',
     cooldown: 300,
-    execute: async function(message) {
+    async execute(message) {
         logger.info(`Server-code command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         const result = await api.getGuild(message.guild.id);

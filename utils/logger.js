@@ -8,7 +8,7 @@ const options = {
         json: true,
         format: winston.format.combine(
             winston.format.timestamp({
-                format: 'MMM-DD-YYYY HH:mm:ss'
+                format: 'YYYY-MM-DD ZZ HH:mm:ss'
             }),
             winston.format.json()
         ),
@@ -28,8 +28,11 @@ const options = {
             winston.format.timestamp({
                 format: 'YYYY-MM-DD ZZ HH:mm:ss'
             }),
-            winston.format.printf((info) => `[${info.level.toUpperCase()}]:  ${[info.timestamp]}: ${info.message}`),
-            winston.format.colorize({ all: true, level: false })
+            winston.format.printf((info) => `[${info.level.toUpperCase()}]: ${[info.timestamp]}: ${info.message}`),
+            winston.format.colorize({
+                all: true,
+                level: false
+            })
         )
     },
     test: {

@@ -16,10 +16,10 @@ module.exports = {
         logger.debug(`Announce command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         let startWith;
-        if (message.content.startsWith(prefix + 'announce')) {
+        if (message.content.startsWith(`${prefix}announce`)) {
             startWith = 10;
         }
-        else if (message.content.startsWith(prefix + 'broadcast')) {
+        else if (message.content.startsWith(`${prefix}broadcast`)) {
             startWith = 11;
         }
         else {
@@ -28,13 +28,12 @@ module.exports = {
 
         const content = message.content.substring(startWith);
 
-        message.guild.channels.cache.forEach((channel => {
+        message.guild.channels.cache.forEach(((channel) => {
             if (channel.type === 'text') {
                 if (!(message.guild.rulesChannelID && message.guild.rulesChannelID !== channel.id)) {
                     channel.send(content);
                 }
             }
         }));
-
     }
 };

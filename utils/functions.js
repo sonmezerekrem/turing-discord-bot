@@ -2,30 +2,33 @@ const { monthNames, levels } = require('./variables');
 const { prefix, music } = require('../config.json');
 const api = require('./api');
 const canvases = require('./canvases');
+const logger = require('./logger');
 
 
 function toTitleCase(str) {
     return str.replace(
         /\w\S*/g,
-        function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        }
+        (txt) => txt.charAt(0)
+            .toUpperCase() + txt.substr(1)
+            .toLowerCase()
     );
 }
 
 function getDateAsString(date) {
-    console.log(typeof date);
-    if (date instanceof String || typeof date == 'string') {
-        return date.substring(8) + ' ' + monthNames[parseInt(date.substr(5, 2))] + ' ' + date.substr(0, 4);
+    if (date instanceof String || typeof date === 'string') {
+        return `${date.substring(8)} ${monthNames[parseInt(date.substr(5, 2), 10)]} ${date.substr(0, 4)}`;
     }
-    return date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+    return `${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 }
 
 function formatTime(time) {
-    let hrs = ~~(time / 3600);
-    let mins = ~~((time % 3600) / 60);
-    let secs = ~~time % 60;
-    return [hrs, ':', (mins < 10 ? '0' + mins : mins), ':', (secs < 10 ? '0' + secs : secs)].join('');
+    // eslint-disable-next-line no-bitwise
+    const hrs = ~~(time / 3600);
+    // eslint-disable-next-line no-bitwise
+    const mins = ~~((time % 3600) / 60);
+    // eslint-disable-next-line no-bitwise
+    const secs = ~~time % 60;
+    return [hrs, ':', (mins < 10 ? `0${mins}` : mins), ':', (secs < 10 ? `0${secs}` : secs)].join('');
 }
 
 function timerController(message, timerObject) {
@@ -40,32 +43,32 @@ function timerController(message, timerObject) {
 
 function rules(message, command, guild) {
     if (guild) {
-        const rules = new Map(JSON.parse(guild.rules));
-        if (rules.has(message.channel.id)) {
-            const rule = rules.get(message.channel.id);
+        const rulesObj = new Map(JSON.parse(guild.rules));
+        if (rulesObj.has(message.channel.id)) {
+            const rule = rulesObj.get(message.channel.id);
             if (rule.name === 'nothing') {
                 return [true, rule.message];
             }
-            else if (rule.name === 'no command') {
+            if (rule.name === 'no command') {
                 if (rule.args.includes(command.name)) {
                     return [true, rule.message];
                 }
                 return [false, ''];
             }
-            else if (rule.name === 'only command') {
+            if (rule.name === 'only command') {
                 if (!rule.args.includes(command.name)) {
                     return [true, rule.message];
                 }
                 return [false, ''];
             }
-            else if (rule.name === 'no category') {
+            if (rule.name === 'no category') {
                 if (rule.args.contains(command.category)) {
                     return [true, rule.message];
                 }
                 return [false, ''];
             }
-            else if (rule.name === 'only category') {
-                if (!rules.args.includes(command.category)) {
+            if (rule.name === 'only category') {
+                if (!rulesObj.args.includes(command.category)) {
                     return [true, rule.message];
                 }
                 return [false, ''];
@@ -78,7 +81,8 @@ function rules(message, command, guild) {
 function getPoint(content) {
     const length = Math.min(
         content.length + Math.floor(Math.random() * 7),
-        Math.floor(Math.random() * 17) + (Math.random() * 119));
+        Math.floor(Math.random() * 17) + (Math.random() * 119)
+    );
     const cofactor = Math.random() * 2;
     const cofactor2 = Math.random() * 13.73;
     const point = length * cofactor2 + cofactor;
@@ -86,11 +90,7 @@ function getPoint(content) {
 }
 
 async function getFromDatabase(message) {
-    let member = await api.getMember(message.guild.id, message.author.id);
-    if (member == null) {
-        await api.saveMember(message.guild.id, [message.guild.id, message.author.id, message.author.tag, message.member.joinedAt]);
-        member = await api.getMember(message.guild.id, message.author.id);
-    }
+    const member = await api.getMember(message.guild.id, message.author.id);
     const guild = await api.getGuild(message.guild.id);
     return [member, guild];
 }
@@ -102,7 +102,7 @@ async function pointsAndLevels(message, member, guild) {
     let levelUp = false;
 
     if (member) {
-        const level = member.level;
+        const { level } = member;
         const point = member.points + newPoint;
 
         if (level > 17) {
@@ -110,10 +110,8 @@ async function pointsAndLevels(message, member, guild) {
                 levelUp = true;
             }
         }
-        else {
-            if (point > levels[level.toString()]) {
-                levelUp = true;
-            }
+        else if (point > levels[level.toString()]) {
+            levelUp = true;
         }
 
         if (levelUp) {
@@ -123,51 +121,54 @@ async function pointsAndLevels(message, member, guild) {
 
         if (guild && guild.roleManagement && levelUp) {
             if (level === 3) {
-                let bronze = message.guild.roles.cache.find(role => role.name === 'Bronze');
-                const newMember = message.guild.roles.cache.find(role => role.name === 'New Member');
+                let bronze = message.guild.roles.cache.find((role) => role.name === 'Bronze');
+                const newMember = message.guild.roles.cache.find((role) => role.name === 'New Member');
                 if (bronze == null) {
                     await message.guild.roles.create({
-                            name: 'Bronze',
-                            color: 'DARK_GOLD'
-                        },
-                        'Role for Bronze members'
-                    );
-                    bronze = message.guild.roles.cache.find(role => role.name === 'Bronze');
+                        name: 'Bronze',
+                        color: 'DARK_GOLD'
+                    },
+                    'Role for Bronze members');
+                    bronze = message.guild.roles.cache.find((role) => role.name === 'Bronze');
                 }
-                message.member.roles.add(bronze).catch(error => logger.error(error.message));
-                message.member.roles.remove(newMember).catch(error => logger.error(error.message));
+                message.member.roles.add(bronze)
+                    .catch((error) => logger.error(error.message));
+                message.member.roles.remove(newMember)
+                    .catch((error) => logger.error(error.message));
                 message.channel.send(canvases.roleUp(message, bronze));
             }
             else if (level === 11) {
-                const bronze = message.guild.roles.cache.find(role => role.name === 'Bronze');
-                let silver = message.guild.roles.cache.find(role => role.name === 'Silver');
+                const bronze = message.guild.roles.cache.find((role) => role.name === 'Bronze');
+                let silver = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 if (silver == null) {
                     await message.guild.roles.create({
-                            name: 'Silver',
-                            color: 'LIGHT_GREY'
-                        },
-                        'Role for Silver members'
-                    );
-                    silver = message.guild.roles.cache.find(role => role.name === 'Silver');
+                        name: 'Silver',
+                        color: 'LIGHT_GREY'
+                    },
+                    'Role for Silver members');
+                    silver = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 }
-                message.member.roles.add(silver).catch(error => logger.error(error.message));
-                message.member.roles.remove(bronze).catch(error => logger.error(error.message));
+                message.member.roles.add(silver)
+                    .catch((error) => logger.error(error.message));
+                message.member.roles.remove(bronze)
+                    .catch((error) => logger.error(error.message));
                 message.channel.send(canvases.roleUp(message, silver));
             }
             else if (level === 17) {
-                const silver = message.guild.roles.cache.find(role => role.name === 'Silver');
-                let gold = message.guild.roles.cache.find(role => role.name === 'Gold');
+                const silver = message.guild.roles.cache.find((role) => role.name === 'Silver');
+                let gold = message.guild.roles.cache.find((role) => role.name === 'Gold');
                 if (gold == null) {
                     await message.guild.roles.create({
-                            name: 'Gold',
-                            color: 'GOLD'
-                        },
-                        'Role for Gold members'
-                    );
-                    gold = message.guild.roles.cache.find(role => role.name === 'Silver');
+                        name: 'Gold',
+                        color: 'GOLD'
+                    },
+                    'Role for Gold members');
+                    gold = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 }
-                message.member.roles.add(gold).catch(error => logger.error(error.message));
-                message.member.roles.remove(silver).catch(error => logger.error(error.message));
+                message.member.roles.add(gold)
+                    .catch((error) => logger.error(error.message));
+                message.member.roles.remove(silver)
+                    .catch((error) => logger.error(error.message));
                 message.channel.send(canvases.roleUp(message, silver));
             }
         }
@@ -177,17 +178,25 @@ async function pointsAndLevels(message, member, guild) {
 function basicControllers(message, guild) {
     if (guild) {
         if (guild.disableMusicEmbeds) {
-            music.forEach(command => {
+            music.forEach((command) => {
                 if (message.content.startsWith(/./ + command)) {
-                    message.suppressEmbeds(true).then().catch();
+                    message.suppressEmbeds(true)
+                        .then()
+                        .catch();
                 }
             });
         }
-
     }
 }
 
 
 module.exports = {
-    toTitleCase, getDateAsString, formatTime, timerController, pointsAndLevels, rules, basicControllers, getFromDatabase
+    toTitleCase,
+    getDateAsString,
+    formatTime,
+    timerController,
+    pointsAndLevels,
+    rules,
+    basicControllers,
+    getFromDatabase
 };

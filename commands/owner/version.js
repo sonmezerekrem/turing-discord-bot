@@ -18,16 +18,16 @@ module.exports = {
         logger.debug(`Version command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         try {
-            const channel = message.channel;
             message.delete();
             const doc = yaml.load(fs.readFileSync('versions.yml', 'utf8'));
-            const added = doc.versions[version]['Added'];
+            const added = doc.versions[version].Added;
             const fixed = doc.versions[version]['Fixed or Changed'];
-            let content = `**VERSION ${version}**\n\n__Added__\n- ${added.join('\n- ')}\n\n__Fixed or Changed__\n- ${fixed.join('\n- ')}`;
-            message.author.send(content);
+            const content = `**VERSION ${version}**\n\n__Added__\n- ${added.join('\n- ')}\n\n__Fixed or Changed__\n- ${fixed.join('\n- ')}`;
+            message.author.send(content)
+                .catch((e) => logger.error(e.message));
         }
         catch (e) {
-            console.log(e.message);
+            logger.error(e.message);
         }
     }
 };

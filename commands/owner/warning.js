@@ -13,16 +13,14 @@ module.exports = {
     execute(message, args) {
         logger.info(`Warning command has been used at guild:${message.guild.id}`);
 
-        const guild = message.guild;
+        const { guild } = message;
 
-        const channel = guild.channels.cache.find(channel => channel.name === args[0]);
+        const channel = guild.channels.cache.find((chn) => chn.name === args[0]);
         if (channel && channel.type === 'text') {
             const member = message.guild.member(message.mentions.users.first());
             if (member) {
                 channel.send(warning(member, message.member.displayName, 'Admin Warning'));
             }
         }
-
-
     }
 };

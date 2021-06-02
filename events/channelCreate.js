@@ -4,7 +4,7 @@ const api = require('../utils/api');
 
 module.exports = {
     name: 'channelCreate',
-    execute: async function(channel) {
+    async execute(channel) {
         if (channel.type !== 'dm') {
             logger.info(`New channel is created at guild: ${channel.guild.name} channel:${channel.id}`);
 
@@ -12,13 +12,13 @@ module.exports = {
 
             if (guildDb) {
                 if (guildDb.moderationMessages.enabled) {
-                    let moderatorChannel = channel.guild.channels.cache.find(channel => channel.name === guildDb.moderationMessages.channel);
+                    const moderatorChannel = channel.guild.channels.cache
+                        .find((chn) => chn.name === guildDb.moderationMessages.channel);
                     if (moderatorChannel) {
                         moderatorChannel.send(embed('Channel Create', [channel, channel.guild.name, channel.guild.iconURL()]));
                     }
                 }
             }
         }
-
     }
 };

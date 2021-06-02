@@ -1,20 +1,38 @@
 const Discord = require('discord.js');
 const logger = require('../utils/logger');
 const { prefix } = require('../config.json');
-const { timerController, pointsAndLevels, rules, getFromDatabase, basicControllers } = require('../utils/functions');
+const {
+    timerController,
+    pointsAndLevels,
+    rules,
+    getFromDatabase,
+    basicControllers
+} = require('../utils/functions');
 
 module.exports = {
     name: 'message',
     async execute(message) {
-        const client = message.client;
+        const { client } = message;
 
         if (message.author.bot || message.webhookID) return;
 
-        //const [member, guild] = await getFromDatabase(message);
+        let member;
+        let guild;
 
-        //basicControllers(message, guild);
+        try {
+            [member, guild] = await getFromDatabase(message);
 
-        //await pointsAndLevels(message, member, guild);
+            if (guild) {
+                basicControllers(message, guild);
+            }
+
+            if (member && guild) {
+                await pointsAndLevels(message, member, guild);
+            }
+        }
+        catch (e) {
+            logger.warn(e.message);
+        }
 
         if (message.channel.type !== 'dm') {
             const timer = client.timers.get(message.guild.id + message.channel.id);
@@ -23,11 +41,14 @@ module.exports = {
 
         if (!message.content.startsWith(prefix)) return;
 
-        const args = message.content.slice(prefix.length).trim().split(/ +/);
-        const commandName = args.shift().toLowerCase();
+        const args = message.content.slice(prefix.length)
+            .trim()
+            .split(/ +/);
+        const commandName = args.shift()
+            .toLowerCase();
 
         const command = client.commands.get(commandName)
-            || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+            || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
 
         if (!command) return;
 
@@ -46,24 +67,26 @@ module.exports = {
             return message.reply('I can\'t execute that command inside guilds!');
         }
 
-        // if (message.channel.type !== 'dm') {
-        //     const [rule, ruleMessage] = await rules(message, command, guild);
-        //     if (rule) {
-        //         message.channel.stopTyping(true);
-        //         try {
-        //             message.delete();
-        //             message.channel.send(ruleMessage)
-        //                 .then(msg => {
-        //                     msg.delete({ timeout: 3000 });
-        //                 });
-        //         }
-        //         catch (e) {
-        //             logger.error(e.message);
-        //         }
-        //     }
-        // }
+        if (message.channel.type !== 'dm' && guild) {
+            const [rule, ruleMessage] = await rules(message, command, guild);
+            if (rule) {
+                message.channel.stopTyping(true);
+                try {
+                    message.delete();
+                    message.channel.send(ruleMessage)
+                        .then((msg) => {
+                            msg.delete({ timeout: 3000 });
+                        });
+                }
+                catch (e) {
+                    logger.error(e.message);
+                }
+            }
+        }
 
-        message.channel.startTyping().then().catch();
+        message.channel.startTyping()
+            .then()
+            .catch();
 
         if (command.permissions) {
             const authorPerms = message.channel.permissionsFor(message.author);
@@ -73,7 +96,7 @@ module.exports = {
                 try {
                     message.delete();
                     message.channel.send('You do not have permission for this!')
-                        .then(msg => {
+                        .then((msg) => {
                             msg.delete({ timeout: 3000 });
                         });
                     return;
@@ -81,7 +104,6 @@ module.exports = {
                 catch (e) {
                     logger.error(e.message);
                 }
-
             }
         }
         if (command.channel) {
@@ -132,7 +154,7 @@ module.exports = {
         catch (error) {
             logger.error(`${error.message} guild:${message.guild ? message.guild.name : 'DM'}`);
             message.channel.send(`Sorry, there was an error trying to execute that command! You can report this problem by using **${prefix}issue** command`)
-                .then(msg => {
+                .then((msg) => {
                     msg.delete({ timeout: 5000 });
                 });
             message.channel.stopTyping(true);

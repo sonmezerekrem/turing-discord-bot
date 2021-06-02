@@ -12,10 +12,10 @@ module.exports = {
     execute(message, args) {
         logger.info(`Message command has been used at guild:${message.guild.id}`);
 
-        const guild = message.guild;
+        const { guild } = message;
 
-        const channel = guild.channels.cache.find(channel => channel.name === args[0]);
-        if(channel && channel.type === "text") {
+        const channel = guild.channels.cache.find((chn) => chn.name === args[0]);
+        if (channel && channel.type === 'text') {
             const content = message.content.substring(args[0].length + 10);
             channel.send(content);
         }

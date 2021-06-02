@@ -1,6 +1,7 @@
-const logger = require('../../utils/logger');
-const geniusToken = process.env.geniusToken;
 const axios = require('axios').default;
+const logger = require('../../utils/logger');
+
+const { geniusToken } = process.env;
 const { geniusApi } = require('../../config.json');
 const embed = require('../../utils/embeds').lyrics;
 const { queue } = require('./utils');
@@ -32,14 +33,15 @@ module.exports = {
             try {
                 const result = await axios({
                     method: 'get',
-                    url: geniusApi + '/search',
+                    url: `${geniusApi}/search`,
                     data: {
                         q: title
                     },
                     headers: {
-                        Authorization: 'Bearer ' + geniusToken
+                        Authorization: `Bearer ${geniusToken}`
                     }
-                }).catch(error => logger.error(error.message));
+                })
+                    .catch((error) => logger.error(error.message));
                 if (result.status === 200 && result.data.meta.status === 200) {
                     for (let i = 0; i < result.data.response.hits.length; i++) {
                         if (result.data.response.hits[i].type === 'song') {
@@ -47,9 +49,10 @@ module.exports = {
                                 method: 'get',
                                 url: geniusApi + result.data.response.hits[i].result.api_path,
                                 headers: {
-                                    Authorization: 'Bearer ' + geniusToken
+                                    Authorization: `Bearer ${geniusToken}`
                                 }
-                            }).catch(error => logger.error(error.message));
+                            })
+                                .catch((error) => logger.error(error.message));
 
                             if (songDetail.status === 200 && songDetail.data.meta.status === 200) {
                                 song.title = songDetail.data.response.song.title_with_featured;
@@ -69,26 +72,29 @@ module.exports = {
                 logger.error(e.message);
             }
         }
-        if (!message.member.voice.channel)
+        if (!message.member.voice.channel) {
             return message.channel.send('You have to be in a voice channel to use this command!');
+        }
 
         const serverQueue = queue.get(message.guild.id);
 
-        if (!serverQueue)
+        if (!serverQueue) {
             return message.channel.send('There is no song that I could show lyrics!');
+        }
 
-        if (!message.client.voice.connections.has(message.guild.id))
+        if (!message.client.voice.connections.has(message.guild.id)) {
             return message.channel.send('There is no song that I could show lyrics!');
+        }
 
-        if (serverQueue.playing == null)
+        if (serverQueue.playing == null) {
             return message.channel.send('There is no song that I could show lyrics!');
+        }
         const song = serverQueue.songs[serverQueue.playing];
 
-        if (song.lyricsUrl == null)
+        if (song.lyricsUrl == null) {
             return message.channel.send('Sorry, no lyrics found for this song');
+        }
 
         return message.channel.send(embed(song));
-
-
     }
 };

@@ -4,7 +4,7 @@ const api = require('../utils/api');
 
 module.exports = {
     name: 'guildDelete',
-    execute: async function(guild) {
+    async execute(guild) {
         logger.info(`${guild.client.user.tag} is deleted: ${guild.name} guildId:${guild.id}`);
 
         api.deleteGuild(guild.id);

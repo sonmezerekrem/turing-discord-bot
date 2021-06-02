@@ -23,7 +23,7 @@ module.exports = {
         }
 
         if (serverQueue.songs.length > 0) {
-            let array = serverQueue.songs;
+            const array = serverQueue.songs;
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * i);
                 if (i !== serverQueue.playing && j !== serverQueue.playing) {
@@ -35,7 +35,7 @@ module.exports = {
             serverQueue.songs = array;
             return message.channel.send('The play queue has shuffled.');
         }
-        else
-            return message.channel.send('There is no song that I could shuffle!');
+
+        return message.channel.send('There is no song that I could shuffle!');
     }
 };

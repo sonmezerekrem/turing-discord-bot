@@ -4,10 +4,12 @@ const api = require('../utils/api');
 
 module.exports = {
     name: 'inviteCreate',
-    execute: async function(invite) {
-
+    async execute(invite) {
         try {
-            const guild = invite.guild;
+            const {
+                guild,
+                channel
+            } = invite;
             const user = invite.inviter;
             logger.info(`New invite is created at guild: ${guild.name} user:${user.id}`);
 
@@ -15,7 +17,8 @@ module.exports = {
 
             if (guildDb) {
                 if (guildDb.moderationMessages.enabled) {
-                    let moderatorChannel = channel.guild.channels.cache.find(channel => channel.name === guildDb.moderationMessages.channel);
+                    const moderatorChannel = channel.guild.channels.cache
+                        .find((chn) => chn.name === guildDb.moderationMessages.channel);
                     if (moderatorChannel) {
                         moderatorChannel.send(embed('Invite Create', [user, invite.url, invite.expiresAt, guild.name]));
                     }

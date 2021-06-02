@@ -12,16 +12,17 @@ module.exports = {
     usage: '<channel name> <points> <member>',
     category: 'Owner',
     type: 'general',
-    execute: async function(message, args) {
+    async execute(message, args) {
         logger.info(`Admin command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        const guild = message.guild;
+        const { guild } = message;
 
-        const channel = guild.channels.cache.find(channel => channel.name === args[0]);
+        const channel = guild.channels.cache.find((chn) => chn.name === args[0]);
         if (channel && channel.type === 'text') {
             const member = message.guild.member(message.mentions.users.first());
             if (member) {
-                let point = parseInt(args[1]);
+                let point = parseInt(args[1], 10);
+                // eslint-disable-next-line no-restricted-globals
                 if (!isNaN(point)) {
                     point = Math.min(point, 20);
                     channel.send(points(member, point, 'Gift'));

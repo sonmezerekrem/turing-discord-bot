@@ -10,7 +10,7 @@ module.exports = {
     usage: '',
     category: 'Info',
     type: 'general',
-    execute(message, args) {
+    execute(message) {
         logger.debug(`Charts command has been used at guild:${message.guild.id} by:${message.author.id}`);
         return message.channel.send('We are trying to implement this command. It will be ready soon. Thank you for your interest.');
     }

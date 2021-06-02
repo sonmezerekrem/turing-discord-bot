@@ -26,7 +26,7 @@ module.exports = {
         if (serverQueue.songs.length > 0) {
             return message.channel.send(embed(message.guild.name, serverQueue.songs, serverQueue.playing));
         }
-        else
-            return message.channel.send('There is no song that I could show!');
+
+        return message.channel.send('There is no song that I could show!');
     }
 };

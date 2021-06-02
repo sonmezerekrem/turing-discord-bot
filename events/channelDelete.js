@@ -4,7 +4,7 @@ const api = require('../utils/api');
 
 module.exports = {
     name: 'channelDelete',
-    execute: async function(channel) {
+    async execute(channel) {
         if (channel.type !== 'dm') {
             logger.info(`Channel is deleted at guild: ${channel.guild.name} channel:${channel.id}`);
 
@@ -12,7 +12,8 @@ module.exports = {
 
             if (guildDb) {
                 if (guildDb.moderationMessages.enabled) {
-                    let moderatorChannel = channel.guild.channels.cache.find(channel => channel.name === guildDb.moderationMessages.channel);
+                    const moderatorChannel = channel.guild.channels.cache
+                        .find((chn) => chn.name === guildDb.moderationMessages.channel);
                     if (moderatorChannel) {
                         moderatorChannel.send(embed('Channel Delete', [channel, channel.guild.name, channel.guild.iconURL()]));
                     }

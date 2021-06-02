@@ -4,14 +4,15 @@ const api = require('../utils/api');
 
 module.exports = {
     name: 'guildCreate',
-    execute: async function(guild) {
+    async execute(guild) {
         logger.info(`${guild.client.user.tag} is joined to ${guild.name} guildId:${guild.id}`);
 
-        let channel = guild.channels.cache.find(channel => channel.name === 'general');
+        let channel = guild.channels.cache.find((chn) => chn.name === 'general');
         if (channel == null) {
             channel = guild.channels.cache
-                .filter(c => c.type === 'text'
-                    && c.permissionsFor(guild.client.user).has('SEND_MESSAGES')
+                .filter((c) => c.type === 'text'
+                    && c.permissionsFor(guild.client.user)
+                        .has('SEND_MESSAGES')
                     && c.permissionsFor(guild.roles.everyone))
                 .first();
         }

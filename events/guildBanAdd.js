@@ -1,20 +1,21 @@
 const logger = require('../utils/logger');
 const embed = require('../utils/embeds').moderation;
-const { turing } = require('../config.json');
+const api = require('../utils/api');
 
 module.exports = {
     name: 'guildBanAdd',
-    execute: async function(guild, user) {
+    async execute(guild, user) {
         logger.info(`User is banned at guild: ${guild.name} user:${user.id}`);
 
 
-        const guildDb = await api.getGuild(channel.guild.id);
+        const guildDb = await api.getGuild(guild.id);
 
         if (guildDb) {
             if (guildDb.moderationMessages.enabled) {
-                let moderatorChannel = channel.guild.channels.cache.find(channel => channel.name === guildDb.moderationMessages.channel);
+                const moderatorChannel = guild.channels.cache
+                    .find((channel) => channel.name === guildDb.moderationMessages.channel);
                 if (moderatorChannel) {
-                    const banInfo = await guild.fetchBan(user)
+                    const banInfo = await guild.fetchBan(user);
                     moderatorChannel.send(embed('Ban', [banInfo]));
                 }
             }

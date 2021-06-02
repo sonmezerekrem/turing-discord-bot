@@ -12,7 +12,7 @@ module.exports = {
     usage: '',
     category: 'Info',
     type: 'general',
-    execute: async function(message) {
+    async execute(message) {
         logger.debug(`Info command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const result = await api.getGuild(message.guild.id);
         return message.channel.send(embed(message, result));
