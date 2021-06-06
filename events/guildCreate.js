@@ -2,6 +2,7 @@ const logger = require('../utils/logger');
 const embed = require('../utils/embeds').helloOnJoin;
 const api = require('../utils/api');
 
+
 module.exports = {
     name: 'guildCreate',
     async execute(guild) {
