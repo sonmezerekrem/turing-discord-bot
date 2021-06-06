@@ -8,8 +8,7 @@ const {
     youtubeSearchApiUrl
 } = require('../../config.json');
 
-const { youtubeKey } = process.env;
-const { geniusToken } = process.env;
+
 const queue = new Map();
 
 const isSongUrl = (url) => {
@@ -54,7 +53,7 @@ const songInfo = async (args, author) => {
                     q: title
                 },
                 headers: {
-                    Authorization: `Bearer ${geniusToken}`
+                    Authorization: `Bearer ${process.env.GENIUS_TOKEN}`
                 }
             })
                 .catch((error) => logger.error(error.message));
@@ -65,7 +64,7 @@ const songInfo = async (args, author) => {
                             method: 'get',
                             url: geniusApi + result.data.response.hits[i].result.api_path,
                             headers: {
-                                Authorization: `Bearer ${geniusToken}`
+                                Authorization: `Bearer ${process.env.GENIUS_TOKEN}`
                             }
                         })
                             .catch((error) => logger.error(error.message));
@@ -104,7 +103,7 @@ const songInfo = async (args, author) => {
         if (song.youtubeUrl == null) {
             const youtubeSearch = await axios.get(youtubeSearchApiUrl, {
                 params: {
-                    key: youtubeKey,
+                    key: process.env.YOUTUBE_KEY,
                     type: 'video',
                     part: 'snippet',
                     q: args.join(' ')
