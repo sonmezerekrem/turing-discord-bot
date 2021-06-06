@@ -14,31 +14,11 @@
   "geniusUrl": "https://genius.com",
   "version": "2.0.0",
   "turing": "840619177739419649",
-  "grovvy": "234395307759108106",
-  "channels": {
-    "bugReporting": "842156525635108874",
-    "suggestions": "844260900906598451",
-    "lessons": "844118873640402964",
-    "project": "844269969080451112",
-    "commands": "840627566985347093",
-    "rules": "840624175433777192"
-  },
   "contact": {
     "invite": "https://discord.gg/TtdcMSuCK4",
     "website": "Not Released Yet",
     "instagram": "https://www.instagram.com/turingdiscordbot/"
   },
-  "music": [
-    "play",
-    "next",
-    "skip",
-    "prev",
-    "stop",
-    "p",
-    "resume",
-    "pause",
-    "queue",
-    "clear"
-  ],
+  "website": "https://turingdiscordbot.netlify.app",
   "backendPath": "http://localhost:3000"
 }

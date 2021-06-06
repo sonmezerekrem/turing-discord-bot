@@ -7,9 +7,7 @@ module.exports = {
     extends: [
         'airbnb-base'
     ],
-    parserOptions: {
-        ecmaVersion: 12
-    },
+    parserOptions: { ecmaVersion: 12 },
     rules: {
         indent: ['error', 4],
         'no-multiple-empty-lines': ['error', {
@@ -22,7 +20,8 @@ module.exports = {
             ignoreStrings: true,
             ignoreTemplateLiterals: true,
             ignoreRegExpLiterals: true
-        }],
+        }
+        ],
         'brace-style': ['error', 'stroustrup'],
         'linebreak-style': ['error', 'windows'],
         'comma-dangle': ['error', 'never'],
