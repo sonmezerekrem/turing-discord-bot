@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --recursive",
     "covarage": "nyc mocha --recursive",
-    "dev": "nodemon index.js",
+    "dev": "nodemon dev.js",
     "start": "pm2 start index.js --name discordbot --watch"
   },
   "author": "",

@@ -1,5 +1,5 @@
 require('dotenv')
-    .config({ path: 'prod.env' });
+    .config({ path: 'dev.env' });
 const logger = require('./utils/logger');
 const run = require('./app');
 
