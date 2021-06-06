@@ -9,7 +9,6 @@ const {
     prefix,
     color,
     website,
-    defaultActivity,
     version,
     contact
 } = require('../config.json');
@@ -21,6 +20,7 @@ const {
     toTitleCase,
     getDateAsString
 } = require('./functions');
+
 
 function help(message, args) {
     const embed = new Discord.MessageEmbed()
@@ -257,6 +257,15 @@ function memberEmbed(message, result) {
         .setTimestamp()
         .setThumbnail(member.user.avatarURL());
 
+    if (member.presence && member.presence.activities.length > 0) {
+        if (member.presence.activities[0].name === 'Spotify') {
+            embed.addField('Status', `**${member.presence.activities[0].name}** - ${member.presence.activities[0].state.replace(';', ',')} - ${member.presence.activities[0].details}`);
+        }
+        else {
+            embed.addField('Status', `${toTitleCase(member.presence.activities[0].type)} - ${member.presence.activities[0].name}`);
+        }
+    }
+
     if (result.connections.length > 0) {
         const connections = [];
         result.connections.forEach((conn) => {
@@ -421,26 +430,18 @@ function teamsEmbed(message, teams) {
 function botInfo(message) {
     const { user } = message.client;
     const member = message.guild.members.cache.get(user.id);
-    const { roles } = message.guild;
-
-    // eslint-disable-next-line no-underscore-dangle
-    const roleList = member._roles.map((id) => roles.cache.get(id).name)
-        .join(', ');
 
     const joinDate = getDateAsString(member.joinedAt);
 
     return new Discord.MessageEmbed()
         .setTitle(member.displayName)
+        .setDescription('Information about bot')
         .setColor(color)
+        .setURL(website)
         .addFields(
             {
-                name: 'Roles',
-                value: `${roleList.length > 0 ? roleList : 'No Roles'}`
-            },
-            {
-                name: 'Server Count ',
-                value: `${1}`,
-                inline: true
+                name: 'Website',
+                value: website
             },
             {
                 name: 'Joined At ',
@@ -465,16 +466,6 @@ function botInfo(message) {
             {
                 name: 'Language',
                 value: 'English',
-                inline: true
-            },
-            {
-                name: 'Activity ',
-                value: `${prefix}${defaultActivity.name} ${toTitleCase(defaultActivity.type)}`,
-                inline: true
-            },
-            {
-                name: 'Status ',
-                value: 'online',
                 inline: true
             },
             {
@@ -573,6 +564,9 @@ function moderation(action, args) {
                 .addField('Banned User', `${args[0].user.tag} (${args[0].user.id})`)
                 .addField('Reason', `${args[0].reason ? args[0].reason : 'No reason'}`)
                 .setThumbnail(args[0].user.avatarURL());
+            if (args[1] === '') {
+                embed.addField('Banned By', args[1]);
+            }
         }
         else if (action === 'Ban Remove') {
             embed.setTitle('Ban Remove')
@@ -582,11 +576,21 @@ function moderation(action, args) {
                 .setThumbnail(args[0].avatarURL());
         }
         else if (action === 'Member Remove') {
-            embed.setTitle('Member Leave')
-                .setDescription('Member is left or kicked')
-                .setThumbnail(args[0].user.avatarURL())
-                .setColor(colorSet.DarkOrange)
-                .addField('Member', `${args[0].displayName} (${args[0].id})`);
+            if (args[1] === '') {
+                embed.setTitle('Member Leave')
+                    .setDescription('Member is left the guild')
+                    .setThumbnail(args[0].user.avatarURL())
+                    .setColor(colorSet.DarkOrange)
+                    .addField('Member', `${args[0].displayName} (${args[0].id})`);
+            }
+            else {
+                embed.setTitle('Member Kicked')
+                    .setDescription('Member is kicked from the guild')
+                    .setThumbnail(args[0].user.avatarURL())
+                    .setColor(colorSet.DarkOrange)
+                    .addField('Member', `${args[0].displayName} (${args[0].id})`)
+                    .addField('Kicked By', args[1]);
+            }
         }
         else if (action === 'Channel Create') {
             embed.setTitle('Channel Create')
@@ -778,30 +782,41 @@ function libraryProject(project) {
         .setURL(project.url)
         .attachFiles(attachment)
         .setThumbnail('attachment://libraries.png')
-        .addFields({
-            name: 'Platform',
-            value: project.platform,
-            inline: true
-        }, {
-            name: 'Language',
-            value: project.language,
-            inline: true
-        }, {
-            name: 'Version',
-            value: project.latestStableRelease
-        },
-        {
-            name: 'Latest Release',
-            value: getDateAsString(new Date(project.latestStableReleaseDate))
-        },
-        {
-            name: 'License',
-            value: project.license
-        },
-        {
-            name: 'Repository',
-            value: project.repository ? project.repository : '-'
-        });
+        .addFields(
+            {
+                name: 'Platform',
+                value: project.platform,
+                inline: true
+            }, {
+                name: 'Language',
+                value: project.language,
+                inline: true
+            }, {
+                name: 'Version',
+                value: project.latestStableRelease
+            },
+            {
+                name: 'Latest Release',
+                value: getDateAsString(new Date(project.latestStableReleaseDate))
+            },
+            {
+                name: 'License',
+                value: project.license
+            },
+            {
+                name: 'Repository',
+                value: project.repository ? project.repository : '-'
+            }
+        );
+}
+
+function presenceUpdate(presence) {
+    return new Discord.MessageEmbed()
+        .setTitle(`${presence.member.displayName} now Playing`)
+        .setDescription(`${presence.activities[0].name} - ${presence.activities[0].details}`)
+        .setThumbnail(presence.activities[0].assets.largeImage)
+        .setFooter(`${presence.guild.name} -  Discord`)
+        .setTimestamp();
 }
 
 module.exports = {
@@ -824,5 +839,6 @@ module.exports = {
     support,
     user: userEmbed,
     libraryPlatform,
-    libraryProject
+    libraryProject,
+    presenceUpdate
 };
