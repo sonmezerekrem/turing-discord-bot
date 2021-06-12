@@ -1,5 +1,10 @@
-const { monthNames, levels } = require('./variables');
-const { prefix, music } = require('../config.json');
+const {
+    monthNames,
+    levels
+} = require('./variables');
+const {
+    prefix
+} = require('../config.json');
 const api = require('./api');
 const canvases = require('./canvases');
 const logger = require('./logger');
@@ -43,7 +48,7 @@ function timerController(message, timerObject) {
 
 function rules(message, command, guild) {
     if (guild) {
-        const rulesObj = new Map(JSON.parse(guild.rules));
+        const rulesObj = new Map(JSON.parse(JSON.stringify([...guild.rules])));
         if (rulesObj.has(message.channel.id)) {
             const rule = rulesObj.get(message.channel.id);
             if (rule.name === 'nothing') {
@@ -62,7 +67,7 @@ function rules(message, command, guild) {
                 return [false, ''];
             }
             if (rule.name === 'no category') {
-                if (rule.args.contains(command.category)) {
+                if (rule.args.includes(command.category)) {
                     return [true, rule.message];
                 }
                 return [false, ''];
@@ -90,8 +95,20 @@ function getPoint(content) {
 }
 
 async function getFromDatabase(message) {
-    const member = await api.getMember(message.guild.id, message.author.id);
-    const guild = await api.getGuild(message.guild.id);
+    let member = await api.getMember(message.guild.id, message.author.id);
+    if (member === 404) {
+        await api.saveMember(message.guild.id,
+            [message.guild.id, message.author.id, message.author.tag, message.member.joinedAt]);
+        member = await api.getMember(message.guild.id, message.author.id);
+    }
+    let guild = await api.getGuild(message.guild.id);
+    if (guild === 404) {
+        await api.saveGuild([
+            message.guild.id, message.guild.ownerID, message.guild.createdAt,
+            message.guild.joinedAt, message.guild.region
+        ]);
+        guild = await api.getGuild(message.guild.id);
+    }
     return [member, guild];
 }
 
@@ -101,7 +118,7 @@ async function pointsAndLevels(message, member, guild) {
 
     let levelUp = false;
 
-    if (member) {
+    if (member !== null) {
         const { level } = member;
         const point = member.points + newPoint;
 
@@ -116,77 +133,75 @@ async function pointsAndLevels(message, member, guild) {
 
         if (levelUp) {
             api.updateMember(message.guild.id, message.author.id, { level: level + 1 });
-            message.channel.send(canvases.levelUp(message, level + 1));
+            await canvases.levelUp(message, level + 1);
         }
 
-        if (guild && guild.roleManagement && levelUp) {
+        if (guild != null && guild.roleManagement && levelUp) {
             if (level === 3) {
                 let bronze = message.guild.roles.cache.find((role) => role.name === 'Bronze');
                 const newMember = message.guild.roles.cache.find((role) => role.name === 'New Member');
                 if (bronze == null) {
-                    await message.guild.roles.create({
-                        name: 'Bronze',
-                        color: 'DARK_GOLD'
-                    },
-                    'Role for Bronze members');
+                    await message.guild.roles.create(
+                        {
+                            name: 'Bronze',
+                            color: 'DARK_GOLD'
+                        },
+                        'Role for Bronze members');
                     bronze = message.guild.roles.cache.find((role) => role.name === 'Bronze');
                 }
                 message.member.roles.add(bronze)
                     .catch((error) => logger.error(error.message));
                 message.member.roles.remove(newMember)
                     .catch((error) => logger.error(error.message));
-                message.channel.send(canvases.roleUp(message, bronze));
+                await canvases.roleUp(message, bronze);
             }
             else if (level === 11) {
                 const bronze = message.guild.roles.cache.find((role) => role.name === 'Bronze');
                 let silver = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 if (silver == null) {
-                    await message.guild.roles.create({
-                        name: 'Silver',
-                        color: 'LIGHT_GREY'
-                    },
-                    'Role for Silver members');
+                    await message.guild.roles.create(
+                        {
+                            name: 'Silver',
+                            color: 'LIGHT_GREY'
+                        },
+                        'Role for Silver members');
                     silver = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 }
                 message.member.roles.add(silver)
                     .catch((error) => logger.error(error.message));
                 message.member.roles.remove(bronze)
                     .catch((error) => logger.error(error.message));
-                message.channel.send(canvases.roleUp(message, silver));
+                await canvases.roleUp(message, silver);
             }
             else if (level === 17) {
                 const silver = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 let gold = message.guild.roles.cache.find((role) => role.name === 'Gold');
                 if (gold == null) {
-                    await message.guild.roles.create({
-                        name: 'Gold',
-                        color: 'GOLD'
-                    },
-                    'Role for Gold members');
+                    await message.guild.roles.create(
+                        {
+                            name: 'Gold',
+                            color: 'GOLD'
+                        },
+                        'Role for Gold members');
                     gold = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 }
                 message.member.roles.add(gold)
                     .catch((error) => logger.error(error.message));
                 message.member.roles.remove(silver)
                     .catch((error) => logger.error(error.message));
-                message.channel.send(canvases.roleUp(message, silver));
+                await canvases.roleUp(message, gold);
             }
         }
     }
 }
 
 function basicControllers(message, guild) {
-    if (guild) {
-        if (guild.disableMusicEmbeds) {
-            music.forEach((command) => {
-                if (message.content.startsWith(/./ + command)) {
-                    message.suppressEmbeds(true)
-                        .then()
-                        .catch();
-                }
-            });
-        }
-    }
+    // if (guild) {
+    //     if (guild.disableMusicEmbeds) {
+    //         message.suppressEmbeds()
+    //             .catch((error) => logger.error(error.message));
+    //     }
+    // }
 }
 
 

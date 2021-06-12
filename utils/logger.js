@@ -8,7 +8,7 @@ const options = {
         json: true,
         format: winston.format.combine(
             winston.format.timestamp({
-                format: 'YYYY-MM-DD HH:mm:ss'
+                format: 'YYYY-MM-DD HH-mm-ss'
             }),
             winston.format.json()
         ),
@@ -26,7 +26,7 @@ const options = {
         colorize: true,
         format: winston.format.combine(
             winston.format.timestamp({
-                format: 'YYYY-MM-DD HH:mm:ss'
+                format: 'YYYY-MM-DD HH-mm-ss'
             }),
             winston.format.printf((info) => `[${info.level.toUpperCase()}]: ${[info.timestamp]}: ${info.message}`),
             winston.format.colorize({
@@ -44,38 +44,35 @@ const options = {
     }
 };
 
-let logger;
+
+let transports;
 
 if (process.env.NODE_ENV === 'production') {
-    logger = winston.createLogger({
-        transports: [
-            new winston.transports.MongoDB(options.production),
-            new winston.transports.Console({
-                format: winston.format.combine(
-                    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-                    winston.format.printf((info) => `${info.level}: ${[info.timestamp]}: ${info.message}`)
-                )
-            })
-        ],
-        exitOnError: false
-    });
+    transports = [
+        new winston.transports.MongoDB(options.production),
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                winston.format.printf((info) => `${info.level}: ${[info.timestamp]}: ${info.message}`)
+            )
+        })
+    ];
 }
 else if (process.env.NODE_ENV === 'development') {
-    logger = winston.createLogger({
-        transports: [
-            new winston.transports.Console(options.development)
-        ],
-        exitOnError: false
-    });
+    transports = [
+        new winston.transports.Console(options.development)
+    ];
 }
 else {
-    logger = winston.createLogger({
-        transports: [
-            new winston.transports.Console(options.test)
-        ],
-        exitOnError: false
-    });
+    transports = [
+        new winston.transports.Console(options.test)
+    ];
 }
+
+const logger = winston.createLogger({
+    transports,
+    exitOnError: false
+});
 
 
 module.exports = logger;
