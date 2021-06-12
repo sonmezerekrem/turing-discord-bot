@@ -7,7 +7,7 @@ module.exports = {
     description: 'Sends the website of bot, Discord server invite link and other support channels of bot',
     guildOnly: false,
     args: false,
-    aliases: [],
+    aliases: ['contact'],
     usage: '',
     category: 'Info',
     type: 'general',

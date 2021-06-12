@@ -22,7 +22,7 @@ module.exports = {
             message.channel.send(members.join('\n'));
         }
         else {
-            message.channel.send('No member found for this guild!');
+            message.channel.send('Sorry, I can\'t show top list right now');
         }
     }
 };

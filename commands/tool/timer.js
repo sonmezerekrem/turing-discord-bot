@@ -4,11 +4,11 @@ const { formatTime } = require('../../utils/functions');
 
 module.exports = {
     name: 'timer',
-    description: 'Creates a timer with given seconds or default 10 minutes. IT update remaining time every 10 seconds. With block option delete all messages until the timer runs out.',
+    description: 'Creates a timer with given seconds or default 10 minutes. It update remaining time every 10 seconds. With block option deletes all messages until the timer runs out.',
     guildOnly: true,
     args: false,
     aliases: [],
-    usage: '[seconds] [\'block\']',
+    usage: '<seconds> [\'block\']',
     category: 'Tool',
     type: 'general',
     execute(message, args) {

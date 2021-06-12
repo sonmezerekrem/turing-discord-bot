@@ -1,8 +1,5 @@
 const logger = require('../../utils/logger');
-const {
-    turing,
-    suggestions
-} = require('../../config.json');
+const api = require('../../utils/api');
 
 
 module.exports = {
@@ -14,30 +11,20 @@ module.exports = {
     usage: '',
     category: 'Other',
     type: 'general',
+    cooldown: 60,
     execute(message) {
         logger.debug(`Suggestion command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        const { guild } = message;
+        const suggest = {
+            guild: message.guild.id,
+            guildname: message.guild.name,
+            user: message.author.id,
+            username: message.author.username,
+            time: new Date().toString(),
+            content: message.content
+        };
 
-        if (guild.id === turing) {
-            if (message.channel.id !== suggestions) {
-                try {
-                    message.delete();
-                    message.channel.send(`Please use **${guild.channels.cache.find((channel) => channel.name === 'suggestions')}** channel to use **suggestion** command.`)
-                        .then((msg) => {
-                            msg.delete({ timeout: 5000 });
-                        });
-                    return;
-                }
-                catch (e) {
-                    logger.error(e.message);
-                }
-            }
-            logger.info(`A suggestion is written by ${message.author.id} at guild ${guild.id}. Suggestion: ${message.content}`);
-            return message.channel.send('Thank you for your suggestion. My developers will evaluate this suggestion.');
-        }
-
-        logger.info(`A suggestion is written by ${message.author.id} at guild ${guild.id}. Suggestion: ${message.content}`);
-        return message.channel.send('Thank you for your suggestion. My developers will evaluate this suggestion.');
+        api.saveSuggestion(suggest);
+        message.channel.send('Thank you for your suggestion. My developers will evaluate this suggestion.');
     }
 };

@@ -2,7 +2,7 @@ const logger = require('../../utils/logger');
 const embed = require('../../utils/embeds').teams;
 
 
-function mention(client, mentionText) {
+const mention = (client, mentionText) => {
     if (!mentionText) return;
 
     if (mentionText.startsWith('<@') && mentionText.endsWith('>')) {
@@ -14,8 +14,7 @@ function mention(client, mentionText) {
 
         return client.users.cache.get(mentionText);
     }
-}
-
+};
 
 module.exports = {
     name: 'teams',
@@ -25,7 +24,7 @@ module.exports = {
     aliases: [],
     usage: '<number of teams> <members>',
     permissions: '',
-    category: 'Moderation',
+    category: 'Tools',
     type: 'general',
     execute(message, args) {
         logger.debug(`Teams command has been used at guild:${message.guild.id} by:${message.author.id}`);

@@ -1,8 +1,5 @@
 const logger = require('../../utils/logger');
-const {
-    turing,
-    bugReporting
-} = require('../../config.json');
+const api = require('../../utils/api');
 
 
 module.exports = {
@@ -14,30 +11,21 @@ module.exports = {
     usage: '',
     category: 'Other',
     type: 'general',
+    cooldown: 60,
     execute(message) {
         logger.debug(`Issue command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        const { guild } = message;
+        const report = {
+            guild: message.guild.id,
+            guildname: message.guild.name,
+            user: message.author.id,
+            username: message.author.username,
+            time: new Date().toString(),
+            content: message.content
+        };
 
-        if (guild.id === turing) {
-            if (message.channel.id !== bugReporting) {
-                try {
-                    message.delete();
-                    message.channel.send(`Please use **${guild.channels.cache.find((channel) => channel.name === 'bug-reporting')}** channel to use **issue** command.`)
-                        .then((msg) => {
-                            msg.delete({ timeout: 5000 });
-                        });
-                    return;
-                }
-                catch (e) {
-                    logger.error(e.message);
-                }
-            }
-            logger.info(`An issue reported by ${message.author.id} at guild ${guild.id}. Issue: ${message.content}`);
-            return message.channel.send('Thank you for reporting this issue. My developers will  analyze this issue.');
-        }
+        api.reportIssue(report);
 
-        logger.info(`An issue reported by ${message.author.id} at guild ${guild.id}. Issue: ${message.content}`);
-        return message.channel.send('Thank you for reporting this issue. My developers will be analyze this issue.');
+        return message.channel.send('Thank you for reporting this issue. My developers will analyze this issue.');
     }
 };
