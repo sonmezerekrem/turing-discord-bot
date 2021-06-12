@@ -10,6 +10,7 @@ function run(dirname) {
     client.commands = new Discord.Collection();
     client.cooldowns = new Discord.Collection();
     client.timers = new Discord.Collection();
+    client.playlists = new Discord.Collection();
 
     const eventsPath = path.resolve(dirname, './events');
     const eventFiles = fs.readdirSync(eventsPath)

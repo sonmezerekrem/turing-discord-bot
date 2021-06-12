@@ -7,12 +7,13 @@
     "test": "mocha --recursive",
     "covarage": "nyc mocha --recursive",
     "dev": "nodemon dev.js",
-    "start": "pm2 start index.js --name discordbot --watch"
+    "start": "pm2 start index.js --name discordbot --watch",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.5.0",
+    "@discordjs/opus": "^0.5.3",
     "axios": "^0.21.1",
     "canvas": "^2.8.0",
     "discord.js": "^12.5.3",
@@ -21,17 +22,19 @@
     "ffmpeg-static": "^4.3.0",
     "fluent-ffmpeg": "^2.1.2",
     "js-yaml": "^4.1.0",
-    "mathjs": "^9.4.1",
+    "mathjs": "^9.4.2",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "string-similarity": "^4.0.4",
     "unique-names-generator": "^4.5.0",
     "winston": "^3.3.3",
     "winston-mongodb": "^5.0.7",
+    "yt-search": "^2.8.0",
     "ytdl-core": "^4.8.0"
   },
   "devDependencies": {
     "chai": "^4.3.4",
-    "eslint": "^7.27.0",
+    "eslint": "^7.28.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
     "mocha": "^8.4.0",
