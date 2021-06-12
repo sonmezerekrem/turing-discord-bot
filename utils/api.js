@@ -2,16 +2,24 @@ const axios = require('axios').default;
 const logger = require('./logger');
 const { backendPath } = require('../config.json');
 
+
 async function getGuild(guildId) {
     const result = await axios({
         method: 'get',
         url: `${backendPath}/guilds/${guildId}`
     })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => {
+            logger.warn(error.message);
+            if (error.response.status === 404) {
+                return 404;
+            }
+        });
 
+    if (result === 404) return 404;
     if (result.status === 200) return result.data.guild;
     return null;
 }
+
 
 async function saveGuild(args) {
     const result = await axios({
@@ -32,6 +40,7 @@ async function saveGuild(args) {
     return result.status === 201;
 }
 
+
 function updateGuild(guildId, args) {
     axios({
         method: 'patch',
@@ -47,6 +56,7 @@ function updateGuild(guildId, args) {
         })
         .catch((error) => logger.warn(error.message));
 }
+
 
 function deleteGuild(guildId) {
     axios({
@@ -64,16 +74,24 @@ function deleteGuild(guildId) {
         .catch((error) => logger.warn(error.message));
 }
 
+
 async function getMember(guildId, memberId) {
     const result = await axios({
         method: 'get',
         url: `${backendPath}/guilds/${guildId}/members/${memberId}`
     })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => {
+            logger.warn(error.message);
+            if (error.response.status === 404) {
+                return 404;
+            }
+        });
 
+    if (result === 404) return 404;
     if (result.status === 200) return result.data.member;
     return null;
 }
+
 
 async function saveMember(guildId, args) {
     const result = await axios({
@@ -92,6 +110,7 @@ async function saveMember(guildId, args) {
 
     return result.status === 201;
 }
+
 
 function updateMember(guildId, memberId, args) {
     axios({
@@ -120,11 +139,12 @@ function givePoints(guildId, memberId, points) {
     })
         .then((result) => {
             if (result.status === 201) {
-                logger.info('Changes have saved');
+                logger.debug('Points given');
             }
         })
         .catch((error) => logger.warn(error.message));
 }
+
 
 function deleteMember(guildId, memberId) {
     axios({
@@ -142,6 +162,7 @@ function deleteMember(guildId, memberId) {
         .catch((error) => logger.warn(error.message));
 }
 
+
 async function getTopTen(guildId) {
     const result = await axios({
         method: 'get',
@@ -152,6 +173,7 @@ async function getTopTen(guildId) {
     if (result.status === 200) return result.data.members;
     return null;
 }
+
 
 async function getWeeklyTop(guildId) {
     const result = await axios({
