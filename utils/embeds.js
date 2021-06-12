@@ -10,7 +10,9 @@ const {
     color,
     website,
     version,
-    contact
+    contact,
+    defaultActivity,
+    defaultState
 } = require('../config.json');
 const {
     categories,
@@ -48,8 +50,8 @@ function help(message, args) {
                     .join(', ')
             },
             {
-                name: 'Music',
-                value: commands.filter((command) => command.category === 'Music')
+                name: 'Sound',
+                value: commands.filter((command) => command.category === 'Sound')
                     .map((command) => command.name)
                     .join(', ')
             },
@@ -98,13 +100,13 @@ function help(message, args) {
             return 'Only owner of this guild access this commands!';
         }
         embed.setTitle(`${toTitleCase(name)} Commands`);
-        embed.setDescription(categories[name]);
         const categoryCommands = commands.filter((command) => command.category === toTitleCase(name));
+        const content = [`${categories[name]}\n`];
         categoryCommands.forEach((command) => {
-            embed.addField(command.name, command.description);
+            content.push(`**${command.name}:** ${command.description}`);
         });
-
-        embed.addField('\u200b', `\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+        content.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+        embed.setDescription(content.join('\n\n'));
         return embed;
     }
 
@@ -132,6 +134,7 @@ function help(message, args) {
     embed.addField('Guild Only', `${command.guildOnly ? 'Yes' : 'No'}`);
     return embed;
 }
+
 
 function serverInfo(message, result) {
     const { guild } = message;
@@ -162,11 +165,6 @@ function serverInfo(message, result) {
                 inline: true
             },
             {
-                name: 'Roles',
-                value: `${guild.roles.cache.size}`,
-                inline: true
-            },
-            {
                 name: 'AFK Channel',
                 value: `${guild.afkChannel ? guild.afkChannel : 'Not Set'}`,
                 inline: true
@@ -191,7 +189,7 @@ function serverInfo(message, result) {
         embed.addField('Rules Channel', guild.rulesChannel.name);
     }
 
-    if (result && result.connections.length > 0) {
+    if (result !== null && result.connections.length > 0) {
         const connections = [];
         result.connections.forEach((conn) => {
             connections.push(`__${conn.name}__\n${conn.url}\n`);
@@ -201,16 +199,6 @@ function serverInfo(message, result) {
     return embed;
 }
 
-function lyrics(song) {
-    const title = (song.artist != null ? `${song.artist} - ` : '') + (song.title != null ? song.title : song.youtubeTitle);
-    return new Discord.MessageEmbed()
-        .setColor(song.color)
-        .setTitle(`${title}`)
-        .setDescription(`You can find the lyrics on the link below\n\n ${song.lyricsUrl}\n`)
-        .setThumbnail(song.thumbnail != null ? song.thumbnail : song.youtubeThumbnail)
-        .setFooter('Powered by Genius')
-        .setTimestamp();
-}
 
 function memberEmbed(message, result) {
     const { member } = message;
@@ -255,7 +243,7 @@ function memberEmbed(message, result) {
         )
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp()
-        .setThumbnail(member.user.avatarURL());
+        .setThumbnail(member.user.avatarURL() != null ? member.user.avatarURL() : 'https://cdn.discordapp.com/embed/avatars/0.png');
 
     if (member.presence && member.presence.activities.length > 0) {
         if (member.presence.activities[0].name === 'Spotify') {
@@ -277,36 +265,6 @@ function memberEmbed(message, result) {
     return embed;
 }
 
-function playingSong(guild, song) {
-    return new Discord.MessageEmbed()
-        .setTitle(song.isGenius ? `${song.artist} - ${song.title}` : song.youtubeTitle)
-        .setColor(song.color)
-        .setURL(song.youtubeUrl)
-        .setAuthor('Now Playing')
-        .setFooter(`Powered By Genius -  ${guild.name} -  Discord`)
-        .setThumbnail(song.isGenius ? song.thumbnail : song.youtubeThumbnail)
-        .addField('\u200B', '\u200B'.repeat(500));
-}
-
-function queue(guildName, songs, playing) {
-    const embed = new Discord.MessageEmbed()
-        .setTitle('The Play Queue')
-        .setColor(color)
-        .setFooter(`Powered By Genius -  ${guildName} -  Discord`)
-        .setTimestamp();
-    const content = [];
-    for (let i = 0; i < songs.length; i++) {
-        if (playing != null && playing === i) {
-            content.push(`**Now Playing**\n__${i + 1}- ${songs[i].isGenius ? `${songs[i].artist} - ${songs[i].title}` : songs[i].youtubeTitle}__\n`);
-            embed.setThumbnail(songs[i].isGenius ? songs[i].thumbnail : songs[i].youtubeThumbnail);
-        }
-        else {
-            content.push(`${i + 1}- ${songs[i].isGenius ? `${songs[i].artist} - ${songs[i].title}` : songs[i].youtubeTitle}\n`);
-        }
-    }
-    embed.setDescription(content);
-    return embed;
-}
 
 function roleEmbed(message, roleName) {
     const role = message.guild.roles.cache.find((r) => r.name === roleName.join(' '));
@@ -332,80 +290,6 @@ function roleEmbed(message, roleName) {
             .includes('ADMINISTRATOR') ? 'Yes' : 'No', true);
 }
 
-function search(message, args) {
-    const songOptions = args.map((s) => [s.snippet.title, s.snippet.channelTitle]);
-    return new Discord.MessageEmbed()
-        .setColor(color)
-        .setThumbnail(args[0].snippet.thumbnails.medium.url)
-        .setFooter(`${message.guild.name} -  Discord`)
-        .setTimestamp()
-        .setTitle('Here\'s what I found for you')
-        .setDescription('You can use reactions to choose a song')
-        .addFields(
-            {
-                name: `1- ${songOptions[0][0]}`,
-                value: `by ${songOptions[0][1]}`
-            },
-            {
-                name: `2- ${songOptions[1][0]}`,
-                value: `by ${songOptions[0][1]}`
-            },
-            {
-                name: `3- ${songOptions[2][0]}`,
-                value: `by ${songOptions[0][1]}`
-            },
-            {
-                name: `4- ${songOptions[3][0]}`,
-                value: `by ${songOptions[0][1]}`
-            },
-            {
-                name: `5- ${songOptions[4][0]}`,
-                value: `by ${songOptions[0][1]}`
-            }
-        );
-}
-
-function songInfo(song, streamTime) {
-    streamTime = Math.round(streamTime / 1000);
-
-    const embed = new Discord.MessageEmbed()
-        .setAuthor('Song Information')
-        .setTitle(song.isGenius ? song.title : song.youtubeTitle)
-        .setThumbnail(song.isGenius ? song.thumbnail : song.youtubeThumbnail)
-        .setURL(song.youtubeUrl)
-        .setColor(song.color)
-        .setFooter('Powered by Genius');
-
-    if (song.length != null) {
-        // eslint-disable-next-line no-return-assign
-        const toMinute = (s) => (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s;
-
-        const point = Math.round((streamTime) * 30 / song.length);
-        let current = Array(30)
-            .fill('–');
-        current[point] = '⁕';
-        current = current.join('');
-
-        embed.setDescription(`♪ ${toMinute(streamTime)} ${current} ${toMinute(song.length)}`);
-    }
-
-    if (song.isGenius) {
-        embed.addField('Artist', song.artist);
-        embed.addField('Album', song.album);
-    }
-    if (song.release) {
-        embed.addField('Release Date', getDateAsString(song.release));
-    }
-
-    if (song.lyricsUrl != null) {
-        embed.addField('Lyrics', song.lyricsUrl);
-    }
-    if (song.spotifyUrl != null) {
-        embed.addField('Spotify', song.spotifyUrl);
-    }
-
-    return embed;
-}
 
 function teamsEmbed(message, teams) {
     const embed = new Discord.MessageEmbed()
@@ -426,6 +310,7 @@ function teamsEmbed(message, teams) {
 
     return embed;
 }
+
 
 function botInfo(message) {
     const { user } = message.client;
@@ -479,79 +364,36 @@ function botInfo(message) {
         .setThumbnail(user.avatarURL());
 }
 
-function helloOnJoin(guild) {
+
+function helloOnJoin(guild, db) {
     const { user } = guild.client;
     const memberObj = guild.members.cache.get(user.id);
 
     const joinDate = getDateAsString(memberObj.joinedAt);
 
+    const description = [];
+    description.push(`I am happy to here. Thank you for adding me to ${guild.name}. I am a multipurpose bot with many capabilities. Here's a little bit information about me and configurations for this guild.\n`);
+    description.push(`**Website**\n ${website}\n`);
+    description.push(`**Joined At:** ${joinDate}`);
+    description.push(`**Prefix:** ${prefix}`);
+    description.push(`**Status and Activity:** ${toTitleCase(defaultState)}, ${toTitleCase(`${defaultActivity.type} ${defaultActivity.name}`)}`);
+    description.push(`**Help Command:** ${prefix}help`);
+    description.push(`**Role Management:** ${db !== null && db.roleManagement ? 'Active' : 'Inactive'}`);
+    description.push(`**Welcome Messages:** ${db !== null && db.welcomeMessage.enabled ? 'Active' : 'Inactive'}`);
+    description.push(`**Warnings for Members:** ${db !== null && db.warnings ? 'Active' : 'Inactive'}`);
+    description.push(`**Moderation Messages:** ${db !== null && db.moderationMessages.enabled ? 'Active' : 'Inactive'}`);
+    description.push(`**Disabled Music Embeds:** ${db !== null && db.disableMusicEmbeds ? 'Active' : 'Inactive'}`);
+
     return new Discord.MessageEmbed()
         .setTitle(`Hello I am ${memberObj.displayName}.`)
         .setColor(color)
-        .setDescription(`I am happy to here. Thank you for adding me to ${guild.name}. I am a multipurpose bot with many capabilities.
-                        Here's a little bit information about me and configurations for this guild.`)
-        .addField('Website', website)
-        .addFields(
-            {
-                name: 'Server Count',
-                value: `${guild.client.guilds.cache.size}`,
-                inline: true
-            },
-            {
-                name: 'Joined At ',
-                value: `${joinDate}`,
-                inline: true
-            },
-            {
-                name: 'Prefix ',
-                value: `${prefix}`,
-                inline: true
-            },
-            {
-                name: 'Status ',
-                value: 'online',
-                inline: true
-            },
-            {
-                name: 'Activity ',
-                value: 'Playing help',
-                inline: true
-            },
-            {
-                name: 'Help Command',
-                value: `${prefix}help`,
-                inline: true
-            },
-            {
-                name: 'Leveling',
-                value: 'Active',
-                inline: true
-            },
-            {
-                name: 'Role Management',
-                value: 'Inactive',
-                inline: true
-            },
-            {
-                name: 'Welcome/Leave Messages',
-                value: 'Inactive',
-                inline: true
-            },
-            {
-                name: 'Warnings',
-                value: 'Inactive',
-                inline: true
-            },
-            {
-                name: 'Moderation Messages',
-                value: 'Inactive',
-                inline: true
-            }
-        )
+        .setDescription(description.join('\n'))
+        .setURL(website)
         .setFooter(`${guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(user.avatarURL());
 }
+
 
 function moderation(action, args) {
     const embed = new Discord.MessageEmbed()
@@ -629,15 +471,6 @@ function moderation(action, args) {
                 .addField('Creator User', `${args[0].tag} (${args[0].id})`)
                 .addField('Expires At', getDateAsString(args[2]));
         }
-        else if (action === 'Role Request') {
-            embed.setTitle('Role Request')
-                .setDescription('New role is requested')
-                .setColor(colorSet.Lime)
-                .addField('User', `${args[0].tag} (${args[0].id})`)
-                .setThumbnail(args[0].avatarURL())
-                .setFooter(`${args[2]} -  Discord`)
-                .addField('Role', `${args[1]}`);
-        }
     }
     catch (e) {
         logger.error(e.message);
@@ -645,6 +478,7 @@ function moderation(action, args) {
 
     return embed;
 }
+
 
 function welcomeMessage(member) {
     return new Discord.MessageEmbed()
@@ -655,6 +489,7 @@ function welcomeMessage(member) {
         .setColor(colorSet.LightYellow)
         .setTimestamp();
 }
+
 
 function points(member, point, source) {
     return new Discord.MessageEmbed()
@@ -668,6 +503,7 @@ function points(member, point, source) {
         .setThumbnail(member.user.avatarURL());
 }
 
+
 function warning(member, warner, reason) {
     return new Discord.MessageEmbed()
         .setTitle(`Warning: ${member.displayName}`)
@@ -675,12 +511,13 @@ function warning(member, warner, reason) {
         .setTimestamp()
         .setColor(colorSet.Orange)
         .setThumbnail(member.user.avatarURL())
-        .setDescription(`**Warned By:** ${warner} \n\n**Member:** ${member.user.tag} - (${member.id}) \n\n**Reason:** ${reason}`);
+        .setDescription(`**Warned By:** ${warner} \n**Member:** ${member.user.tag} - (${member.id}) \n**Reason:** ${reason}`);
 }
+
 
 function support(message) {
     return new Discord.MessageEmbed()
-        .setTitle(`Here's support channels for ${message.client.user.username}`)
+        .setTitle(`Here's contact channels for ${message.client.user.username}`)
         .setDescription('You can reach community from this channels')
         .addFields(
             {
@@ -702,11 +539,19 @@ function support(message) {
         .setThumbnail(message.client.user.avatarURL());
 }
 
+
 function userEmbed(member, result) {
     const { roles } = member.guild;
     // eslint-disable-next-line no-underscore-dangle
     const roleList = member._roles.map((id) => roles.cache.get(id).name)
         .join(', ');
+
+    if (result == null) {
+        result = {
+            level: '-',
+            connections: []
+        };
+    }
 
     const embed = new Discord.MessageEmbed()
         .setTitle(member.displayName)
@@ -750,65 +595,6 @@ function userEmbed(member, result) {
     return embed;
 }
 
-function libraryPlatform(platform) {
-    const embed = new Discord.MessageEmbed()
-        .setTitle(platform.name)
-        .setDescription(platform.description)
-        .setColor(platform.color)
-        .setURL(platform.homepage)
-        .addField('Language', platform.language)
-        .addField('Homepage', platform.homepage)
-        .setFooter('Powered by Libraries.io')
-        .setTimestamp();
-
-    try {
-        embed.setThumbnail(platform.image ? platform.image : 'https://libraries.io/assets/logo-9a0c71ef3e238cad3e4ee8196e4b11f0d83c43435bb81602f6932bed992812ed.svg');
-    }
-    catch (e) {
-        logger.error(e.message);
-    }
-
-    return embed;
-}
-
-function libraryProject(project) {
-    const attachment = new Discord.MessageAttachment('./assets/icons/libraries.png', 'libraries.png');
-    return new Discord.MessageEmbed()
-        .setTitle(project.name)
-        .setDescription(project.description)
-        .setColor(project.color)
-        .setFooter('Powered by Libraries.io')
-        .setTimestamp()
-        .setURL(project.url)
-        .attachFiles(attachment)
-        .setThumbnail('attachment://libraries.png')
-        .addFields(
-            {
-                name: 'Platform',
-                value: project.platform,
-                inline: true
-            }, {
-                name: 'Language',
-                value: project.language,
-                inline: true
-            }, {
-                name: 'Version',
-                value: project.latestStableRelease
-            },
-            {
-                name: 'Latest Release',
-                value: getDateAsString(new Date(project.latestStableReleaseDate))
-            },
-            {
-                name: 'License',
-                value: project.license
-            },
-            {
-                name: 'Repository',
-                value: project.repository ? project.repository : '-'
-            }
-        );
-}
 
 function presenceUpdate(presence) {
     return new Discord.MessageEmbed()
@@ -819,16 +605,82 @@ function presenceUpdate(presence) {
         .setTimestamp();
 }
 
+
+function nowPlaying(guildName, song) {
+    const embed = new Discord.MessageEmbed()
+        .setTitle(song.title)
+        .setAuthor(`Now Playing${song.type === 'Live' ? ' - LIVE' : ''}`)
+        .setURL(song.url)
+        .setColor(color)
+        .setThumbnail(song.thumbnail)
+        .setTimestamp()
+        .setFooter(`${guildName} -  Discord`);
+
+    const content = [`**Channel:** ${song.channel}`];
+
+    if (Object.prototype.hasOwnProperty.call(song, 'length')) {
+        content.push(`**Length:** ${song.length}`);
+    }
+    if (Object.prototype.hasOwnProperty.call(song, 'watching') && song.watching != null) {
+        content.push(`**Watching:** ${song.watching}`);
+    }
+    content.push(`**Added By:** ${song.addedBy}`);
+
+    embed.setDescription(content.join('\n'));
+    return embed;
+}
+
+
+function queue(guildName, playlist) {
+    const content = [];
+    let i = 0;
+    let end = playlist.songs.length;
+    if (playlist.songs.length > 16) {
+        i = Math.max(playlist.playing - 5, 0);
+        end = Math.min(playlist.playing + 10, playlist.songs.length);
+    }
+
+    for (i; i < end; i++) {
+        if (i === playlist.playing) {
+            content.push(`**${i + 1}. ${playlist.songs[i].title}**`);
+        }
+        else {
+            content.push(`${i + 1}. ${playlist.songs[i].title}`);
+        }
+    }
+
+    return new Discord.MessageEmbed()
+        .setTitle('Play Queue')
+        .setDescription(content.join('\n'))
+        .setColor(color)
+        .setThumbnail(playlist.songs[playlist.playing].thumbnail)
+        .setTimestamp()
+        .setFooter(`${guildName} -  Discord`);
+}
+
+
+function search(guildName, searchQuery, videos) {
+    const content = [`Search results for: _${searchQuery}_\n`];
+
+    for (let i = 0; i < videos.length; i++) {
+        content.push(`**${i + 1}. ${videos[i].title}**\n${videos[i].author.name}\n`);
+    }
+
+    return new Discord.MessageEmbed()
+        .setTitle('Search')
+        .setColor(color)
+        .setDescription(content.join('\n'))
+        .setThumbnail(videos[0].thumbnail)
+        .setTimestamp()
+        .setFooter(`${guildName} -  Discord`);
+}
+
+
 module.exports = {
     help,
     serverInfo,
-    lyrics,
     member: memberEmbed,
-    playingSong,
-    queue,
     role: roleEmbed,
-    search,
-    songInfo,
     teams: teamsEmbed,
     botInfo,
     helloOnJoin,
@@ -838,7 +690,8 @@ module.exports = {
     warning,
     support,
     user: userEmbed,
-    libraryPlatform,
-    libraryProject,
-    presenceUpdate
+    presenceUpdate,
+    nowPlaying,
+    queue,
+    search
 };
