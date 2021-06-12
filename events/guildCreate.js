@@ -8,6 +8,8 @@ module.exports = {
     async execute(guild) {
         logger.info(`${guild.client.user.tag} is joined to ${guild.name} guildId:${guild.id}`);
 
+        await api.saveGuild([guild.id, guild.ownerID, guild.createdAt, guild.joinedAt, guild.region]);
+
         let channel = guild.channels.cache.find((chn) => chn.name === 'general');
         if (channel == null) {
             channel = guild.channels.cache
@@ -19,9 +21,10 @@ module.exports = {
         }
 
         if (channel) {
-            channel.send(embed(guild));
+            const guildDb = await api.getGuild(guild.id);
+            channel.send(embed(guild, guildDb));
         }
 
-        await api.saveGuild([guild.id, guild.ownerID, guild.createdAt, guild.joinedAt, guild.region]);
+
     }
 };

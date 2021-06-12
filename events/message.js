@@ -23,10 +23,6 @@ module.exports = {
         try {
             [member, guild] = await getFromDatabase(message);
 
-            if (guild) {
-                basicControllers(message, guild);
-            }
-
             if (member && guild) {
                 await pointsAndLevels(message, member, guild);
             }
@@ -76,12 +72,13 @@ module.exports = {
                     message.delete();
                     message.channel.send(ruleMessage)
                         .then((msg) => {
-                            msg.delete({ timeout: 3000 });
+                            msg.delete({ timeout: 5000 });
                         });
                 }
                 catch (e) {
                     logger.error(e.message);
                 }
+                return;
             }
         }
 
@@ -107,10 +104,23 @@ module.exports = {
                 }
             }
         }
+
+        if (guild !== null && command.category === 'Sound') {
+            basicControllers(message, guild);
+        }
+
         if (command.channel) {
             if (!message.member.voice.channel) {
                 message.channel.stopTyping(true);
                 return message.channel.send('You have to be in a voice channel to use this command!');
+            }
+        }
+
+        if (command.speak) {
+            const perms = message.member.voice.channel.permissionsFor(message.client.user);
+            if (!perms.has('CONNECT') || !perms.has('SPEAK')) {
+                logger.debug(`Bot needs permission to speak and connect at guild:${message.guild.id} by:${message.author.id}`);
+                return message.channel.send('I need the permissions to join and speak in your voice channel!');
             }
         }
 
