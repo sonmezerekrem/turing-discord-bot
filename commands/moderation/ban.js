@@ -15,6 +15,10 @@ module.exports = {
 
         const banMember = message.guild.member(message.mentions.users.first());
 
+        if (banMember.user.bot) {
+            return message.reply('This is a bot user. Please do not give bot users as argument for this command!');
+        }
+
         const reason = `${args.length > 1 ? args[1] : 'No reason'}`;
         if (banMember) {
             banMember.ban(reason)

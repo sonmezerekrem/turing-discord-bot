@@ -15,9 +15,17 @@ module.exports = {
     async execute(message) {
         logger.debug(`Me command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const member = message.guild.member(message.mentions.users.first());
+        if (member.user.bot) {
+            return message.reply('This is a bot user. Please do not give bot users as argument for this command!');
+        }
         if (member) {
             const result = await api.getMember(message.guild.id, member.id);
-            return message.reply(embed(member, result));
+            if (result != null && result !== 404) {
+                return message.reply(embed(member, result));
+            }
+            else {
+                return message.channel.send('Sorry, I couldn\'t find any information about this user');
+            }
         }
     }
 };

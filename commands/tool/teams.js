@@ -32,6 +32,13 @@ module.exports = {
             let teamCount = parseInt(args[0], 10);
             args.shift();
             const mentions = args.map((member) => mention(client, member));
+
+            for (let i = 0; i < mentions.length; i++) {
+                if (mentions[i].bot) {
+                    return message.reply('Please do not give bot users as argument for this command!');
+                }
+            }
+
             if (teamCount > mentions.length) {
                 teamCount = mentions.length;
             }
@@ -52,6 +59,7 @@ module.exports = {
             return message.channel.send(embed(message, teams));
         }
         catch (exception) {
+            message.channel.send('Wrong arguments for `teams` command!');
             logger.error(exception.message);
         }
     }

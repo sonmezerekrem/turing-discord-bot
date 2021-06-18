@@ -14,8 +14,12 @@ module.exports = {
     async execute(message, args) {
         logger.info(`Admin command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-
         const member = message.guild.member(message.mentions.users.first());
+
+        if (member.user.bot) {
+            return message.reply('This is a bot user. Please do not give bot users as argument for this command!');
+        }
+
         if (member) {
             let point = parseInt(args[0], 10);
             // eslint-disable-next-line no-restricted-globals
