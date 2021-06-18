@@ -131,7 +131,9 @@ function help(message, args) {
     if (Object.prototype.hasOwnProperty.call(command, 'link')) {
         embed.addField('Link', command.link);
     }
-    embed.addField('Guild Only', `${command.guildOnly ? 'Yes' : 'No'}`);
+    if (Object.prototype.hasOwnProperty.call(command, 'guildOnly') && !command.guildOnly) {
+        embed.addField('DM Availability', 'Yes');
+    }
     return embed;
 }
 

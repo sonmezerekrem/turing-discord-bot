@@ -5,8 +5,7 @@ const {
     timerController,
     pointsAndLevels,
     rules,
-    getFromDatabase,
-    basicControllers
+    getFromDatabase
 } = require('../utils/functions');
 
 
@@ -22,6 +21,13 @@ module.exports = {
 
         try {
             [member, guild] = await getFromDatabase(message);
+
+            if (member === 404) {
+                member = null;
+            }
+            if (guild === 404) {
+                guild = null;
+            }
 
             if (member && guild) {
                 await pointsAndLevels(message, member, guild);
@@ -59,11 +65,6 @@ module.exports = {
             return message.reply('I can\'t execute that command inside DMs!');
         }
 
-        if (command.dmOnly && message.channel.type !== 'dm') {
-            message.channel.stopTyping(true);
-            return message.reply('I can\'t execute that command inside guilds!');
-        }
-
         if (message.channel.type !== 'dm' && guild) {
             const [rule, ruleMessage] = await rules(message, command, guild);
             if (rule) {
@@ -83,7 +84,6 @@ module.exports = {
         }
 
         message.channel.startTyping()
-            .then()
             .catch();
 
         if (command.permissions) {
@@ -103,10 +103,6 @@ module.exports = {
                     logger.error(e.message);
                 }
             }
-        }
-
-        if (guild !== null && command.category === 'Sound') {
-            basicControllers(message, guild);
         }
 
         if (command.channel) {

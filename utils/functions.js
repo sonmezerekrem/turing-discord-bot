@@ -47,7 +47,7 @@ function timerController(message, timerObject) {
 }
 
 function rules(message, command, guild) {
-    if (guild) {
+    if (guild != null && guild !== 404) {
         const rulesObj = new Map(JSON.parse(JSON.stringify([...guild.rules])));
         if (rulesObj.has(message.channel.id)) {
             const rule = rulesObj.get(message.channel.id);
@@ -195,15 +195,6 @@ async function pointsAndLevels(message, member, guild) {
     }
 }
 
-function basicControllers(message, guild) {
-    // if (guild) {
-    //     if (guild.disableMusicEmbeds) {
-    //         message.suppressEmbeds()
-    //             .catch((error) => logger.error(error.message));
-    //     }
-    // }
-}
-
 
 module.exports = {
     toTitleCase,
@@ -212,6 +203,5 @@ module.exports = {
     timerController,
     pointsAndLevels,
     rules,
-    basicControllers,
     getFromDatabase
 };

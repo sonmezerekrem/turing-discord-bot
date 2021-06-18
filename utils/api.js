@@ -9,14 +9,18 @@ async function getGuild(guildId) {
         url: `${backendPath}/guilds/${guildId}`
     })
         .catch((error) => {
-            logger.warn(error.message);
-            if (error.response.status === 404) {
+            if (error.response != null && error.response.status === 404) {
                 return 404;
             }
+            logger.warn(`${error.message}`);
         });
 
-    if (result === 404) return 404;
-    if (result.status === 200) return result.data.guild;
+    if (result === 404) {
+        return 404;
+    }
+    if (result != null && Object.prototype.hasOwnProperty.call(result, 'status') && result.status === 200) {
+        return result.data.guild;
+    }
     return null;
 }
 
@@ -81,14 +85,18 @@ async function getMember(guildId, memberId) {
         url: `${backendPath}/guilds/${guildId}/members/${memberId}`
     })
         .catch((error) => {
-            logger.warn(error.message);
-            if (error.response.status === 404) {
+            if (error.response != null && error.response.status === 404) {
                 return 404;
             }
+            logger.warn(`${error.message}`);
         });
 
-    if (result === 404) return 404;
-    if (result.status === 200) return result.data.member;
+    if (result === 404) {
+        return 404;
+    }
+    if (result != null && Object.prototype.hasOwnProperty.call(result, 'status') && result.status === 200) {
+        return result.data.member;
+    }
     return null;
 }
 
@@ -187,6 +195,46 @@ async function getWeeklyTop(guildId) {
 }
 
 
+function addMemberConnection(guildId, memberId, url, name) {
+    axios({
+        method: 'post',
+        url: `${backendPath}/guilds/${guildId}/members/${memberId}/connections`,
+        data: {
+            url,
+            name
+        }
+    })
+        .then((result) => {
+            if (result.status === 201) {
+                logger.info('Connection added');
+            }
+        })
+        .catch((error) => logger.warn(error.message));
+}
+
+
+function removeMemberConnection(guildId, memberId, name) {
+    axios({
+        method: 'delete',
+        url: `${backendPath}/guilds/${guildId}/members/${memberId}/connections`,
+        data: {
+            name
+        }
+    })
+        .then((result) => {
+            if (result.status === 200) {
+                logger.info('Connection removed');
+            }
+        })
+        .catch((error) => logger.warn(error.message));
+}
+
+
+function reportUserResponse(issue) {
+
+}
+
+
 module.exports = {
     getGuild,
     saveGuild,
@@ -198,5 +246,8 @@ module.exports = {
     deleteMember,
     givePoints,
     getTopTen,
-    getWeeklyTop
+    getWeeklyTop,
+    addMemberConnection,
+    removeMemberConnection,
+    reportUserResponse
 };
