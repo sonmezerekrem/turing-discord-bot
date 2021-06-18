@@ -10,7 +10,6 @@ module.exports = {
     aliases: ['math', 'calculate'],
     usage: '',
     category: 'Tool',
-    type: 'general',
     link: 'https://mathjs.org/index.html',
     execute(message, args) {
         logger.debug(`Calculator command has been used at guild:${message.guild.id} by:${message.author.id}`);

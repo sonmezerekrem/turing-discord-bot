@@ -9,7 +9,6 @@ module.exports = {
     aliases: ['latency'],
     usage: '',
     category: 'Info',
-    type: 'general',
     execute(message) {
         logger.debug(`Ping command has been used at guild:${message.guild.id} by:${message.author.id}`);
         return message.reply(`Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(message.client.ws.ping)}ms`);

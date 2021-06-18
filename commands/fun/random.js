@@ -9,7 +9,6 @@ module.exports = {
     aliases: ['rand'],
     usage: '',
     category: 'Fun',
-    type: 'general',
     async execute(message) {
         logger.debug(`Random command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const random = Math.floor(Math.random() * 100);

@@ -10,8 +10,7 @@ module.exports = {
     aliases: ['t', 'levels', 'ranks'],
     usage: '',
     category: 'Leveling',
-    type: 'general',
-    cooldown: 30,
+    cooldown: 10,
     async execute(message) {
         logger.debug(`Top command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

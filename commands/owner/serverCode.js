@@ -10,7 +10,6 @@ module.exports = {
     aliases: [],
     usage: '',
     category: 'Owner',
-    type: 'general',
     cooldown: 300,
     async execute(message) {
         logger.info(`Server-code command has been used at guild:${message.guild.id} by:${message.author.id}`);

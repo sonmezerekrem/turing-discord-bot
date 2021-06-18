@@ -4,13 +4,12 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'breakingbad',
-    description: 'Sends a daily wallpaper to member',
+    description: 'Sends a Breaking Bad quote',
     guildOnly: false,
     args: false,
     aliases: ['brba', '3556'],
     usage: '',
     category: 'Fun',
-    type: 'general',
     async execute(message) {
         logger.debug(`Breaking-bad command has been used at guild:${message.guild.id} by:${message.author.id}`);
         axios({

@@ -25,7 +25,6 @@ module.exports = {
     usage: '<number of teams> <members>',
     permissions: '',
     category: 'Tools',
-    type: 'general',
     execute(message, args) {
         logger.debug(`Teams command has been used at guild:${message.guild.id} by:${message.author.id}`);
         try {

@@ -14,7 +14,6 @@ module.exports = {
     channel: true,
     speak: true,
     category: 'Sound',
-    type: 'general',
     async execute(message) {
         logger.debug(`Prev command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

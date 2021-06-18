@@ -10,7 +10,6 @@ module.exports = {
     usage: '',
     permissions: 'CREATE_INSTANT_INVITE',
     category: 'Moderation',
-    type: 'general',
     execute(message) {
         logger.debug(`Invite command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

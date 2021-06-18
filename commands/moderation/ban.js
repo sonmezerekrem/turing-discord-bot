@@ -10,7 +10,6 @@ module.exports = {
     usage: '<member> <reason>',
     permissions: 'BAN_MEMBERS',
     category: 'Moderation',
-    type: 'general',
     execute(message, args) {
         logger.debug(`Ban command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

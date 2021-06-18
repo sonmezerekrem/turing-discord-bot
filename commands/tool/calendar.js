@@ -17,7 +17,6 @@ module.exports = {
     aliases: [],
     usage: '',
     category: 'Tool',
-    type: 'general',
     async execute(message) {
         logger.debug(`Calendar command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

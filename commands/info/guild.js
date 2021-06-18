@@ -11,7 +11,6 @@ module.exports = {
     aliases: ['server'],
     usage: '',
     category: 'Info',
-    type: 'general',
     async execute(message) {
         logger.debug(`Server command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const result = await api.getGuild(message.guild.id);

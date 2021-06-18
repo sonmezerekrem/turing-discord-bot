@@ -11,7 +11,6 @@ module.exports = {
     usage: '<message content>',
     permissions: 'ADMINISTRATOR',
     category: 'Moderation',
-    type: 'general',
     execute(message) {
         logger.debug(`Announce command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

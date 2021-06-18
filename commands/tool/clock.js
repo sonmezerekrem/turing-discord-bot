@@ -12,7 +12,6 @@ module.exports = {
     aliases: [],
     usage: '<city name>',
     category: 'Tool',
-    type: 'general',
     execute(message, args) {
         logger.debug(`Clock command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const zones = moment.tz.names();

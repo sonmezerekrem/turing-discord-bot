@@ -10,7 +10,6 @@ module.exports = {
     usage: '<user> [reason]',
     permissions: 'KICK_MEMBERS',
     category: 'Moderation',
-    type: 'general',
     execute(message, args) {
         logger.debug(`Kick command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

@@ -11,7 +11,6 @@ module.exports = {
     aliases: [],
     usage: '',
     category: 'Leveling',
-    type: 'general',
     async execute(message) {
         logger.debug(`Daily command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

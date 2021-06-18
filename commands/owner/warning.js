@@ -9,7 +9,6 @@ module.exports = {
     aliases: [],
     usage: '<channel name> <member>',
     category: 'Owner',
-    type: 'general',
     execute(message, args) {
         logger.info(`Warning command has been used at guild:${message.guild.id}`);
 

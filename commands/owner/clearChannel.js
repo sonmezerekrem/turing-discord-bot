@@ -9,7 +9,6 @@ module.exports = {
     aliases: ['clc'],
     usage: '< all | number of messages (eg. 124) >',
     category: 'Owner',
-    type: 'general',
     async execute(message, args) {
         logger.debug(`Clear-channel command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

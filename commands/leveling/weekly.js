@@ -10,7 +10,7 @@ module.exports = {
     aliases: ['week'],
     usage: '',
     category: 'Leveling',
-    type: 'general',
+    cooldown: 10,
     async execute(message) {
         logger.debug(`Weekly command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

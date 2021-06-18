@@ -11,7 +11,6 @@ module.exports = {
     aliases: [],
     usage: '<user>',
     category: 'Info',
-    type: 'general',
     cooldown: 300,
     async execute(message) {
         logger.debug(`Me command has been used at guild:${message.guild.id} by:${message.author.id}`);

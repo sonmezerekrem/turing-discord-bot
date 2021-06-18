@@ -17,7 +17,6 @@ module.exports = {
     guildOnly: true,
     args: true,
     category: 'Sound',
-    type: 'general',
     usage: '<search query>',
     async execute(message, args) {
         logger.debug(`Search command has been used at guild:${message.guild.id} by:${message.author.id}`);

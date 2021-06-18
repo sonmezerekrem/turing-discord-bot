@@ -3,14 +3,13 @@ const api = require('../../utils/api');
 
 
 module.exports = {
-    name: 'addconn',
-    description: 'Add a connection to database',
+    name: 'conadd',
+    description: 'Add a connection to database about member',
     guildOnly: true,
     args: true,
-    aliases: [],
+    aliases: ['connadd'],
     usage: '<connection url> <connection name>',
     category: 'Member',
-    type: 'general',
     async execute(message, args) {
         logger.debug(`Addconn command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

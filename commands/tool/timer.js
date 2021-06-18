@@ -10,7 +10,6 @@ module.exports = {
     aliases: [],
     usage: '<seconds> [\'block\']',
     category: 'Tool',
-    type: 'general',
     execute(message, args) {
         logger.debug(`Timer command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
@@ -19,6 +18,7 @@ module.exports = {
         if (args.length === 1) {
             if (args[0] !== 'block') {
                 time = parseInt(args[0], 10);
+                time = Math.max(time, 3600000);
             }
             else {
                 block = true;

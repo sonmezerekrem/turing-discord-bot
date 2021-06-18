@@ -11,7 +11,6 @@ module.exports = {
     aliases: ['roll'],
     usage: '',
     category: 'Fun',
-    type: 'general',
     async execute(message) {
         logger.debug(`Dice command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];

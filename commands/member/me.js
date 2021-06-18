@@ -11,7 +11,6 @@ module.exports = {
     aliases: ['member', 'profile'],
     usage: '',
     category: 'Member',
-    type: 'general',
     async execute(message) {
         logger.debug(`Me command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const result = await api.getMember(message.guild.id, message.author.id);

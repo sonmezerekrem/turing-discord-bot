@@ -9,7 +9,6 @@ module.exports = {
     aliases: [],
     usage: '',
     category: 'Tool',
-    type: 'general',
     execute(message) {
         logger.debug(`Code command has been used at guild:${message.guild.id} by:${message.author.id}`);
 

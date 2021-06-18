@@ -3,18 +3,17 @@ const api = require('../../utils/api');
 
 
 module.exports = {
-    name: 'remconn',
-    description: 'Removes a connection from database',
+    name: 'condel',
+    description: 'Removes a connection from database about member',
     guildOnly: true,
     args: true,
-    aliases: [],
+    aliases: ['conndel', 'conndel', 'conrem', 'connrem'],
     usage: '<connection name>',
     category: 'Member',
-    type: 'general',
     async execute(message, args) {
         logger.debug(`Remconn command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
-        const result = api.removeMemberConnection(message.author.id, args[0]);
+        const result = api.removeMemberConnection(message.author.id, args.join(' '));
         if (result) {
             message.channel.send('Connection removed');
         }

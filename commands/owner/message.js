@@ -8,7 +8,6 @@ module.exports = {
     aliases: [],
     usage: '<channel name> <message content>',
     category: 'Owner',
-    type: 'general',
     execute(message, args) {
         logger.info(`Message command has been used at guild:${message.guild.id}`);
 

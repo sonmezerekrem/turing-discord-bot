@@ -10,7 +10,6 @@ module.exports = {
     aliases: ['contact'],
     usage: '',
     category: 'Info',
-    type: 'general',
     execute(message) {
         logger.debug(`Support command has been used at guild:${message.guild.id} by:${message.author.id}`);
         return message.channel.send(embed(message));
