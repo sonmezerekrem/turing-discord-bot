@@ -17,8 +17,8 @@
   "contact": {
     "invite": "https://discord.gg/TtdcMSuCK4",
     "website": "https://turingdiscordbot.netlify.app",
-    "instagram": "https://www.instagram.com/turingdiscordbot/"
+    "instagram": "https://www.instagram.com/turingdiscordbot/",
+    "github": "https://github.com/sonmezerekrem/turing-discord-bot"
   },
-  "website": "https://turingdiscordbot.netlify.app",
   "backendPath": "http://localhost:3000"
 }
