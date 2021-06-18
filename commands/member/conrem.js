@@ -3,11 +3,11 @@ const api = require('../../utils/api');
 
 
 module.exports = {
-    name: 'condel',
+    name: 'conrem',
     description: 'Removes a connection from database about member',
     guildOnly: true,
     args: true,
-    aliases: ['conndel', 'conndel', 'conrem', 'connrem'],
+    aliases: ['conndel', 'conndel', 'condel', 'connrem'],
     usage: '<connection name>',
     category: 'Member',
     async execute(message, args) {

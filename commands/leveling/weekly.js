@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
 const api = require('../../utils/api');
-
+const { weekly } = require('../../utils/embeds');
 
 module.exports = {
     name: 'weekly',
@@ -17,8 +17,8 @@ module.exports = {
         const result = await api.getWeeklyTop(message.guild.id);
 
         if (result) {
-            const members = result.map((member) => member.tag);
-            message.channel.send(members.join('\n'));
+            const embed = await weekly(message.guild.name, message.guild.iconURL(), result);
+            message.channel.send(embed);
         }
         else {
             message.channel.send('Sorry, I couldn\'t show weekly list right now');

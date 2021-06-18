@@ -8,7 +8,6 @@ const logger = require('./logger');
 const {
     prefix,
     color,
-    website,
     version,
     contact,
     defaultActivity,
@@ -22,6 +21,10 @@ const {
     toTitleCase,
     getDateAsString
 } = require('./functions');
+const {
+    topCanvas,
+    weeklyCanvas
+} = require('./canvases');
 
 
 function help(message, args) {
@@ -191,7 +194,7 @@ function serverInfo(message, result) {
         embed.addField('Rules Channel', guild.rulesChannel.name);
     }
 
-    if (result !== null && result.connections.length > 0) {
+    if (result !== null && result !== 404 && result.connections.length > 0) {
         const connections = [];
         result.connections.forEach((conn) => {
             connections.push(`__${conn.name}__\n${conn.url}\n`);
@@ -211,7 +214,7 @@ function memberEmbed(message, result) {
     const roleList = member._roles.map((id) => roles.cache.get(id).name)
         .join(', ');
 
-    if (result == null) {
+    if (result == null || result === 404) {
         result = {};
         result.weeklyPoints = '-';
         result.level = '-';
@@ -324,11 +327,15 @@ function botInfo(message) {
         .setTitle(member.displayName)
         .setDescription('Information about bot')
         .setColor(color)
-        .setURL(website)
+        .setURL(contact.website)
         .addFields(
             {
                 name: 'Website',
-                value: website
+                value: contact.website
+            },
+            {
+                name: 'Github Repository',
+                value: contact.github
             },
             {
                 name: 'Joined At ',
@@ -375,7 +382,7 @@ function helloOnJoin(guild, db) {
 
     const description = [];
     description.push(`I am happy to here. Thank you for adding me to ${guild.name}. I am a multipurpose bot with many capabilities. Here's a little bit information about me and configurations for this guild.\n`);
-    description.push(`**Website**\n ${website}\n`);
+    description.push(`**Website**\n ${contact.website}\n`);
     description.push(`**Joined At:** ${joinDate}`);
     description.push(`**Prefix:** ${prefix}`);
     description.push(`**Status and Activity:** ${toTitleCase(defaultState)}, ${toTitleCase(`${defaultActivity.type} ${defaultActivity.name}`)}`);
@@ -390,7 +397,7 @@ function helloOnJoin(guild, db) {
         .setTitle(`Hello I am ${memberObj.displayName}.`)
         .setColor(color)
         .setDescription(description.join('\n'))
-        .setURL(website)
+        .setURL(contact.website)
         .setFooter(`${guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(user.avatarURL());
@@ -533,6 +540,10 @@ function support(message) {
             {
                 name: 'Instagram',
                 value: contact.instagram
+            },
+            {
+                name: 'Github Repository',
+                value: contact.github
             }
         )
         .setThumbnail()
@@ -547,13 +558,6 @@ function userEmbed(member, result) {
     // eslint-disable-next-line no-underscore-dangle
     const roleList = member._roles.map((id) => roles.cache.get(id).name)
         .join(', ');
-
-    if (result == null) {
-        result = {
-            level: '-',
-            connections: []
-        };
-    }
 
     const embed = new Discord.MessageEmbed()
         .setTitle(member.displayName)
@@ -678,6 +682,39 @@ function search(guildName, searchQuery, videos) {
 }
 
 
+async function top(guildName, thumbnail, toplist) {
+    const image = await topCanvas(toplist);
+    const embed = new Discord.MessageEmbed()
+        .setTitle(`Toplist at ${guildName}`)
+        .setColor(color)
+        .setDescription(`Top ranked members by points at ${guildName}`)
+        .setImage('attachment://top.jpg')
+        .setThumbnail(thumbnail)
+        .setTimestamp()
+        .setFooter(`${guildName} -  Discord`);
+    return {
+        files: [image],
+        embed: embed
+    };
+}
+
+async function weekly(guildName, thumbnail, toplist) {
+    const image = await weeklyCanvas(toplist);
+    const embed = new Discord.MessageEmbed()
+        .setTitle(`Weekly List at ${guildName}`)
+        .setColor(color)
+        .setDescription(`Top ranked members by points at ${guildName} in this week`)
+        .setImage('attachment://weekly.jpg')
+        .setThumbnail(thumbnail)
+        .setTimestamp()
+        .setFooter(`${guildName} -  Discord`);
+    return {
+        files: [image],
+        embed: embed
+    };
+}
+
+
 module.exports = {
     help,
     serverInfo,
@@ -695,5 +732,7 @@ module.exports = {
     presenceUpdate,
     nowPlaying,
     queue,
-    search
+    search,
+    top,
+    weekly
 };

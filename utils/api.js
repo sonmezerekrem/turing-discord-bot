@@ -64,15 +64,12 @@ function updateGuild(guildId, args) {
 
 function deleteGuild(guildId) {
     axios({
-        method: 'patch',
-        url: `${backendPath}/guilds/${guildId}`,
-        data: {
-            guild: { isActive: false }
-        }
+        method: 'delete',
+        url: `${backendPath}/guilds/${guildId}`
     })
         .then((result) => {
             if (result.status === 201) {
-                logger.info('Guild has deleted');
+                logger.info('Guild deleted');
             }
         })
         .catch((error) => logger.warn(error.message));
@@ -156,15 +153,12 @@ function givePoints(guildId, memberId, points) {
 
 function deleteMember(guildId, memberId) {
     axios({
-        method: 'patch',
-        url: `${backendPath}/guilds/${guildId}/members/${memberId}`,
-        data: {
-            member: { isActive: false }
-        }
+        method: 'delete',
+        url: `${backendPath}/guilds/${guildId}/members/${memberId}`
     })
         .then((result) => {
-            if (result.status === 201) {
-                logger.info('Changes have saved');
+            if (result.status === 200) {
+                logger.info('Member deleted');
             }
         })
         .catch((error) => logger.warn(error.message));
@@ -231,7 +225,19 @@ function removeMemberConnection(guildId, memberId, name) {
 
 
 function reportUserResponse(issue) {
-
+    axios({
+        method: 'post',
+        url: `${backendPath}/issues`,
+        data: {
+            issue
+        }
+    })
+        .then((result) => {
+            if (result.status === 201) {
+                logger.info('Issue saved');
+            }
+        })
+        .catch((error) => logger.warn(error.message));
 }
 
 

@@ -1,5 +1,6 @@
 const logger = require('../../utils/logger');
 const api = require('../../utils/api');
+const { top } = require('../../utils/embeds');
 
 
 module.exports = {
@@ -17,8 +18,8 @@ module.exports = {
         const result = await api.getTopTen(message.guild.id);
 
         if (result) {
-            const members = result.map((member) => member.tag);
-            message.channel.send(members.join('\n'));
+            const embed = await top(message.guild.name, message.guild.iconURL(), result);
+            message.channel.send(embed);
         }
         else {
             message.channel.send('Sorry, I can\'t show top list right now');
