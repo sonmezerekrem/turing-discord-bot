@@ -15,7 +15,7 @@ async function levelUp(message, newLevel) {
     const canvas = createCanvas(450, 120);
     const context = canvas.getContext('2d');
 
-    const background = await loadImage(`assets/images/backgrounds/levelrole (${Math.floor(Math.random() * 9) + 1}).jpg`);
+    const background = await loadImage('assets/images/backgrounds/level.jpg');
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     context.fillStyle = '#ffffff';
@@ -44,7 +44,7 @@ async function roleUp(message, newRole) {
     const canvas = createCanvas(450, 120);
     const context = canvas.getContext('2d');
 
-    const background = await loadImage(`assets/images/backgrounds/levelrole (${Math.floor(Math.random() * 10) + 1}).jpg`);
+    const background = await loadImage('assets/images/backgrounds/role.jpg');
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     context.fillStyle = '#ffffff';
