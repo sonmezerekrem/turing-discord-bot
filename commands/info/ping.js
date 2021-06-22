@@ -3,8 +3,8 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'ping',
-    description: 'Shows user latency',
-    guildOnly: true,
+    description: 'Shows user latency.',
+    guildOnly: false,
     args: false,
     aliases: ['latency'],
     usage: '',

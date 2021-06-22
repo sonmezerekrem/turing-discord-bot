@@ -4,7 +4,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'calculator',
-    description: 'Calculates given expression',
+    description: 'Calculates given expression.',
     guildOnly: false,
     args: true,
     aliases: ['math', 'calculate'],

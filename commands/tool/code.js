@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'code',
-    description: 'Sends message in code format with mentioning the author',
+    description: 'Sends message in code format with mentioning the author.',
     guildOnly: true,
     args: true,
     aliases: [],

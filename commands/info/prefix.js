@@ -4,8 +4,8 @@ const { prefix } = require('../../config.json');
 
 module.exports = {
     name: 'prefix',
-    description: 'Shows bot\'s prefix',
-    guildOnly: true,
+    description: 'Shows bot\'s prefix.',
+    guildOnly: false,
     args: false,
     aliases: [],
     usage: '',
