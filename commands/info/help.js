@@ -8,7 +8,7 @@ module.exports = {
     guildOnly: false,
     args: false,
     aliases: ['h', 'commands'],
-    usage: '[command name]',
+    usage: '[category or command name]',
     category: 'Info',
     execute(message, args) {
         logger.debug(`Help command has been used at guild:${message.guild ? message.guild.id : 'DM'} by:${message.author.id}`);

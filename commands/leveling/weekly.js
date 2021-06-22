@@ -4,7 +4,7 @@ const { weekly } = require('../../utils/embeds');
 
 module.exports = {
     name: 'weekly',
-    description: 'Shows top ranked list for last week in server. Resets in every Monday',
+    description: 'Shows top ranked list for last week in server. Resets in every Monday.',
     guildOnly: true,
     args: false,
     aliases: ['week'],

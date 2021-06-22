@@ -4,7 +4,7 @@ const api = require('../../utils/api');
 
 module.exports = {
     name: 'server-code',
-    description: 'Sends server code to owner',
+    description: 'Sends server code to owner.',
     guildOnly: true,
     args: false,
     aliases: [],

@@ -4,7 +4,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'breakingbad',
-    description: 'Sends a Breaking Bad quote',
+    description: 'Sends a Breaking Bad quote.',
     guildOnly: false,
     args: false,
     aliases: ['brba', '3556'],

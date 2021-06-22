@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'clear-channel',
-    description: 'Deletes messages in channel according to given argument',
+    description: 'Deletes messages in channel according to given argument.',
     guildOnly: true,
     args: true,
     aliases: ['clc'],

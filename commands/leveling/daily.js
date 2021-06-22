@@ -5,7 +5,7 @@ const api = require('../../utils/api');
 
 module.exports = {
     name: 'daily',
-    description: 'Gives 10 point to user every day',
+    description: 'Gives 10 point to user every day.',
     guildOnly: true,
     args: false,
     aliases: [],

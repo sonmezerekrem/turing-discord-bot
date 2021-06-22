@@ -7,7 +7,7 @@ const { nowPlaying } = require('../../utils/embeds');
 
 module.exports = {
     name: 'now-playing',
-    description: 'Shows currently playing song',
+    description: 'Shows currently playing song.',
     guildOnly: true,
     args: false,
     aliases: ['np'],

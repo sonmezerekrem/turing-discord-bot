@@ -2,7 +2,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'message',
-    description: 'Send message in given channel',
+    description: 'Send message in given channel.',
     guildOnly: true,
     args: true,
     aliases: [],

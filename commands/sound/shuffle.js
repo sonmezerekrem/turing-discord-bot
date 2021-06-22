@@ -6,7 +6,7 @@ const {
 
 module.exports = {
     name: 'shuffle',
-    description: 'Turn on/off shuffle',
+    description: 'Turn on/off shuffle.',
     guildOnly: true,
     args: true,
     aliases: [],

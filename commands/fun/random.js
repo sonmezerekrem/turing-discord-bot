@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'random',
-    description: 'Gives a magical random number between 0 - 100',
+    description: 'Gives a magical random number between 0 - 100.',
     guildOnly: false,
     args: false,
     aliases: ['rand'],

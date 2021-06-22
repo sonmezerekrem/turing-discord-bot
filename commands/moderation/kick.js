@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'kick',
-    description: 'Kicks the tagged user from server',
+    description: 'Kicks the tagged user from server.',
     guildOnly: true,
     args: true,
     aliases: [],

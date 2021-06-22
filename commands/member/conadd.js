@@ -4,7 +4,7 @@ const api = require('../../utils/api');
 
 module.exports = {
     name: 'conadd',
-    description: 'Add a connection to database about member',
+    description: 'Add a connection to database about member.',
     guildOnly: true,
     args: true,
     aliases: ['connadd'],

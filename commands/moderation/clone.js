@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'clone',
-    description: 'Creates a clone of current text channel',
+    description: 'Creates a clone of current text channel.',
     guildOnly: true,
     args: false,
     aliases: [],

@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'join',
-    description: 'Joins the voice channel',
+    description: 'Joins the voice channel.',
     guildOnly: true,
     args: false,
     aliases: ['j', 'connect'],

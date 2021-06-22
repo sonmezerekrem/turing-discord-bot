@@ -4,7 +4,7 @@ const embed = require('../../utils/embeds').role;
 
 module.exports = {
     name: 'role',
-    description: 'Shows the information about role',
+    description: 'Shows the information about role.',
     guildOnly: true,
     args: true,
     aliases: [],

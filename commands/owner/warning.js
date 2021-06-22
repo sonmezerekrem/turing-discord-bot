@@ -3,7 +3,7 @@ const { warning } = require('../../utils/embeds');
 
 module.exports = {
     name: 'warning',
-    description: 'Gives a warning to user and send a information message in given channel',
+    description: 'Gives a warning to user and send a information message in given channel.',
     guildOnly: true,
     args: true,
     aliases: [],

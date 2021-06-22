@@ -6,7 +6,7 @@ const {
 
 module.exports = {
     name: 'resume',
-    description: 'Resumes the music ',
+    description: 'Resumes the music.',
     guildOnly: true,
     args: false,
     aliases: [],

@@ -7,7 +7,7 @@ const {
 
 module.exports = {
     name: 'stop',
-    description: 'Stops the music ',
+    description: 'Stops the music.',
     guildOnly: true,
     args: false,
     aliases: ['s'],

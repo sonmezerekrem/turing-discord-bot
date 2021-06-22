@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'invite',
-    description: 'Creates an invite link',
+    description: 'Creates an invite link.',
     guildOnly: true,
     args: false,
     aliases: [],

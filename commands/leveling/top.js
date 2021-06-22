@@ -5,7 +5,7 @@ const { top } = require('../../utils/embeds');
 
 module.exports = {
     name: 'top',
-    description: 'Shows top ranked list in server',
+    description: 'Shows top ranked list in server.',
     guildOnly: true,
     args: false,
     aliases: ['t', 'levels', 'ranks'],

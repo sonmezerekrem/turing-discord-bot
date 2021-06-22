@@ -9,7 +9,7 @@ const {
 
 module.exports = {
     name: 'live',
-    description: 'Plays a live streaming in Youtube',
+    description: 'Plays a live streaming in Youtube.',
     guildOnly: true,
     args: true,
     aliases: [],

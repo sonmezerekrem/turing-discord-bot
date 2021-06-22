@@ -5,7 +5,7 @@ const api = require('../../utils/api');
 
 module.exports = {
     name: 'points',
-    description: 'Gives points to tagged member and sends an embed in given channel. Max point is 20',
+    description: 'Gives points to tagged member and sends an embed in given channel. Max point is 20.',
     guildOnly: true,
     args: true,
     aliases: [],

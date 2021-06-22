@@ -7,7 +7,7 @@ const { queue } = require('../../utils/embeds');
 
 module.exports = {
     name: 'queue',
-    description: 'Shows song queue',
+    description: 'Shows song queue.',
     guildOnly: true,
     args: false,
     aliases: ['q'],

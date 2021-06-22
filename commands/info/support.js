@@ -4,7 +4,7 @@ const embed = require('../../utils/embeds').support;
 
 module.exports = {
     name: 'support',
-    description: 'Sends the website of bot, Discord server invite link and other support channels of bot',
+    description: 'Sends the website of bot, Discord server invite link and other support channels of bot.',
     guildOnly: false,
     args: false,
     aliases: ['contact'],

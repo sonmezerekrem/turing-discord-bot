@@ -4,7 +4,7 @@ const { prefix } = require('../../config.json');
 
 module.exports = {
     name: 'announce',
-    description: 'Sends the message every text channel in guild',
+    description: 'Sends the message every text channel in guild.',
     guildOnly: true,
     args: true,
     aliases: ['broadcast', 'publish'],

@@ -6,7 +6,7 @@ const {
 
 module.exports = {
     name: 'loop',
-    description: 'Change loop options',
+    description: 'Change loop options.',
     guildOnly: true,
     args: true,
     aliases: [],

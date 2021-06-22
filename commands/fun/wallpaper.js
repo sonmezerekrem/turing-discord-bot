@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'wallpaper',
-    description: 'Sends a daily wallpaper to member',
+    description: 'Sends a daily wallpaper to member.',
     guildOnly: false,
     args: false,
     aliases: [],

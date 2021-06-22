@@ -6,7 +6,7 @@ const {
 
 module.exports = {
     name: 'prev',
-    description: 'Skips the previous song',
+    description: 'Skips the previous song.',
     guildOnly: true,
     args: false,
     aliases: [],

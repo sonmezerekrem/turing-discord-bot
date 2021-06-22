@@ -5,7 +5,7 @@ const { githubIssue } = require('./utils');
 
 module.exports = {
     name: 'issue',
-    description: 'Report an issue about bot functionality',
+    description: 'Report an issue about bot functionality.',
     guildOnly: false,
     args: true,
     aliases: [],

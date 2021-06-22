@@ -4,7 +4,7 @@ const embed = require('../../utils/embeds').botInfo;
 
 module.exports = {
     name: 'bot',
-    description: 'Shows information about bot',
+    description: 'Shows information about bot.',
     guildOnly: true,
     args: false,
     aliases: ['turing'],
