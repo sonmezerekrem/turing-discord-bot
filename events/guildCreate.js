@@ -24,7 +24,5 @@ module.exports = {
             const guildDb = await api.getGuild(guild.id);
             channel.send(embed(guild, guildDb));
         }
-
-
     }
 };

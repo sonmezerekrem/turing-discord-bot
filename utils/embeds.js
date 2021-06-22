@@ -694,6 +694,7 @@ async function top(guildName, thumbnail, toplist) {
         .setFooter(`${guildName} -  Discord`);
     return {
         files: [image],
+        // eslint-disable-next-line object-shorthand
         embed: embed
     };
 }
@@ -710,6 +711,7 @@ async function weekly(guildName, thumbnail, toplist) {
         .setFooter(`${guildName} -  Discord`);
     return {
         files: [image],
+        // eslint-disable-next-line object-shorthand
         embed: embed
     };
 }

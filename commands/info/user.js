@@ -23,9 +23,7 @@ module.exports = {
             if (result != null && result !== 404) {
                 return message.reply(embed(member, result));
             }
-            else {
-                return message.channel.send('Sorry, I couldn\'t find any information about this user');
-            }
+            return message.channel.send('Sorry, I couldn\'t find any information about this user');
         }
     }
 };

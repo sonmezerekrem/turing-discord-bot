@@ -146,7 +146,8 @@ async function pointsAndLevels(message, member, guild) {
                             name: 'Bronze',
                             color: 'DARK_GOLD'
                         },
-                        'Role for Bronze members');
+                        'Role for Bronze members'
+                    );
                     bronze = message.guild.roles.cache.find((role) => role.name === 'Bronze');
                 }
                 message.member.roles.add(bronze)
@@ -164,7 +165,8 @@ async function pointsAndLevels(message, member, guild) {
                             name: 'Silver',
                             color: 'LIGHT_GREY'
                         },
-                        'Role for Silver members');
+                        'Role for Silver members'
+                    );
                     silver = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 }
                 message.member.roles.add(silver)
@@ -182,7 +184,8 @@ async function pointsAndLevels(message, member, guild) {
                             name: 'Gold',
                             color: 'GOLD'
                         },
-                        'Role for Gold members');
+                        'Role for Gold members'
+                    );
                     gold = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 }
                 message.member.roles.add(gold)

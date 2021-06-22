@@ -26,6 +26,5 @@ module.exports = {
         }
 
         message.channel.send(queue(message.guild.name, playlist));
-
     }
 };

@@ -16,7 +16,7 @@ module.exports = {
         logger.debug(`Clock command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const zones = moment.tz.names();
 
-        const matches = stringSimilarity.findBestMatch(args.join(' '), zones.map(z => z.toLowerCase()));
+        const matches = stringSimilarity.findBestMatch(args.join(' '), zones.map((z) => z.toLowerCase()));
 
         if (matches.bestMatch.rating > 0.40) {
             const zone = moment()
