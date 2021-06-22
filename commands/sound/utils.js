@@ -250,7 +250,7 @@ async function playerAux(client, guildId) {
                     })
                     .catch((error) => logger.error(error.message));
                 const dispatcher = playlist.connection
-                    .play(ytdl(curr.url))
+                    .play(ytdl(`${curr.url}&html5=1&c=TVHTML5&cver=5.20150304`))
                     .on('finish', () => {
                         deletePlayMessage(client, guildId);
                         if (playlist.loop === 0 && playlist.shuffle === 0) {
@@ -287,8 +287,10 @@ async function playerAux(client, guildId) {
                         }
                     })
                     .on('error', (error) => {
+                        deletePlayMessage(client, guildId);
+                        curr.textChannel.send('Sorry, an error is occurred when trying to play the song');
                         logger.error(error.message);
-                        playlist.playing = null;
+                        playlist.playing = -2;
                     });
                 dispatcher.setVolume(playlist.volume);
             }
@@ -297,9 +299,9 @@ async function playerAux(client, guildId) {
 }
 
 
-async function player(message) {
+async function player(message, next = 0) {
     const playlist = getPlaylist(message.client, message.guild.id);
-    playlist.playing = 0;
+    playlist.playing = next;
     await playerAux(message.client, message.guild.id);
     deletePlayMessage(message.client, message.guild.id);
 }

@@ -24,6 +24,23 @@ module.exports = {
                 block = true;
             }
         }
+
+        if (block) {
+            const authorPerms = message.channel.permissionsFor(message.author);
+            if (!authorPerms || !authorPerms.has('MANAGE_CHANNELS')) {
+                message.channel.stopTyping(true);
+                try {
+                    message.channel.send('You do not have permission for block option!')
+                        .then((msg) => {
+                            msg.delete({ timeout: 3000 });
+                        });
+                    return;
+                }
+                catch (e) {
+                    logger.error(e.message);
+                }
+            }
+        }
         // eslint-disable-next-line no-restricted-globals
         if (isNaN(time)) return;
         if (args.length > 1 && args[1] === 'block') {

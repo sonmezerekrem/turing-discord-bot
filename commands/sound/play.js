@@ -9,7 +9,7 @@ const {
 
 module.exports = {
     name: 'play',
-    description: 'Plays a music with given queries or Youtube URL',
+    description: 'Plays a music with given queries or Youtube URL.',
     guildOnly: true,
     args: true,
     aliases: ['p'],
@@ -53,7 +53,10 @@ module.exports = {
 
             playlist.songs.push(song);
 
-            if (playlist.playing !== null) {
+            if (playlist.playing === -2) {
+                await player(message, playlist.songs.length - 1);
+            }
+            else if (playlist.playing !== null) {
                 const content = `**${song.title}** has added to queue.`;
                 message.channel.send(content);
             }
