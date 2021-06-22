@@ -15,7 +15,8 @@ const {
 } = require('../config.json');
 const {
     categories,
-    colorSet
+    colorSet,
+    emojiLetters
 } = require('./variables');
 const {
     toTitleCase,
@@ -654,19 +655,23 @@ function queue(guildName, playlist) {
             content.push(`${i + 1}. ${playlist.songs[i].title}`);
         }
     }
-
-    return new Discord.MessageEmbed()
+    const embed = new Discord.MessageEmbed()
         .setTitle('Play Queue')
         .setDescription(content.join('\n'))
         .setColor(color)
-        .setThumbnail(playlist.songs[playlist.playing].thumbnail)
         .setTimestamp()
         .setFooter(`${guildName} -  Discord`);
+
+
+    if (playlist.playing != null && playlist.playing !== -2) {
+        embed.setThumbnail(playlist.songs[playlist.playing].thumbnail);
+    }
+    return embed;
 }
 
 
 function search(guildName, searchQuery, videos) {
-    const content = [`Search results for: _${searchQuery}_\n`];
+    const content = [`Search results for: _${searchQuery}_. You can choose one of them just sending a number between 1 and 5.\n`];
 
     for (let i = 0; i < videos.length; i++) {
         content.push(`**${i + 1}. ${videos[i].title}**\n${videos[i].author.name}\n`);
@@ -699,6 +704,7 @@ async function top(guildName, thumbnail, toplist) {
     };
 }
 
+
 async function weekly(guildName, thumbnail, toplist) {
     const image = await weeklyCanvas(toplist);
     const embed = new Discord.MessageEmbed()
@@ -714,6 +720,23 @@ async function weekly(guildName, thumbnail, toplist) {
         // eslint-disable-next-line object-shorthand
         embed: embed
     };
+}
+
+
+function pollAnswers(question, answers, guild, member) {
+    const content = ['A new poll is started\n',
+        `**Created by:** ${member}\n`,
+        `**Question:** ${question}\n`];
+    for (let i = 0; i < answers.length; i++) {
+        content.push(`${emojiLetters[i]} ${answers[i]}\n`);
+    }
+    return new Discord.MessageEmbed()
+        .setTitle('Poll')
+        .setDescription(content.join('\n'))
+        .setFooter(`${guild} -  Discord`)
+        .setTimestamp()
+        .setColor(color)
+        .setThumbnail(member.user.avatarURL() != null ? member.user.avatarURL() : 'https://cdn.discordapp.com/embed/avatars/0.png');
 }
 
 
@@ -736,5 +759,6 @@ module.exports = {
     queue,
     search,
     top,
-    weekly
+    weekly,
+    pollAnswers
 };
