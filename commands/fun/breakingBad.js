@@ -11,7 +11,7 @@ module.exports = {
     usage: '',
     category: 'Fun',
     async execute(message) {
-        logger.debug(`Breaking-bad command has been used at guild:${message.guild.id} by:${message.author.id}`);
+        logger.debug(`Breaking-bad command has been used by:${message.author.id}`);
         axios({
             method: 'get',
             url: 'https://www.breakingbadapi.com/api/quote/random'

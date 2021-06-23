@@ -11,7 +11,7 @@ module.exports = {
     usage: '',
     category: 'Info',
     execute(message) {
-        logger.debug(`Support command has been used at guild:${message.guild.id} by:${message.author.id}`);
+        logger.debug(`Support command has been used by:${message.author.id}`);
         return message.channel.send(embed(message));
     }
 };

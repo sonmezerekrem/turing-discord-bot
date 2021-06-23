@@ -20,17 +20,19 @@ module.exports = {
         let guild;
 
         try {
-            [member, guild] = await getFromDatabase(message);
+            if (message.channel.type !== 'dm') {
+                [member, guild] = await getFromDatabase(message);
 
-            if (member === 404) {
-                member = null;
-            }
-            if (guild === 404) {
-                guild = null;
-            }
+                if (member === 404) {
+                    member = null;
+                }
+                if (guild === 404) {
+                    guild = null;
+                }
 
-            if (member && guild) {
-                await pointsAndLevels(message, member, guild);
+                if (member && guild) {
+                    await pointsAndLevels(message, member, guild);
+                }
             }
         }
         catch (e) {

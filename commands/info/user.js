@@ -11,9 +11,9 @@ module.exports = {
     aliases: [],
     usage: '<user>',
     category: 'Info',
-    cooldown: 300,
+    cooldown: 30,
     async execute(message) {
-        logger.debug(`Me command has been used at guild:${message.guild.id} by:${message.author.id}`);
+        logger.debug(`User command has been used at guild:${message.guild.id} by:${message.author.id}`);
         const member = message.guild.member(message.mentions.users.first());
         if (member.user.bot) {
             return message.reply('This is a bot user. Please do not give bot users as argument for this command!');

@@ -13,7 +13,7 @@ module.exports = {
     category: 'Other',
     cooldown: 120,
     async execute(message) {
-        logger.debug(`Issue command has been used at guild:${message.guild.id} by:${message.author.id}`);
+        logger.debug(`Issue command has been used by:${message.author.id}`);
 
         if (message.content.length < 150) {
             const timestamps = message.client.cooldowns.get('issue');

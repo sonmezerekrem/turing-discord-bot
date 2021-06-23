@@ -10,7 +10,7 @@ module.exports = {
     usage: '',
     category: 'Fun',
     async execute(message) {
-        logger.debug(`Random command has been used at guild:${message.guild.id} by:${message.author.id}`);
+        logger.debug(`Random command has been used by:${message.author.id}`);
         const random = Math.floor(Math.random() * 100);
         return message.reply(`Your magical number is ${random}`);
     }
