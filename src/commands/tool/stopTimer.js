@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 
 module.exports = {
     name: 'stop-timer',
-    description: 'Stop the timer in this channel.',
+    description: 'Stops the timer in this channel.',
     guildOnly: true,
     args: false,
     aliases: [],

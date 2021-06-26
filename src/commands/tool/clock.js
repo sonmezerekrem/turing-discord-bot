@@ -6,7 +6,7 @@ const { toTitleCase } = require('../../utils/functions');
 
 module.exports = {
     name: 'clock',
-    description: 'Show world clock.',
+    description: 'Shows time at given city.',
     guildOnly: false,
     args: true,
     aliases: [],

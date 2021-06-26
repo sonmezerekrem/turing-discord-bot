@@ -6,7 +6,7 @@ const { emojiLetters } = require('../../utils/variables');
 
 module.exports = {
     name: 'poll',
-    description: 'Starts a poll.',
+    description: 'Starts a poll with or without answers.',
     guildOnly: true,
     args: true,
     aliases: ['survey'],
