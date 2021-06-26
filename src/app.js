@@ -12,7 +12,7 @@ function run(dirname) {
     client.timers = new Discord.Collection();
     client.playlists = new Discord.Collection();
 
-    const eventsPath = path.resolve(dirname, './events');
+    const eventsPath = path.resolve(dirname, './src', './events');
     const eventFiles = fs.readdirSync(eventsPath)
         .filter((file) => file.endsWith('.js') && !file.includes('utils'));
     for (const file of eventFiles) {
@@ -27,7 +27,7 @@ function run(dirname) {
     logger.debug('Events has been read and set');
 
 
-    const commandsPath = path.resolve(dirname, './commands');
+    const commandsPath = path.resolve(dirname, './src', './commands');
     const commandFolders = fs.readdirSync(commandsPath);
     for (const folder of commandFolders) {
         const commandFiles = fs.readdirSync(path.resolve(commandsPath, folder))

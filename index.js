@@ -1,7 +1,7 @@
 require('dotenv')
     .config({ path: 'prod.env' });
-const logger = require('./utils/logger');
-const run = require('./app');
+const logger = require('./src/utils/logger');
+const run = require('./src/app');
 
 const client = run(__dirname);
 
