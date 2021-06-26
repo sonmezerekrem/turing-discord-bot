@@ -151,9 +151,9 @@ async function pointsAndLevels(message, member, guild) {
                     bronze = message.guild.roles.cache.find((role) => role.name === 'Bronze');
                 }
                 message.member.roles.add(bronze)
-                    .catch((error) => logger.error(error.message));
+                    .catch((error) => logger.error(`Bronze role give error: ${error.message}`));
                 message.member.roles.remove(newMember)
-                    .catch((error) => logger.error(error.message));
+                    .catch((error) => logger.error(`New member role delete error: ${error.message}`));
                 await canvases.roleUp(message, bronze);
             }
             else if (level === 11) {
@@ -170,9 +170,9 @@ async function pointsAndLevels(message, member, guild) {
                     silver = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 }
                 message.member.roles.add(silver)
-                    .catch((error) => logger.error(error.message));
+                    .catch((error) => logger.error(`Silver role give error: ${error.message}`));
                 message.member.roles.remove(bronze)
-                    .catch((error) => logger.error(error.message));
+                    .catch((error) => logger.error(`Bronze role delete error: ${error.message}`));
                 await canvases.roleUp(message, silver);
             }
             else if (level === 17) {
@@ -189,9 +189,9 @@ async function pointsAndLevels(message, member, guild) {
                     gold = message.guild.roles.cache.find((role) => role.name === 'Silver');
                 }
                 message.member.roles.add(gold)
-                    .catch((error) => logger.error(error.message));
+                    .catch((error) => logger.error(`Gold role give error: ${error.message}`));
                 message.member.roles.remove(silver)
-                    .catch((error) => logger.error(error.message));
+                    .catch((error) => logger.error(`Silver role delete error: ${error.message}`));
                 await canvases.roleUp(message, gold);
             }
         }

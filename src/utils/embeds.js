@@ -483,7 +483,7 @@ function moderation(action, args) {
         }
     }
     catch (e) {
-        logger.error(e.message);
+        logger.error(`Moderation embed error: ${e.message}`);
     }
 
     return embed;

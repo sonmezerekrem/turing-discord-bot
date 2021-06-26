@@ -12,7 +12,7 @@ async function getGuild(guildId) {
             if (error.response != null && error.response.status === 404) {
                 return 404;
             }
-            logger.warn(`${error.message}`);
+            logger.warn(`Get guild error: ${error.message}`);
         });
 
     if (result === 404) {
@@ -39,7 +39,7 @@ async function saveGuild(args) {
             }
         }
     })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Save guild error: ${error.message}`));
 
     return result.status === 201;
 }
@@ -55,10 +55,10 @@ function updateGuild(guildId, args) {
     })
         .then((result) => {
             if (result.status === 201) {
-                logger.info('Changes have saved');
+                logger.info('Updated guild');
             }
         })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Update guild error: ${error.message}`));
 }
 
 
@@ -72,7 +72,7 @@ function deleteGuild(guildId) {
                 logger.info('Guild deleted');
             }
         })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Delete guild error: ${error.message}`));
 }
 
 
@@ -85,7 +85,7 @@ async function getMember(guildId, memberId) {
             if (error.response != null && error.response.status === 404) {
                 return 404;
             }
-            logger.warn(`${error.message}`);
+            logger.warn(`Get member error: ${error.message}`);
         });
 
     if (result === 404) {
@@ -111,7 +111,7 @@ async function saveMember(guildId, args) {
             }
         }
     })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Save member error: ${error.message}`));
 
     return result.status === 201;
 }
@@ -130,7 +130,7 @@ function updateMember(guildId, memberId, args) {
                 logger.info('Changes have saved');
             }
         })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Update member error: ${error.message}`));
 }
 
 
@@ -147,7 +147,7 @@ function givePoints(guildId, memberId, points) {
                 logger.debug('Points given');
             }
         })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Give points error: ${error.message}`));
 }
 
 
@@ -170,7 +170,7 @@ async function getTopTen(guildId) {
         method: 'get',
         url: `${backendPath}/guilds/${guildId}/toplist`
     })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Top ten error: ${error.message}`));
 
     if (result.status === 200) return result.data.members;
     return null;
@@ -182,7 +182,7 @@ async function getWeeklyTop(guildId) {
         method: 'get',
         url: `${backendPath}/guilds/${guildId}/weekly`
     })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Weekly top error: ${error.message}`));
 
     if (result.status === 200) return result.data.members;
     return null;
@@ -203,7 +203,7 @@ function addMemberConnection(guildId, memberId, url, name) {
                 logger.info('Connection added');
             }
         })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Add member connection error: ${error.message}`));
 }
 
 
@@ -220,7 +220,7 @@ function removeMemberConnection(guildId, memberId, name) {
                 logger.info('Connection removed');
             }
         })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Remove member connection error: ${error.message}`));
 }
 
 
@@ -237,7 +237,7 @@ function reportUserResponse(issue) {
                 logger.info('Issue saved');
             }
         })
-        .catch((error) => logger.warn(error.message));
+        .catch((error) => logger.warn(`Report issue error: ${error.message}`));
 }
 
 
