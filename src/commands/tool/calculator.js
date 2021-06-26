@@ -7,7 +7,7 @@ module.exports = {
     description: 'Calculates given expression.',
     guildOnly: false,
     args: true,
-    aliases: ['math', 'calculate'],
+    aliases: ['math', 'calculate', 'calc'],
     usage: '',
     category: 'Tool',
     link: 'https://mathjs.org/index.html',
@@ -20,7 +20,7 @@ module.exports = {
         }
         catch (e) {
             message.channel.send('Wrong expression! Detailed documentation: https://mathjs.org/index.html');
-            logger.warn(e.message);
+            logger.warn(`Calc error: ${e.message}`);
         }
     }
 };

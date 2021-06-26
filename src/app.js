@@ -24,7 +24,7 @@ function run(dirname) {
             client.on(event.name, (...args) => event.execute(...args, client));
         }
     }
-    logger.debug('Events has been read and set');
+    logger.info('Events has been read and set');
 
 
     const commandsPath = path.resolve(dirname, './src', './commands');
@@ -37,7 +37,7 @@ function run(dirname) {
             client.commands.set(command.name, command);
         }
     }
-    logger.debug('Commands has been read and set');
+    logger.info('Commands has been read and set');
 
     return client;
 }

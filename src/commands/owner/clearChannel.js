@@ -39,14 +39,14 @@ module.exports = {
                                 }
                             })
                             .catch((error) => {
-                                logger.error(error.message);
+                                logger.error(`Reaction error: ${error.message}`);
                             });
                         setTimeout(() => {
                             msg.reactions.removeAll();
                         }, 30000);
                     }
                     catch (error) {
-                        logger.error(`One of the emojis failed to react in clc-all guild:${message.guild.id}`);
+                        logger.error(`Emoji error: ${error.message}`);
                     }
                 });
         }
@@ -54,7 +54,7 @@ module.exports = {
             let count = parseInt(args[0], 10);
             while (count > 0) {
                 await message.channel.bulkDelete(Math.min(100, count), true)
-                    .catch((error) => logger.error(error.message));
+                    .catch((error) => logger.error(`Bulk delete error ${error.message}`));
                 count -= 100;
             }
         }

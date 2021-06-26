@@ -45,7 +45,7 @@ module.exports = {
                 }
             }
             catch (err) {
-                logger.error(err.message);
+                logger.error(`Next command error: ${err.message}`);
             }
         }
     }

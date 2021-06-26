@@ -19,6 +19,6 @@ module.exports = {
             .then((invite) => {
                 channel.send(`Here is your invite link: ${invite.url}`);
             })
-            .catch((error) => logger.error(error.message));
+            .catch((error) => logger.error(`Invite error: ${error.message}`));
     }
 };

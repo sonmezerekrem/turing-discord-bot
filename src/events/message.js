@@ -36,7 +36,7 @@ module.exports = {
             }
         }
         catch (e) {
-            logger.warn(e.message);
+            logger.warn(`Database connection error at message: ${e.message}`);
         }
 
         if (message.channel.type !== 'dm') {
@@ -79,7 +79,7 @@ module.exports = {
                         });
                 }
                 catch (e) {
-                    logger.error(e.message);
+                    logger.error(`Rule sending error: ${e.message}`);
                 }
                 return;
             }
@@ -102,7 +102,7 @@ module.exports = {
                     return;
                 }
                 catch (e) {
-                    logger.error(e.message);
+                    logger.error(`Message permissions error: ${e.message}`);
                 }
             }
         }
@@ -161,7 +161,7 @@ module.exports = {
             message.channel.stopTyping(true);
         }
         catch (error) {
-            logger.error(`${error.message} guild:${message.guild ? message.guild.name : 'DM'}`);
+            logger.error(`Command execute error: ${error.message} guild:${message.guild ? message.guild.name : 'DM'}`);
             message.channel.send(`Sorry, there was an error trying to execute that command! You can report this problem by using **${prefix}issue** command`)
                 .then((msg) => {
                     msg.delete({ timeout: 5000 });

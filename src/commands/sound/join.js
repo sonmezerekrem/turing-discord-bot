@@ -17,13 +17,16 @@ module.exports = {
         message.member.voice.channel.join()
             .then((connection) => {
                 connection.setSpeaking(0);
+                connection.on('disconnect', () => {
+                    message.client.playlists.delete(message.guild.id);
+                });
                 connection.voice.setDeaf(true)
                     .then(() => {
                         message.channel.send(`I am joined to ${message.member.voice.channel}`);
                     });
             })
             .catch((error) => {
-                logger.error(error.message);
+                logger.error(`Join command error: ${error.message}`);
             });
     }
 };

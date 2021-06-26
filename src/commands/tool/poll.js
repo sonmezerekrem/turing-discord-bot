@@ -54,7 +54,7 @@ module.exports = {
                     }
                 }
                 catch (error) {
-                    logger.error(`One of the emojis failed to react in poll guild:${message.guild.id}`);
+                    logger.error(`Reaction error at poll : ${error.message}`);
                 }
             });
     }

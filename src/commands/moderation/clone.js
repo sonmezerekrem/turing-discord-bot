@@ -18,7 +18,7 @@ module.exports = {
             message.channel.send(`A clone of ${message.channel} is created`);
         }
         catch (e) {
-            logger.error(e.message);
+            logger.error(`Clone error: ${e.message}`);
         }
     }
 };

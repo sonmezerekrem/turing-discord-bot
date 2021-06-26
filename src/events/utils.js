@@ -15,7 +15,7 @@ const connect = async (client) => {
         }
     })
         .catch((error) => {
-            logger.error(error.message);
+            logger.error(`Client connection error: ${error.message}`);
         });
 
     logger.info(`Status is set to default: '${defaultState}'`);

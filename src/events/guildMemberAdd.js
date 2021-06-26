@@ -26,7 +26,7 @@ module.exports = {
                     newMember = guild.roles.cache.find((role) => role.name === 'New Member');
                 }
                 member.roles.add(newMember)
-                    .catch((error) => logger.error(error.message));
+                    .catch((error) => logger.error(`New member role error: ${error.message}`));
             }
 
             if (guildDb.welcomeMessage.enabled) {

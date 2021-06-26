@@ -37,7 +37,7 @@ module.exports = {
                     return;
                 }
                 catch (e) {
-                    logger.error(e.message);
+                    logger.error(`Timer command error: ${e.message}`);
                 }
             }
         }

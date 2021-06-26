@@ -27,7 +27,7 @@ module.exports = {
             }
         }
         catch (e) {
-            logger.error(e.message);
+            logger.error(`Invite creation error: ${e.message}`);
         }
     }
 };

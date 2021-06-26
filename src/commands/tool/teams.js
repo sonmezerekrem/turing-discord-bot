@@ -58,9 +58,9 @@ module.exports = {
             }
             return message.channel.send(embed(message, teams));
         }
-        catch (exception) {
+        catch (error) {
             message.channel.send('Wrong arguments for `teams` command!');
-            logger.error(exception.message);
+            logger.error(`Teams command error: ${error.message}`);
         }
     }
 };

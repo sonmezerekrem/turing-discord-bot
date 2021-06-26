@@ -124,7 +124,7 @@ async function songInfo(args, message) {
             if (parsed.type === 'track') {
                 const track = await spotify.getPreview(args[0])
                     .catch((error) => {
-                        logger.error(error.message);
+                        logger.error(`Spotify song info error: ${error.message}`);
                     });
                 song.spotify = `${track.artist} - ${track.title}`;
                 song.found = 3;
@@ -133,7 +133,7 @@ async function songInfo(args, message) {
             if (parsed.type === 'playlist') {
                 const tracks = await spotify.getTracks(args[0])
                     .catch((error) => {
-                        logger.error(error.message);
+                        logger.error(`Spotify playlist error: ${error.message}`);
                     });
                 const songList = [];
                 for (let i = 0; i < tracks.length; i++) {
@@ -163,7 +163,7 @@ async function songInfo(args, message) {
             return song;
         }
         catch (error) {
-            logger.error(error.message);
+            logger.error(`Spotify url error: ${error.message}`);
         }
     }
     else if (!isValidURL(args[0])) {
@@ -314,7 +314,7 @@ function deletePlayMessage(client, guildId) {
                             curr.message = null;
                         });
                 })
-                .catch((error) => logger.error(error.message));
+                .catch((error) => logger.error(`Delete play message error: ${error.message}`));
         }
     }
 }
@@ -334,7 +334,7 @@ async function joinTheVoice(message) {
             playlist.connection = connection;
         }
         catch (err) {
-            logger.error(err.message);
+            logger.error(`Join voice error: ${err.message}`);
         }
     }
 }
@@ -354,7 +354,7 @@ async function playerAux(client, guildId) {
                     .then((msg) => {
                         curr.message = msg.id;
                     })
-                    .catch((error) => logger.error(error.message));
+                    .catch((error) => logger.error(`Playing message send error: ${error.message}`));
                 const dispatcher = playlist.connection
                     .play(ytdl(curr.url))
                     .on('finish', () => {
@@ -395,7 +395,7 @@ async function playerAux(client, guildId) {
                     .on('error', (error) => {
                         deletePlayMessage(client, guildId);
                         curr.textChannel.send('Sorry, an error is occurred when trying to play the song');
-                        logger.error(error.message);
+                        logger.error(`Song playerAux error ${error.message}`);
                         playlist.playing = -2;
                     });
                 dispatcher.setVolume(playlist.volume);

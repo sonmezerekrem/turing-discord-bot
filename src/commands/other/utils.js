@@ -33,7 +33,7 @@ async function githubIssue(args) {
             accept: 'application/vnd.github.v3+json'
         }
     })
-        .catch((error) => logger.error(error.message));
+        .catch((error) => logger.error(`Github bot token error: ${error.message}`));
 
     if (botToken.status === 201) {
         const response = await axios({
@@ -49,7 +49,7 @@ async function githubIssue(args) {
                 labels
             }
         })
-            .catch((error) => logger.error(error.message));
+            .catch((error) => logger.error(`Github issue error: ${error.message}`));
 
         if (response.status === 201) {
             return response.data.html_url;

@@ -10,6 +10,7 @@ module.exports = {
             setTimeout(() => {
                 if (!oldState.channel.members.size - 1) {
                     logger.debug('I am leaving voice');
+                    oldState.guild.client.playlists.delete(oldState.guild.id);
                     oldState.channel.leave();
                 }
             }, 300000);
