@@ -134,12 +134,13 @@ function updateMember(guildId, memberId, args) {
 }
 
 
-function givePoints(guildId, memberId, points) {
+function givePoints(guildId, memberId, points, now) {
     axios({
         method: 'patch',
         url: `${backendPath}/guilds/${guildId}/members/${memberId}/points`,
         data: {
-            points
+            points,
+            lastPoint: now
         }
     })
         .then((result) => {
@@ -177,53 +178,6 @@ async function getTopTen(guildId) {
 }
 
 
-async function getWeeklyTop(guildId) {
-    const result = await axios({
-        method: 'get',
-        url: `${backendPath}/guilds/${guildId}/weekly`
-    })
-        .catch((error) => logger.warn(`Weekly top error: ${error.message}`));
-
-    if (result.status === 200) return result.data.members;
-    return null;
-}
-
-
-function addMemberConnection(guildId, memberId, url, name) {
-    axios({
-        method: 'post',
-        url: `${backendPath}/guilds/${guildId}/members/${memberId}/connections`,
-        data: {
-            url,
-            name
-        }
-    })
-        .then((result) => {
-            if (result.status === 201) {
-                logger.info('Connection added');
-            }
-        })
-        .catch((error) => logger.warn(`Add member connection error: ${error.message}`));
-}
-
-
-function removeMemberConnection(guildId, memberId, name) {
-    axios({
-        method: 'delete',
-        url: `${backendPath}/guilds/${guildId}/members/${memberId}/connections`,
-        data: {
-            name
-        }
-    })
-        .then((result) => {
-            if (result.status === 200) {
-                logger.info('Connection removed');
-            }
-        })
-        .catch((error) => logger.warn(`Remove member connection error: ${error.message}`));
-}
-
-
 async function reportUserResponse(issue) {
     const result = await axios({
         method: 'post',
@@ -253,8 +207,5 @@ module.exports = {
     deleteMember,
     givePoints,
     getTopTen,
-    getWeeklyTop,
-    addMemberConnection,
-    removeMemberConnection,
     reportUserResponse
 };

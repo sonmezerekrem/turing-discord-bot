@@ -23,8 +23,7 @@ const {
     getDateAsString
 } = require('./functions');
 const {
-    topCanvas,
-    weeklyCanvas
+    topCanvas
 } = require('./canvases');
 
 
@@ -55,9 +54,6 @@ function help(message, args) {
         content.push(`**Fun**\n${commands.filter((command) => command.category === 'Fun')
             .map((command) => command.name)
             .join(', ')}\n`);
-        content.push(`**Member**\n${commands.filter((command) => command.category === 'Member')
-            .map((command) => command.name)
-            .join(', ')}\n`);
         content.push(`**Bot**\n${commands.filter((command) => command.category === 'Bot')
             .map((command) => command.name)
             .join(', ')}\n`);
@@ -69,6 +65,8 @@ function help(message, args) {
                 .map((command) => command.name)
                 .join(', ')}\n`);
         }
+        embed.attachFiles(new Discord.MessageAttachment('./assets/images/icons/help.png', 'helpicon.png'));
+        embed.setThumbnail('attachment://helpicon.png');
         content.push(`\nYou can send  \`${prefix}help [category name]\` or \`${prefix}help [command name]\` to get info on a specific category or command!`);
         embed.setDescription(content.join('\n'));
     }
@@ -85,6 +83,8 @@ function help(message, args) {
                 content.push(`**${command.name}:** ${command.description}`);
             });
             content.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+            embed.attachFiles(new Discord.MessageAttachment(`./assets/images/icons/${name.toLowerCase()}.png`, 'helpcategoryicon.png'));
+            embed.setThumbnail('attachment://helpcategoryicon.png');
             embed.setDescription(content.join('\n\n'));
         }
         else {
@@ -105,6 +105,8 @@ function help(message, args) {
             if (Object.prototype.hasOwnProperty.call(command, 'guildOnly') && !command.guildOnly) {
                 content.push('**Dm:** Available\n');
             }
+            embed.attachFiles(new Discord.MessageAttachment(`./assets/images/icons/${command.category.toLowerCase()}.png`, 'helpcategoryicon.png'));
+            embed.setThumbnail('attachment://helpcategoryicon.png');
             embed.setDescription(content.join('\n'));
         }
     }
@@ -188,14 +190,13 @@ function memberEmbed(message, result) {
 
     if (result == null || result === 404) {
         result = {};
-        result.weeklyPoints = '-';
+        result.points = '-';
         result.level = '-';
-        result.connections = [];
     }
 
     const embed = new Discord.MessageEmbed()
         .setTitle(member.displayName)
-        .setDescription(member.user.tag)
+        .setDescription(`Roles, points... All about ${member.user.tag}`)
         .setColor(color)
         .addFields(
             {
@@ -208,8 +209,8 @@ function memberEmbed(message, result) {
                 inline: true
             },
             {
-                name: 'Weekly Points',
-                value: result.weeklyPoints,
+                name: 'Points',
+                value: result.points,
                 inline: true
             },
             {
@@ -231,14 +232,6 @@ function memberEmbed(message, result) {
         }
     }
 
-    if (result.connections.length > 0) {
-        const connections = [];
-        result.connections.forEach((conn) => {
-            connections.push(`__${conn.name}__\n${conn.url}\n`);
-        });
-        embed.addField('Connections', connections.join(''));
-    }
-
     return embed;
 }
 
@@ -256,6 +249,7 @@ function roleEmbed(message, roleName) {
         .setTitle(role.name)
         .setAuthor('Role Information')
         .setColor(role.hexColor)
+        .setThumbnail(message.guild.iconURL())
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp()
         .addField('Created At', date, true)
@@ -533,7 +527,7 @@ function userEmbed(member, result) {
 
     const embed = new Discord.MessageEmbed()
         .setTitle(member.displayName)
-        .setDescription('General information about memberEmbed')
+        .setDescription(`General information about ${member.displayName}`)
         .setColor(color)
         .addFields(
             {
@@ -549,26 +543,6 @@ function userEmbed(member, result) {
         .setFooter(`${member.guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(member.user.avatarURL());
-
-    if (result.connections.length > 0) {
-        const connections = [];
-        const length = 0;
-        result.connections.forEach((conn) => {
-            const text = `__${conn.name}__\n${conn.url}\n`;
-            if (length + text.length > 1024) {
-                embed.addField('\u200B', connections.join('')
-                    .substr());
-                connections.length = 0;
-            }
-            else {
-                connections.push(text);
-            }
-        });
-        if (connections.length > 0) {
-            embed.addField('\u200B', connections.join('')
-                .substr());
-        }
-    }
 
     return embed;
 }
@@ -677,24 +651,6 @@ async function top(guildName, thumbnail, toplist) {
 }
 
 
-async function weekly(guildName, thumbnail, toplist) {
-    const image = await weeklyCanvas(toplist);
-    const embed = new Discord.MessageEmbed()
-        .setTitle(`Weekly List at ${guildName}`)
-        .setColor(color)
-        .setDescription(`Top ranked members by points at ${guildName} in this week`)
-        .setImage('attachment://weekly.jpg')
-        .setThumbnail(thumbnail)
-        .setTimestamp()
-        .setFooter(`${guildName} -  Discord`);
-    return {
-        files: [image],
-        // eslint-disable-next-line object-shorthand
-        embed: embed
-    };
-}
-
-
 function pollAnswers(question, answers, guild, member) {
     const content = ['A new poll is started\n',
         `**Created by:** ${member}\n`,
@@ -730,6 +686,5 @@ module.exports = {
     queue,
     search,
     top,
-    weekly,
     pollAnswers
 };

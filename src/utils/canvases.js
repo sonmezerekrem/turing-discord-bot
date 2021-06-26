@@ -88,30 +88,9 @@ async function topCanvas(toplist) {
     return new Discord.MessageAttachment(canvas.toBuffer(), 'top.jpg');
 }
 
-async function weeklyCanvas(toplist) {
-    const canvas = createCanvas(750, 600);
-    const context = canvas.getContext('2d');
-
-    const background = await loadImage('assets/images/backgrounds/top.png');
-    context.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-    context.fillStyle = '#ffffff';
-
-    context.font = '26px "Poppins Bold"';
-
-    for (let i = 0; i < Math.min(toplist.length, 10); i++) {
-        context.fillText(toplist[i].tag.substring(0, toplist[i].tag.length - 5)
-                .substr(0, 32),
-            72, parseInt(49 + i * 58, 10));
-        context.fillText(toplist[i].weeklyPoints, 600, parseInt(49 + i * 58, 10));
-    }
-
-    return new Discord.MessageAttachment(canvas.toBuffer(), 'weekly.jpg');
-}
 
 module.exports = {
     levelUp,
     roleUp,
-    topCanvas,
-    weeklyCanvas
+    topCanvas
 };

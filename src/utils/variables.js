@@ -150,7 +150,6 @@ exports.categories = {
     moderation: 'Commands related to server administration.',
     leveling: 'Commands about level and rank system.',
     fun: 'commands prepared for entertainment purposes',
-    member: 'Commands for member his/her self',
     bot: 'Bot related commands.',
     owner: 'Commands reserved for guild owners.',
     tool: 'Commands for general tool like calendar or calculator.',
