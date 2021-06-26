@@ -1,0 +1,24 @@
+{
+  "defaultActivity": {
+    "name": "help",
+    "type": "LISTENING"
+  },
+  "defaultState": "online",
+  "prefix": "+",
+  "logLevel": 2,
+  "color": "#00BFFF",
+  "youtubeUrl": "https://www.youtube.com/watch?v=",
+  "youtubeSearchApiUrl": "https://www.googleapis.com/youtube/v3/search",
+  "youtubeVideoApiUrl": "https://www.googleapis.com/youtube/v3/videos",
+  "geniusApi": "https://api.genius.com",
+  "geniusUrl": "https://genius.com",
+  "version": "2.0.0",
+  "turing": "840619177739419649",
+  "contact": {
+    "invite": "https://discord.gg/TtdcMSuCK4",
+    "website": "https://turingdiscordbot.netlify.app",
+    "instagram": "https://www.instagram.com/turingdiscordbot/",
+    "github": "https://github.com/sonmezerekrem/turing-discord-bot"
+  },
+  "backendPath": "http://localhost:3000"
+}

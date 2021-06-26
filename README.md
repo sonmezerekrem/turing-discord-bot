@@ -1,14 +1,15 @@
-# Discord.js Bot
+# Turing Discord Bot
 
-A ready to use, written with Javascript, powerful Discord Bot
+![](assets/images/logo.jpg)
 
-![Discord](https://img.shields.io/discord/840619177739419649?label=DISCORD&style=flat-square)
+A powerful Discord bot, written in Javascript with discord.js
 
-![](https://img.shields.io/badge/license-MIT-orange?style=flat-square)
-![npm](https://img.shields.io/npm/v/npm?style=flat-square)
-![npm](https://img.shields.io/npm/v/discord.js?color=orange&label=discord.js&style=flat-square)
-
-![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/sonmezerekrem/discord/develop?style=flat-square)
-![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr/sonmezerekrem/discord?style=flat-square)
+![Discord](https://img.shields.io/discord/840619177739419649?color=purple&label=DISCORD&logo=discord&style=flat-square)
+![Website](https://img.shields.io/website?down_message=offline&style=flat-square&up_color=green&up_message=online&url=https%3A%2F%2Fturingdiscordbot.netlify.app%2F)
 
 
+## Legal
+
+The image representing Turing Bot was purchased from Shutterstock with standard license.
+
+https://www.shutterstock.com/tr/image-vector/cute-robot-waving-hand-cartoon-vector-1917055787
