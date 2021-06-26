@@ -9,7 +9,7 @@ const {
 
 module.exports = {
     name: 'play',
-    description: 'Plays a music with given queries or Youtube URL.',
+    description: 'Plays a music with given queries or Youtube or Spotify URL.',
     guildOnly: true,
     args: true,
     aliases: ['p'],

@@ -29,115 +29,86 @@ const {
 
 
 function help(message, args) {
+    const content = [];
+    const { commands } = message.client;
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setThumbnail(message.client.user.avatarURL())
         .setFooter(`${message.guild ? message.guild.name : 'DM'} -  Discord`)
         .setTimestamp();
 
-    const { commands } = message.client;
-
-    if (!args.length) {
+    if (args.length === 0) {
         embed.setTitle('Help');
-        embed.setDescription('Here\'s a list of all commands by categories:');
-        embed.addFields(
-            {
-                name: 'Info',
-                value: commands.filter((command) => command.category === 'Info')
-                    .map((command) => command.name)
-                    .join(', ')
-            },
-            {
-                name: 'Moderation',
-                value: commands.filter((command) => command.category === 'Moderation')
-                    .map((command) => command.name)
-                    .join(', ')
-            },
-            {
-                name: 'Sound',
-                value: commands.filter((command) => command.category === 'Sound')
-                    .map((command) => command.name)
-                    .join(', ')
-            },
-            {
-                name: 'Leveling',
-                value: commands.filter((command) => command.category === 'Leveling')
-                    .map((command) => command.name)
-                    .join(', ')
-            },
-            {
-                name: 'Fun',
-                value: commands.filter((command) => command.category === 'Fun')
-                    .map((command) => command.name)
-                    .join(', ')
-            },
-            {
-                name: 'Member',
-                value: commands.filter((command) => command.category === 'Member')
-                    .map((command) => command.name)
-                    .join(', ')
-            },
-            {
-                name: 'Other',
-                value: commands.filter((command) => command.category === 'Other')
-                    .map((command) => command.name)
-                    .join(', ')
-            }, {
-                name: 'Tool',
-                value: commands.filter((command) => command.category === 'Tool')
-                    .map((command) => command.name)
-                    .join(', ')
-            }
-        );
+        content.push('Here\'s a list of all commands by categories:\n');
+        content.push(`**Info**\n${commands.filter((command) => command.category === 'Info')
+            .map((command) => command.name)
+            .join(', ')}\n`);
+        content.push(`**Moderation**\n${commands.filter((command) => command.category === 'Moderation')
+            .map((command) => command.name)
+            .join(', ')}\n`);
+        content.push(`**Sound**\n${commands.filter((command) => command.category === 'Sound')
+            .map((command) => command.name)
+            .join(', ')}\n`);
+        content.push(`**Leveling**\n${commands.filter((command) => command.category === 'Leveling')
+            .map((command) => command.name)
+            .join(', ')}\n`);
+        content.push(`**Fun**\n${commands.filter((command) => command.category === 'Fun')
+            .map((command) => command.name)
+            .join(', ')}\n`);
+        content.push(`**Member**\n${commands.filter((command) => command.category === 'Member')
+            .map((command) => command.name)
+            .join(', ')}\n`);
+        content.push(`**Bot**\n${commands.filter((command) => command.category === 'Bot')
+            .map((command) => command.name)
+            .join(', ')}\n`);
+        content.push(`**Tool**\n${commands.filter((command) => command.category === 'Tool')
+            .map((command) => command.name)
+            .join(', ')}\n`);
         if (message.channel.type !== 'dm' && message.author.id === message.guild.ownerID) {
-            embed.addField('Owner', commands.filter((command) => command.category === 'Owner')
+            content.push(`**Owner**\n${commands.filter((command) => command.category === 'Owner')
                 .map((command) => command.name)
-                .join(', '));
+                .join(', ')}\n`);
         }
-        embed.addField('\u200b', `\nYou can send  \`${prefix}help [category name]\` or \`${prefix}help [command name]\` to get info on a specific category or command!`);
-        return embed;
+        content.push(`\nYou can send  \`${prefix}help [category name]\` or \`${prefix}help [command name]\` to get info on a specific category or command!`);
+        embed.setDescription(content.join('\n'));
     }
-
-    const name = args[0].toLowerCase();
-    if (Object.prototype.hasOwnProperty.call(categories, name)) {
-        if (name === 'owner' && message.author.id !== message.guild.ownerID) {
-            return 'Only owner of this guild access this commands!';
+    else {
+        const name = args[0].toLowerCase();
+        if (Object.prototype.hasOwnProperty.call(categories, name)) {
+            if (name === 'owner' && message.author.id !== message.guild.ownerID) {
+                return 'Only owner of this guild access this commands!';
+            }
+            embed.setTitle(`${toTitleCase(name)} Commands`);
+            const categoryCommands = commands.filter((command) => command.category === toTitleCase(name));
+            content.push(`${categories[name]}\n`);
+            categoryCommands.forEach((command) => {
+                content.push(`**${command.name}:** ${command.description}`);
+            });
+            content.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+            embed.setDescription(content.join('\n\n'));
         }
-        embed.setTitle(`${toTitleCase(name)} Commands`);
-        const categoryCommands = commands.filter((command) => command.category === toTitleCase(name));
-        const content = [`${categories[name]}\n`];
-        categoryCommands.forEach((command) => {
-            content.push(`**${command.name}:** ${command.description}`);
-        });
-        content.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
-        embed.setDescription(content.join('\n\n'));
-        return embed;
+        else {
+            const command = commands.get(name) || commands.find((c) => c.aliases && c.aliases.includes(name));
+
+            if (!command || (command.category === 'Owner' && message.author.id !== message.guild.ownerID)) {
+                return 'That\'s not a valid category or command!';
+            }
+
+            embed.setTitle(command.name);
+            content.push(`${command.description}\n`);
+            content.push(`**Category:** ${command.category}\n`);
+            content.push(`**Aliases:** ${command.aliases.length > 0 ? command.aliases.join(', ') : '-'}\n`);
+            content.push(`**Usage:** ${prefix}${command.name} ${command.usage}\n`);
+            if (Object.prototype.hasOwnProperty.call(command, 'link')) {
+                content.push(`**Link:** ${command.link}\n`);
+            }
+            if (Object.prototype.hasOwnProperty.call(command, 'guildOnly') && !command.guildOnly) {
+                content.push('**Dm:** Available\n');
+            }
+            embed.setDescription(content.join('\n'));
+        }
     }
 
-    const command = commands.get(name) || commands.find((c) => c.aliases && c.aliases.includes(name));
-
-    if (!command || (command.category === 'Owner' && message.author.id !== message.guild.ownerID)) {
-        return 'That\'s not a valid category or command!';
-    }
-
-    embed.setTitle(command.name);
-    embed.setDescription(command.description);
-    embed.addField('Category', command.category);
-    let aliases = '-';
-    if (command.aliases.length > 0) {
-        aliases = command.aliases.join(', ');
-    }
-    embed.addField('Aliases', aliases);
-    embed.addField('Usage', `${prefix}${command.name} ${command.usage}`);
-    if (Object.prototype.hasOwnProperty.call(command, 'example')) {
-        embed.addField('Examples', command.example);
-    }
-    if (Object.prototype.hasOwnProperty.call(command, 'link')) {
-        embed.addField('Link', command.link);
-    }
-    if (Object.prototype.hasOwnProperty.call(command, 'guildOnly') && !command.guildOnly) {
-        embed.addField('DM Availability', 'Yes');
-    }
     return embed;
 }
 

@@ -9,7 +9,7 @@ module.exports = {
     args: true,
     aliases: [],
     usage: '<your suggestion>',
-    category: 'Other',
+    category: 'Bot',
     cooldown: 120,
     async execute(message) {
         logger.debug(`Suggestion command has been used by:${message.author.id}`);
@@ -37,16 +37,21 @@ module.exports = {
             url: null
         };
 
-        const github = await githubIssue(issue);
 
-        if (github != null) {
-            issue.url = github;
-            message.channel.send(`Thanks for reporting an issue. You can follow the progress about the issue from ${github}`);
-        }
-        else {
-            message.channel.send('Thanks for reporting an issue. Issue will be examined');
-        }
+        const result = await api.reportUserResponse(issue);
+        if (result === 201) {
+            const github = await githubIssue(issue);
 
-        api.reportUserResponse(issue);
+            if (github != null) {
+                issue.url = github;
+                message.channel.send(`Thanks for reporting an issue. You can follow the progress about the issue from ${github}`);
+            }
+            else {
+                message.channel.send('Thanks for reporting an issue. Issue will be examined');
+            }
+        }
+        else if (result === 403) {
+            message.channel.send('You are blocked for reporting issues & suggestions because of spamming.');
+        }
     }
 };

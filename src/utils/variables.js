@@ -146,12 +146,12 @@ exports.colorSet = {
 };
 
 exports.categories = {
-    info: 'Informational commands for the server, bot or user, etc.',
+    info: 'Informational commands for the server, user, ping, etc.',
     moderation: 'Commands related to server administration.',
     leveling: 'Commands about level and rank system.',
     fun: 'commands prepared for entertainment purposes',
     member: 'Commands for member his/her self',
-    other: 'Other commands.',
+    bot: 'Bot related commands.',
     owner: 'Commands reserved for guild owners.',
     tool: 'Commands for general tool like calendar or calculator.',
     sound: 'Commands related to playing sound.'

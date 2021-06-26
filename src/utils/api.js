@@ -224,20 +224,21 @@ function removeMemberConnection(guildId, memberId, name) {
 }
 
 
-function reportUserResponse(issue) {
-    axios({
+async function reportUserResponse(issue) {
+    const result = await axios({
         method: 'post',
         url: `${backendPath}/issues`,
-        data: {
-            issue
-        }
+        data: { issue }
     })
-        .then((result) => {
-            if (result.status === 201) {
-                logger.info('Issue saved');
-            }
-        })
         .catch((error) => logger.warn(`Report issue error: ${error.message}`));
+
+    if (result.status === 201) {
+        return 201;
+    }
+    if (result.status === 403) {
+        return 403;
+    }
+    return null;
 }
 
 

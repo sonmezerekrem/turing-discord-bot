@@ -9,7 +9,7 @@ module.exports = {
     args: false,
     aliases: ['turing'],
     usage: '',
-    category: 'Info',
+    category: 'Bot',
     execute(message) {
         logger.debug(`Turing command has been used at guild:${message.guild.id} by:${message.author.id}`);
         return message.channel.send(embed(message));
