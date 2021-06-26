@@ -38,12 +38,12 @@ module.exports = {
             }
         }
         else {
-            if (song.found === 2) {
+            if (song.found === 6) {
                 message.channel.send('This is a live streaming. Please use `live` command.');
                 message.client.playlists.delete(message.guild.id);
                 return;
             }
-            if (song.found !== 1) {
+            if (song.found === 0) {
                 message.channel.send('Sorry, I couldn\'t any song for this.');
                 message.client.playlists.delete(message.guild.id);
                 return;
@@ -57,7 +57,7 @@ module.exports = {
                 await player(message, playlist.songs.length - 1);
             }
             else if (playlist.playing !== null) {
-                const content = `**${song.title}** has added to queue.`;
+                const content = `**${song.found === 3 ? song.spotify : song.title}** has added to queue.`;
                 message.channel.send(content);
             }
             else {

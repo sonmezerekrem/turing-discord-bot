@@ -603,16 +603,6 @@ function userEmbed(member, result) {
 }
 
 
-function presenceUpdate(presence) {
-    return new Discord.MessageEmbed()
-        .setTitle(`${presence.member.displayName} now Playing`)
-        .setDescription(`${presence.activities[0].name} - ${presence.activities[0].details}`)
-        .setThumbnail(presence.activities[0].assets.largeImage)
-        .setFooter(`${presence.guild.name} -  Discord`)
-        .setTimestamp();
-}
-
-
 function nowPlaying(guildName, song) {
     const embed = new Discord.MessageEmbed()
         .setTitle(song.title)
@@ -648,11 +638,22 @@ function queue(guildName, playlist) {
     }
 
     for (i; i < end; i++) {
-        if (i === playlist.playing) {
-            content.push(`**${i + 1}. ${playlist.songs[i].title}**`);
+        if (playlist.songs[i].found === 3 || playlist.songs[i].found === 4) {
+            if (i === playlist.playing) {
+                content.push(`**${i + 1}. ${playlist.songs[i].spotify}**`);
+            }
+            else {
+                content.push(`${i + 1}. ${playlist.songs[i].spotify}`);
+            }
         }
         else {
-            content.push(`${i + 1}. ${playlist.songs[i].title}`);
+            // eslint-disable-next-line no-lonely-if
+            if (i === playlist.playing) {
+                content.push(`**${i + 1}. ${playlist.songs[i].title}**`);
+            }
+            else {
+                content.push(`${i + 1}. ${playlist.songs[i].title}`);
+            }
         }
     }
     const embed = new Discord.MessageEmbed()
@@ -754,7 +755,6 @@ module.exports = {
     warning,
     support,
     user: userEmbed,
-    presenceUpdate,
     nowPlaying,
     queue,
     search,

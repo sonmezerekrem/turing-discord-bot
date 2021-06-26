@@ -46,7 +46,7 @@ module.exports = {
 
                                 const song = await songInfo([url], message);
 
-                                if (song.found !== 1) {
+                                if (song.found === 0) {
                                     return message.channel.send('Sorry, I couldn\'t any song for this.');
                                 }
 

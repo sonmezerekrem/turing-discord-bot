@@ -22,7 +22,7 @@ module.exports = {
 
         const live = await liveStreamingInfo(args, message);
 
-        if (live.found !== 1) {
+        if (live.found !== 7) {
             return message.channel.send('Sorry, I couldn\'t any live streaming for this.');
         }
 

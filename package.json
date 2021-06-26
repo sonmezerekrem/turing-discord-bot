@@ -23,6 +23,8 @@
     "mathjs": "^9.4.3",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
+    "spotify-uri": "^2.2.0",
+    "spotify-url-info": "^2.2.3",
     "string-similarity": "^4.0.4",
     "unique-names-generator": "^4.5.0",
     "winston": "^3.3.3",

@@ -1,5 +1,7 @@
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
+const spotify = require('spotify-url-info');
+const spotifyUri = require('spotify-uri');
 
 const logger = require('../../utils/logger');
 const { nowPlaying } = require('../../utils/embeds');
@@ -34,6 +36,17 @@ function getYoutubeVideoId(url) {
 }
 
 
+function isSpotifyUrl(url) {
+    try {
+        spotifyUri.parse(url);
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+
+
 async function songInfo(args, message) {
     const song = {
         found: 0,
@@ -46,19 +59,12 @@ async function songInfo(args, message) {
         length: null,
         seconds: null,
         release: null,
+        spotify: null,
         textChannel: message.channel,
         message: null,
         addedBy: message.author
     };
 
-    let video;
-
-    if (!isValidURL(args[0])) {
-        const title = args.join(' ');
-        const result = await yts(title);
-        // eslint-disable-next-line prefer-destructuring
-        video = result.videos.slice(0, 1)[0];
-    }
     if (isYoutubeUrl(args[0])) {
         const urlSearchParams = new URLSearchParams(args[0].split('?')[1]);
         const params = Object.fromEntries(urlSearchParams.entries());
@@ -73,7 +79,7 @@ async function songInfo(args, message) {
             }
             for (let i = start; i < videos.length; i++) {
                 const songDetails = {
-                    found: 1,
+                    found: 2,
                     id: videos[i].videoId,
                     type: 'Song',
                     title: videos[i].title,
@@ -83,6 +89,7 @@ async function songInfo(args, message) {
                     length: null,
                     seconds: null,
                     release: null,
+                    spotify: null,
                     textChannel: message.channel,
                     message: null,
                     addedBy: message.author
@@ -93,22 +100,89 @@ async function songInfo(args, message) {
         }
 
         const id = getYoutubeVideoId(args[0]);
-        video = await yts({ videoId: id });
+        let video = await yts({ videoId: id });
+
         if (video.seconds === 0) {
             video = null;
-            song.found = 2;
+            song.found = 6;
+        }
+
+        if (video != null) {
+            song.title = video.title;
+            song.channel = video.author.name;
+            song.thumbnail = video.thumbnail;
+            song.length = video.timestamp;
+            song.seconds = video.seconds;
+            song.release = video.ago;
+            song.url = video.url;
+            song.found = 1;
         }
     }
+    else if (isSpotifyUrl(args[0])) {
+        try {
+            const parsed = spotifyUri.parse(args[0]);
+            if (parsed.type === 'track') {
+                const track = await spotify.getPreview(args[0])
+                    .catch((error) => {
+                        logger.error(error.message);
+                    });
+                song.spotify = `${track.artist} - ${track.title}`;
+                song.found = 3;
+                return song;
+            }
+            if (parsed.type === 'playlist') {
+                const tracks = await spotify.getTracks(args[0])
+                    .catch((error) => {
+                        logger.error(error.message);
+                    });
+                const songList = [];
+                for (let i = 0; i < tracks.length; i++) {
+                    if (tracks[i].type === 'track') {
+                        const songDetails = {
+                            found: 4,
+                            id: null,
+                            type: 'Song',
+                            title: null,
+                            channel: null,
+                            thumbnail: null,
+                            url: null,
+                            length: null,
+                            seconds: null,
+                            release: null,
+                            spotify: `${tracks[i].artists.map((artist) => artist.name)
+                                .join(' ')} - ${tracks[i].name}`,
+                            textChannel: message.channel,
+                            message: null,
+                            addedBy: message.author
+                        };
+                        songList.push(songDetails);
+                    }
+                }
+                return songList;
+            }
+            return song;
+        }
+        catch (error) {
+            logger.error(error.message);
+        }
+    }
+    else if (!isValidURL(args[0])) {
+        const title = args.join(' ');
+        const result = await yts(title);
+        // eslint-disable-next-line prefer-destructuring
+        const video = result.videos.slice(0, 1)[0];
 
-    if (video) {
-        song.title = video.title;
-        song.channel = video.author.name;
-        song.thumbnail = video.thumbnail;
-        song.length = video.timestamp;
-        song.seconds = video.seconds;
-        song.release = video.ago;
-        song.url = video.url;
-        song.found = 1;
+        if (video) {
+            song.title = video.title;
+            song.channel = video.author.name;
+            song.thumbnail = video.thumbnail;
+            song.length = video.timestamp;
+            song.seconds = video.seconds;
+            song.release = video.ago;
+            song.url = video.url;
+            song.found = 5;
+        }
+        return song;
     }
 
     return song;
@@ -118,12 +192,16 @@ async function songInfo(args, message) {
 async function liveStreamingInfo(args, message) {
     const live = {
         found: 0,
-        type: 'Live',
+        id: null,
+        type: 'Song',
         title: null,
         channel: null,
         thumbnail: null,
         url: null,
-        watching: null,
+        length: null,
+        seconds: null,
+        release: null,
+        spotify: null,
         textChannel: message.channel,
         message: null,
         addedBy: message.author
@@ -131,26 +209,33 @@ async function liveStreamingInfo(args, message) {
 
     let streaming;
 
-    if (!isValidURL(args[0])) {
-        const title = args.join(' ');
-        const result = await yts(title);
-        // eslint-disable-next-line prefer-destructuring
-        streaming = result.live.slice(0, 1)[0];
-    }
-    else if (isYoutubeUrl(args[0])) {
+    if (isYoutubeUrl(args[0])) {
         const id = getYoutubeVideoId(args[0]);
         if (id) {
             streaming = await yts({ videoId: id });
         }
+        if (streaming) {
+            live.title = streaming.title;
+            live.channel = streaming.author.name;
+            live.thumbnail = streaming.thumbnail;
+            live.watching = streaming.watching;
+            live.url = streaming.url;
+            live.found = 7;
+        }
     }
-
-    if (streaming) {
-        live.title = streaming.title;
-        live.channel = streaming.author.name;
-        live.thumbnail = streaming.thumbnail;
-        live.watching = streaming.watching;
-        live.url = streaming.url;
-        live.found = 1;
+    else if (!isValidURL(args[0])) {
+        const title = args.join(' ');
+        const result = await yts(title);
+        // eslint-disable-next-line prefer-destructuring
+        streaming = result.live.slice(0, 1)[0];
+        if (streaming) {
+            live.title = streaming.title;
+            live.channel = streaming.author.name;
+            live.thumbnail = streaming.thumbnail;
+            live.watching = streaming.watching;
+            live.url = streaming.url;
+            live.found = 7;
+        }
     }
 
     return live;
@@ -177,17 +262,35 @@ async function fillSongInfo(client, guildId) {
 
     const song = playlist.songs[playlist.playing];
 
-    const video = await yts({ videoId: song.id });
+    if (song.found === 2) {
+        const video = await yts({ videoId: song.id });
 
-    if (video) {
-        song.title = video.title;
-        song.channel = video.author.name;
-        song.thumbnail = video.thumbnail;
-        song.length = video.timestamp;
-        song.seconds = video.seconds;
-        song.release = video.ago;
-        song.url = video.url;
-        song.found = 1;
+        if (video) {
+            song.title = video.title;
+            song.channel = video.author.name;
+            song.thumbnail = video.thumbnail;
+            song.length = video.timestamp;
+            song.seconds = video.seconds;
+            song.release = video.ago;
+            song.url = video.url;
+            song.found = 1;
+        }
+    }
+    else if (song.found === 3 || song.found === 4) {
+        const result = await yts(song.spotify);
+        // eslint-disable-next-line prefer-destructuring
+        const video = result.videos.slice(0, 1)[0];
+
+        if (video) {
+            song.title = video.title;
+            song.channel = video.author.name;
+            song.thumbnail = video.thumbnail;
+            song.length = video.timestamp;
+            song.seconds = video.seconds;
+            song.release = video.ago;
+            song.url = video.url;
+            song.found = 5;
+        }
     }
 }
 
@@ -224,6 +327,9 @@ async function joinTheVoice(message) {
         try {
             const connection = await message.member.voice.channel.join();
             connection.setSpeaking(0);
+            connection.on('disconnect', () => {
+                message.client.playlists.delete(message.guild.id);
+            });
             await connection.voice.setDeaf(true);
             playlist.connection = connection;
         }
@@ -240,17 +346,17 @@ async function playerAux(client, guildId) {
     if (playlist.connection) {
         const curr = playlist.songs[playlist.playing];
         if (curr != null) {
-            if (curr.url == null) {
+            if (curr.found === 2 || curr.found === 3 || curr.found === 4) {
                 await fillSongInfo(client, guildId);
             }
-            if (curr.url != null) {
+            if (curr.found === 1 || curr.found === 5 || curr.found === 7) {
                 curr.textChannel.send(nowPlaying(curr.textChannel.guild.name, curr))
                     .then((msg) => {
                         curr.message = msg.id;
                     })
                     .catch((error) => logger.error(error.message));
                 const dispatcher = playlist.connection
-                    .play(ytdl(`${curr.url}&html5=1&c=TVHTML5&cver=5.20150304`))
+                    .play(ytdl(curr.url))
                     .on('finish', () => {
                         deletePlayMessage(client, guildId);
                         if (playlist.loop === 0 && playlist.shuffle === 0) {
@@ -293,6 +399,11 @@ async function playerAux(client, guildId) {
                         playlist.playing = -2;
                     });
                 dispatcher.setVolume(playlist.volume);
+            }
+            else {
+                curr.textChannel.send('Sorry, I couldn\'t found this song. Skipping the song...');
+                playlist.playing++;
+                await playerAux(client, guildId);
             }
         }
     }
