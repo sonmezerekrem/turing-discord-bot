@@ -19,8 +19,7 @@ module.exports = {
             return message.channel.send(`**Expression:** _${exp}_\n**Result:** _${res}_`);
         }
         catch (e) {
-            message.channel.send('Wrong expression! Detailed documentation: https://mathjs.org/index.html');
-            logger.warn(`Calc error: ${e.message}`);
+            return message.channel.send('Wrong expression! Detailed documentation: https://mathjs.org/index.html');
         }
     }
 };

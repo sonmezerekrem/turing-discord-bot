@@ -13,7 +13,6 @@ module.exports = {
         logger.debug(`Code command has been used at guild:${message.guild.id} by:${message.author.id}`);
 
         message.delete();
-        message.channel.send(`By ${message.author}
->>> ${message.content.substring(6)}`);
+        message.channel.send(`By ${message.author}\n>>> ${message.content.substring(6)}`);
     }
 };

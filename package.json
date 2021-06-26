@@ -4,7 +4,7 @@
   "description": "A Discord bot written with discord.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest  --testTimeout=100000",
     "dev": "nodemon dev.js",
     "start": "pm2 start index.js --name discordbot --watch",
     "lint": "eslint ."
@@ -36,6 +36,7 @@
     "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
+    "jest": "^27.0.5",
     "nodemon": "^2.0.7"
   }
 }

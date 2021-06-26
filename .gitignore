@@ -13,3 +13,4 @@ test.env
 dev.js
 
 .nyc_output/
+coverage/
