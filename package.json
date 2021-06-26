@@ -20,7 +20,7 @@
     "ffmpeg-static": "^4.4.0",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
-    "mathjs": "^9.4.2",
+    "mathjs": "^9.4.3",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "string-similarity": "^4.0.4",
@@ -28,7 +28,7 @@
     "winston": "^3.3.3",
     "winston-mongodb": "^5.0.7",
     "yt-search": "^2.9.0",
-    "ytdl-core": "^4.8.0"
+    "ytdl-core": "^4.8.3"
   },
   "devDependencies": {
     "eslint": "^7.29.0",
