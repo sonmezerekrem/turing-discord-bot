@@ -4,7 +4,7 @@
   "description": "A Discord bot written with discord.js",
   "main": "index.js",
   "scripts": {
-    "test": "jest  --testTimeout=100000",
+    "test": "jest  --testTimeout=100000 --collectCoverage=true",
     "dev": "nodemon dev.js",
     "start": "pm2 start index.js --name discordbot --watch",
     "lint": "eslint ."
