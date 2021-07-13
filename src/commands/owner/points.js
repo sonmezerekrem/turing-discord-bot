@@ -24,11 +24,14 @@ module.exports = {
             let point = parseInt(args[0], 10);
             // eslint-disable-next-line no-restricted-globals
             if (!isNaN(point)) {
-                point = Math.min(point, 20);
-                message.channel.send(points(member, point, 'Gift'));
-                api.givePoints(message.guild.id, member.user.id, point);
+                if (point > 0) {
+                    point = Math.min(point, 20);
+                    api.givePoints(message.guild.id, member.user.id, point, message, member);
+                }
+                else {
+                    message.channel.send('Please give points between 1 and 20!');
+                }
             }
         }
     }
-
 };
