@@ -1,5 +1,5 @@
 const logger = require('../utils/logger');
-const embed = require('../utils/embeds').moderation;
+const embed = require('../utils/embeds');
 const api = require('../utils/api');
 
 
@@ -18,10 +18,16 @@ module.exports = {
 
             if (guildDb) {
                 if (guildDb.moderationMessages.enabled) {
-                    const moderatorChannel = channel.guild.channels.cache
-                        .find((chn) => chn.name === guildDb.moderationMessages.channel);
+                    const moderatorChannel = channel.guild.channels.cache.get(guildDb.moderationMessages.channel);
                     if (moderatorChannel) {
-                        moderatorChannel.send(embed('Invite Create', [user, invite.url, invite.expiresAt, guild.name]));
+                        moderatorChannel.send(embed.inviteEvent({
+                            url: invite.url,
+                            tag: user,
+                            expires: invite.expiresAt,
+                            guild: guild.name,
+                            id: user.id,
+                            avatar: user.avatarURL()
+                        }));
                     }
                 }
             }

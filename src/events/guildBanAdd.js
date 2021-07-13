@@ -30,8 +30,7 @@ module.exports = {
 
         if (guildDb) {
             if (guildDb.moderationMessages.enabled) {
-                const moderatorChannel = guild.channels.cache
-                    .find((channel) => channel.name === guildDb.moderationMessages.channel);
+                const moderatorChannel = guild.channels.cache.get(guildDb.moderationMessages.channel);
                 if (moderatorChannel) {
                     const banInfo = await guild.fetchBan(user);
                     moderatorChannel.send(embed('Ban', [banInfo, banner]));
