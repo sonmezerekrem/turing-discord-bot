@@ -29,12 +29,15 @@ module.exports = {
 
             await joinTheVoice(message);
 
-            if (playlist.playing !== null) {
-                const content = 'Playlist has added to queue.';
-                message.channel.send(content);
+            if (playlist.playing === -3 || playlist.playing === -2) {
+                await player(message, playlist.songs.length - 1);
+            }
+            else if (playlist.playing == null) {
+                await player(message);
             }
             else {
-                await player(message);
+                const content = 'Playlist has added to queue.';
+                message.channel.send(content);
             }
         }
         else {
@@ -53,7 +56,7 @@ module.exports = {
 
             playlist.songs.push(song);
 
-            if (playlist.playing === -2) {
+            if (playlist.playing === -2 || playlist.playing === -3) {
                 await player(message, playlist.songs.length - 1);
             }
             else if (playlist.playing !== null) {

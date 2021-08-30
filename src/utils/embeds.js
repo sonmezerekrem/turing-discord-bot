@@ -1,9 +1,4 @@
 const Discord = require('discord.js');
-const {
-    uniqueNamesGenerator,
-    adjectives,
-    colors
-} = require('unique-names-generator');
 const logger = require('./logger');
 const {
     prefix,
@@ -65,8 +60,8 @@ function help(message, args) {
                 .map((command) => command.name)
                 .join(', ')}\n`);
         }
-        embed.attachFiles(new Discord.MessageAttachment('./assets/images/icons/help.png', 'helpicon.png'));
-        embed.setThumbnail('attachment://helpicon.png');
+        embed.attachFiles(new Discord.MessageAttachment('./assets/images/icons/help.png', 'help.png'));
+        embed.setThumbnail('attachment://help.png');
         content.push(`\nYou can send  \`${prefix}help [category name]\` or \`${prefix}help [command name]\` to get info on a specific category or command!`);
         embed.setDescription(content.join('\n'));
     }
@@ -83,8 +78,8 @@ function help(message, args) {
                 content.push(`**${command.name}:** ${command.description}`);
             });
             content.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
-            embed.attachFiles(new Discord.MessageAttachment(`./assets/images/icons/${name.toLowerCase()}.png`, 'helpcategoryicon.png'));
-            embed.setThumbnail('attachment://helpcategoryicon.png');
+            embed.attachFiles(new Discord.MessageAttachment(`./assets/images/icons/${name.toLowerCase()}.png`, 'help.png'));
+            embed.setThumbnail('attachment://help.png');
             embed.setDescription(content.join('\n\n'));
         }
         else {
@@ -96,17 +91,17 @@ function help(message, args) {
 
             embed.setTitle(command.name);
             content.push(`${command.description}\n`);
-            content.push(`**Category:** ${command.category}\n`);
-            content.push(`**Aliases:** ${command.aliases.length > 0 ? command.aliases.join(', ') : '-'}\n`);
-            content.push(`**Usage:** ${prefix}${command.name} ${command.usage}\n`);
+            content.push(`**Category:** ${command.category}`);
+            content.push(`**Aliases:** ${command.aliases.length > 0 ? command.aliases.join(', ') : '-'}`);
+            content.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
             if (Object.prototype.hasOwnProperty.call(command, 'link')) {
-                content.push(`**Link:** ${command.link}\n`);
+                content.push(`**Link:** ${command.link}`);
             }
             if (Object.prototype.hasOwnProperty.call(command, 'guildOnly') && !command.guildOnly) {
-                content.push('**Dm:** Available\n');
+                content.push('**Dm:** Available');
             }
-            embed.attachFiles(new Discord.MessageAttachment(`./assets/images/icons/${command.category.toLowerCase()}.png`, 'helpcategoryicon.png'));
-            embed.setThumbnail('attachment://helpcategoryicon.png');
+            embed.attachFiles(new Discord.MessageAttachment(`./assets/images/icons/${command.category.toLowerCase()}.png`, 'help.png'));
+            embed.setThumbnail('attachment://help.png');
             embed.setDescription(content.join('\n'));
         }
     }
@@ -115,47 +110,42 @@ function help(message, args) {
 }
 
 
-function serverInfo(message, result) {
+function serverInfo(message) {
     const { guild } = message;
 
     const embed = new Discord.MessageEmbed()
         .setTitle(guild.name)
         .setColor(color)
-        .setDescription(guild.description ? guild.description : guild.name)
+        .setDescription(guild.description ? guild.description : `Information about ${guild.name}`)
         .addFields(
             {
-                name: 'Owner',
-                value: `${guild.owner}`,
-                inline: true
-            },
-            {
-                name: 'Members',
+                name: '**Members**',
                 value: `${guild.members.cache.filter((member) => !member.user.bot).size}`,
                 inline: true
             },
             {
-                name: 'Bots',
+                name: '**Bots**',
                 value: guild.members.cache.filter((member) => member.user.bot).size,
                 inline: true
             },
             {
-                name: 'Online',
+                name: '**Online**',
                 value: guild.members.cache.filter((member) => member.presence.status === 'online').size,
                 inline: true
             },
             {
-                name: 'AFK Channel',
+                name: '**AFK Channel**',
                 value: `${guild.afkChannel ? guild.afkChannel : 'Not Set'}`,
                 inline: true
             },
             {
-                name: 'Region',
+                name: '**Region**',
                 value: `${guild.region.charAt(0)
                     .toUpperCase() + guild.region.substring(1)}`,
                 inline: true
             },
             {
-                name: 'Created',
+                name: '**Created**',
                 value: `${getDateAsString(guild.createdAt)}`,
                 inline: true
             }
@@ -166,14 +156,6 @@ function serverInfo(message, result) {
 
     if (guild.rulesChannel) {
         embed.addField('Rules Channel', guild.rulesChannel.name);
-    }
-
-    if (result !== null && result !== 404 && result.connections.length > 0) {
-        const connections = [];
-        result.connections.forEach((conn) => {
-            connections.push(`__${conn.name}__\n${conn.url}\n`);
-        });
-        embed.addField('Connections', connections.join(''));
     }
     return embed;
 }
@@ -189,32 +171,33 @@ function memberEmbed(message, result) {
         .join(', ');
 
     if (result == null || result === 404) {
-        result = {};
-        result.points = '-';
-        result.level = '-';
+        result = {
+            points: '-',
+            level: '-'
+        };
     }
 
-    const embed = new Discord.MessageEmbed()
+    return new Discord.MessageEmbed()
         .setTitle(member.displayName)
         .setDescription(`Roles, points... All about ${member.user.tag}`)
         .setColor(color)
         .addFields(
             {
-                name: 'Roles',
+                name: '**Roles**',
                 value: `${roleList.length > 0 ? roleList : 'No Roles'}`
             },
             {
-                name: 'Joined At',
+                name: '**Joined At**',
                 value: `${date}`,
                 inline: true
             },
             {
-                name: 'Points',
+                name: '**Points**',
                 value: result.points,
                 inline: true
             },
             {
-                name: 'Level ',
+                name: '**Level**',
                 value: result.level,
                 inline: true
             }
@@ -222,17 +205,6 @@ function memberEmbed(message, result) {
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(member.user.avatarURL() != null ? member.user.avatarURL() : 'https://cdn.discordapp.com/embed/avatars/0.png');
-
-    if (member.presence && member.presence.activities.length > 0) {
-        if (member.presence.activities[0].name === 'Spotify') {
-            embed.addField('Status', `**${member.presence.activities[0].name}** - ${member.presence.activities[0].state.replace(';', ',')} - ${member.presence.activities[0].details}`);
-        }
-        else {
-            embed.addField('Status', `${toTitleCase(member.presence.activities[0].type)} - ${member.presence.activities[0].name}`);
-        }
-    }
-
-    return embed;
 }
 
 
@@ -248,7 +220,7 @@ function roleEmbed(message, roleName) {
     return new Discord.MessageEmbed()
         .setTitle(role.name)
         .setAuthor('Role Information')
-        .setColor(role.hexColor)
+        .setColor(color)
         .setThumbnail(message.guild.iconURL())
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp()
@@ -272,8 +244,7 @@ function teamsEmbed(message, teams) {
         .setTimestamp();
 
     for (let i = 0; i < teams.length; i++) {
-        const teamName = toTitleCase(uniqueNamesGenerator({ dictionaries: [adjectives, colors] })
-            .replace('_', ' '));
+        const teamName = `Team ${i + 1}`;
 
         const members = teams[i].join(', ');
         embed.addField(`${i + 1}.  ${teamName}`, members);
@@ -296,40 +267,40 @@ function botInfo(message) {
         .setURL(contact.website)
         .addFields(
             {
-                name: 'Website',
+                name: '**Website**',
                 value: contact.website
             },
             {
-                name: 'Github Repository',
+                name: '**Github**',
                 value: contact.github
             },
             {
-                name: 'Joined At ',
+                name: '**Joined At**',
                 value: `${joinDate}`,
                 inline: true
             },
             {
-                name: 'Prefix ',
+                name: '**Prefix **',
                 value: `${prefix}`,
                 inline: true
             },
             {
-                name: 'Help Command',
+                name: '**Help Command**',
                 value: `${prefix}help`,
                 inline: true
             },
             {
-                name: 'Issue Report',
+                name: '**Issue Report**',
                 value: `${prefix}issue`,
                 inline: true
             },
             {
-                name: 'Language',
+                name: '**Language**',
                 value: 'English',
                 inline: true
             },
             {
-                name: 'Version',
+                name: '**Version**',
                 value: version,
                 inline: true
             }
@@ -409,33 +380,6 @@ function moderation(action, args) {
                     .addField('Kicked By', args[1]);
             }
         }
-        else if (action === 'Channel Create') {
-            embed.setTitle('Channel Create')
-                .setDescription('New channel is created at guild')
-                .setColor(colorSet.RoyalBlue)
-                .addField('Type', args[0].type)
-                .addField('Name', `${args[0].name} (${args[0].id})`)
-                .setFooter(`${args[1]} -  Discord`)
-                .setThumbnail(args[2]);
-        }
-        else if (action === 'Channel Delete') {
-            embed.setTitle('Channel Delete')
-                .setDescription('Channel is deleted at guild')
-                .setColor(colorSet.Blue)
-                .addField('Type', args[0].type)
-                .addField('Name', `${args[0].name} (${args[0].id})`)
-                .setFooter(`${args[1]} -  Discord`)
-                .setThumbnail(args[2]);
-        }
-        else if (action === 'Channel Update') {
-            embed.setTitle('Channel Update')
-                .setDescription('Channel is updated at guild')
-                .setColor(colorSet.MediumBlue)
-                .addField('Type', args[1].type)
-                .addField('Name', `${args[1].name} (${args[1].id})`)
-                .setFooter(`${args[2]} -  Discord`)
-                .setThumbnail(args[3]);
-        }
         else if (action === 'Invite Create') {
             embed.setTitle('Invite Created')
                 .setDescription('New invite is created')
@@ -455,6 +399,70 @@ function moderation(action, args) {
 }
 
 
+function channelEvents(type, args) {
+    if (type === 'create') {
+        const content = [
+            `**Channel ID:** ${args.id}`,
+            `**Channel Name:** ${args.name}`,
+            `**Channel Type:** ${args.type}`
+        ];
+        return new Discord.MessageEmbed()
+            .setTitle('Channel Created')
+            .setDescription(content.join('\n'))
+            .setTimestamp()
+            .setThumbnail(args.guild.iconURL() != null ? args.guild.iconURL() : 'https://cdn.discordapp.com/embed/avatars/0.png')
+            .setFooter(`${args.guild.name} -  Discord`)
+            .setColor(colorSet.RoyalBlue);
+    }
+    else if (type === 'delete') {
+        const content = [
+            `**Channel ID:** ${args.id}`,
+            `**Channel Name:** ${args.name}`,
+            `**Channel Type:** ${args.type}`
+        ];
+        return new Discord.MessageEmbed()
+            .setTitle('Channel Deleted')
+            .setDescription(content.join('\n'))
+            .setTimestamp()
+            .setThumbnail(args.guild.iconURL() != null ? args.guild.iconURL() : 'https://cdn.discordapp.com/embed/avatars/0.png')
+            .setFooter(`${args.guild.name} -  Discord`)
+            .setColor(colorSet.RoyalBlue);
+    }
+    else {
+        const content = [
+            `**Channel ID:** ${args[0].id}`,
+            `**Channel Name:** ${args[0].name}`,
+            `**Updated Property:** ${args[1].field}`,
+            `**Message:** ${args[1].message}`
+        ];
+        if (args[1].id) {
+            content.push(`**ID of Affected Role/Member:** ${args[1].id}`);
+        }
+        return new Discord.MessageEmbed()
+            .setTitle('Channel Updated')
+            .setDescription(content.join('\n'))
+            .setTimestamp()
+            .setThumbnail(args[0].guild.iconURL() != null ? args[0].guild.iconURL() : 'https://cdn.discordapp.com/embed/avatars/0.png')
+            .setFooter(`${args[0].guild.name} -  Discord`)
+            .setColor(colorSet.RoyalBlue);
+    }
+}
+
+
+function inviteEvent(args) {
+    const content = ['New invite is created',
+        `**Url:** ${args.url}`,
+        `**Creator:** ${args.tag}(${args.id})`,
+        `**Expires At:** ${getDateAsString(args.expires)}`];
+    return new Discord.MessageEmbed()
+        .setTitle('Invite Created')
+        .setDescription(content.join('\n'))
+        .setColor(colorSet.Indigo)
+        .setThumbnail(args.avatar != null ? args.avatar : 'https://cdn.discordapp.com/embed/avatars/0.png')
+        .setFooter(`${args.guild} -  Discord`);
+}
+
+
 function welcomeMessage(member) {
     return new Discord.MessageEmbed()
         .setTitle(`Welcome to The ${member.guild.name}`)
@@ -469,9 +477,7 @@ function welcomeMessage(member) {
 function points(member, point, source) {
     return new Discord.MessageEmbed()
         .setTitle(`Congratulations ${member.displayName}!`)
-        .setDescription('You earn points')
-        .addField('Points', point)
-        .addField('Source', source)
+        .setDescription(`You earn points\n\n**Points:** ${point}\n\n**Source:** ${source}`)
         .setColor(colorSet.Yellow)
         .setFooter(`${member.guild.name} -  Discord`)
         .setTimestamp()
@@ -496,25 +502,26 @@ function support(message) {
         .setDescription('You can reach community from this channels')
         .addFields(
             {
-                name: 'Discord Community',
+                name: '**Discord Community**',
                 value: contact.invite
             },
             {
-                name: 'Website',
+                name: '**Website**',
                 value: contact.website
             },
             {
-                name: 'Instagram',
+                name: '**Instagram**',
                 value: contact.instagram
             },
             {
-                name: 'Github Repository',
+                name: '**Github Repository**',
                 value: contact.github
             }
         )
         .setThumbnail()
         .setFooter(`${message.guild.name} -  Discord`)
         .setTimestamp()
+        .setColor(color)
         .setThumbnail(message.client.user.avatarURL());
 }
 
@@ -525,17 +532,17 @@ function userEmbed(member, result) {
     const roleList = member._roles.map((id) => roles.cache.get(id).name)
         .join(', ');
 
-    const embed = new Discord.MessageEmbed()
+    return new Discord.MessageEmbed()
         .setTitle(member.displayName)
         .setDescription(`General information about ${member.displayName}`)
         .setColor(color)
         .addFields(
             {
-                name: 'Roles',
+                name: '**Roles**',
                 value: `${roleList.length > 0 ? roleList : 'No Roles'}`
             },
             {
-                name: 'Level ',
+                name: '**Level**',
                 value: result.level,
                 inline: true
             }
@@ -543,8 +550,6 @@ function userEmbed(member, result) {
         .setFooter(`${member.guild.name} -  Discord`)
         .setTimestamp()
         .setThumbnail(member.user.avatarURL());
-
-    return embed;
 }
 
 
@@ -583,21 +588,22 @@ function queue(guildName, playlist) {
     }
 
     for (i; i < end; i++) {
-        if (playlist.songs[i].found === 3 || playlist.songs[i].found === 4) {
+        const song = playlist.songs[i];
+        if (song.found === 3 || song.found === 4) {
             if (i === playlist.playing) {
-                content.push(`**${i + 1}. ${playlist.songs[i].spotify}**`);
+                content.push(`**${i + 1}. ${song.spotify}**\n${song.length ? song.length : '-:-'}`);
             }
             else {
-                content.push(`${i + 1}. ${playlist.songs[i].spotify}`);
+                content.push(`${i + 1}. ${song.spotify}\n${song.length ? song.length : '-:-'}`);
             }
         }
         else {
             // eslint-disable-next-line no-lonely-if
             if (i === playlist.playing) {
-                content.push(`**${i + 1}. ${playlist.songs[i].title}**`);
+                content.push(`**${i + 1}. ${song.title}**\n${song.length ? song.length : '-:-'}`);
             }
             else {
-                content.push(`${i + 1}. ${playlist.songs[i].title}`);
+                content.push(`${i + 1}. ${song.title}\n${song.length ? song.length : '-:-'}`);
             }
         }
     }
@@ -609,7 +615,7 @@ function queue(guildName, playlist) {
         .setFooter(`${guildName} -  Discord`);
 
 
-    if (playlist.playing != null && playlist.playing !== -2) {
+    if (playlist.playing != null && playlist.playing !== -2 && playlist.playing !== -3) {
         embed.setThumbnail(playlist.songs[playlist.playing].thumbnail);
     }
     return embed;
@@ -652,15 +658,16 @@ async function top(guildName, thumbnail, toplist) {
 
 
 function pollAnswers(question, answers, guild, member) {
-    const content = ['A new poll is started\n',
+    const content = [
         `**Created by:** ${member}\n`,
-        `**Question:** ${question}\n`];
+        `**Question:** ${question}\n`
+    ];
     for (let i = 0; i < answers.length; i++) {
         content.push(`${emojiLetters[i]} ${answers[i]}\n`);
     }
     return new Discord.MessageEmbed()
         .setTitle('Poll')
-        .setDescription(content.join('\n'))
+        .setDescription(content.join('\n').substring(0, 2048))
         .setFooter(`${guild} -  Discord`)
         .setTimestamp()
         .setColor(color)
@@ -686,5 +693,7 @@ module.exports = {
     queue,
     search,
     top,
-    pollAnswers
+    pollAnswers,
+    channelEvents,
+    inviteEvent
 };

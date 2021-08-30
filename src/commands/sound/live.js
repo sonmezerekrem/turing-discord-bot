@@ -29,8 +29,10 @@ module.exports = {
         const playlist = getPlaylist(message.client, message.guild.id);
 
         await joinTheVoice(message);
-
-        if (playlist.playing !== null) {
+        if (playlist.playing === -3 || playlist.playing === -2) {
+            await player(message, playlist.songs.length - 1);
+        }
+        else if (playlist.playing !== null) {
             playlist.songs.push(live);
             const content = `**${live.title}** has added to queue.`;
             message.channel.send(content);

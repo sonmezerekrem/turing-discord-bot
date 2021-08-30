@@ -1,6 +1,8 @@
 const axios = require('axios').default;
 const logger = require('./logger');
-const { backendPath } = require('../config.json');
+const embed = require('./embeds');
+
+const backendPath = process.env.BACKEND;
 
 
 async function getGuild(guildId) {
@@ -127,14 +129,14 @@ function updateMember(guildId, memberId, args) {
     })
         .then((result) => {
             if (result.status === 201) {
-                logger.info('Changes have saved');
+                logger.info('Member changes have saved');
             }
         })
         .catch((error) => logger.warn(`Update member error: ${error.message}`));
 }
 
 
-function givePoints(guildId, memberId, points, now) {
+function givePoints(guildId, memberId, points, now, message = null, member = null) {
     axios({
         method: 'patch',
         url: `${backendPath}/guilds/${guildId}/members/${memberId}/points`,
@@ -145,10 +147,18 @@ function givePoints(guildId, memberId, points, now) {
     })
         .then((result) => {
             if (result.status === 201) {
-                logger.debug('Points given');
+                if (message != null && member != null) {
+                    message.channel.send(embed.points(member, points, 'Guild Gift'));
+                }
+                logger.debug(`Points given to ${memberId}`);
             }
         })
-        .catch((error) => logger.warn(`Give points error: ${error.message}`));
+        .catch((error) => {
+            if (message != null && member != null) {
+                message.channel.send('Point gifts couldn\'t given. Possible overuse of points command!');
+            }
+            logger.warn(`Give points error: ${error.message}`);
+        });
 }
 
 

@@ -364,6 +364,9 @@ async function playerAux(client, guildId) {
                                 playlist.playing++;
                                 playerAux(client, guildId);
                             }
+                            else {
+                                playlist.playing = -3;
+                            }
                         }
                         else if (playlist.loop === 0 && playlist.shuffle === 1) {
                             if (playlist.playing < playlist.songs.length - 1) {
@@ -395,7 +398,8 @@ async function playerAux(client, guildId) {
                     .on('error', (error) => {
                         deletePlayMessage(client, guildId);
                         curr.textChannel.send('Sorry, an error is occurred when trying to play the song');
-                        logger.error(`Song playerAux error ${error.message}`);
+                        logger.error(`Song playerAux error: ${error.message}`);
+                        playlist.songs = playlist.songs.filter((v, i) => i !== playlist.playing);
                         playlist.playing = -2;
                     });
                 dispatcher.setVolume(playlist.volume);
