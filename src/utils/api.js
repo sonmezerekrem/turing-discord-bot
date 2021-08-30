@@ -129,7 +129,7 @@ function updateMember(guildId, memberId, args) {
     })
         .then((result) => {
             if (result.status === 201) {
-                logger.info('Changes have saved');
+                logger.info('Member changes have saved');
             }
         })
         .catch((error) => logger.warn(`Update member error: ${error.message}`));

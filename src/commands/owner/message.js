@@ -14,7 +14,7 @@ module.exports = {
         const { guild } = message;
 
         const channel = guild.channels.cache.find((chn) => chn.name === args[0]);
-        if (channel && channel.type === 'text') {
+        if (channel && (channel.type === 'text' || channel.type === 'news')) {
             const content = message.content.substring(args[0].length + 10);
             channel.send(content);
         }
